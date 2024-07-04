@@ -14,13 +14,30 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get("bigquery")
-  async getBQ(): Promise<any> {
+  @Get("bigquerycreate")
+  async getBQCreate(): Promise<any> {
     return await this.bigQueryService.user.create([
       { name: "Rodrigooo", email: "rodfrutuoso", password: "minhaDega" },
     ]);
-    // return await this.bigQueryService.runQuery(
-    //   "Select * from `movimentation.users`"
-    // );
+  }
+
+  @Get("bigquerydelete")
+  async getBQDelete(): Promise<any> {
+    return await this.bigQueryService.user.delete({
+      email: "rodfrutuoso@ecoeletrica.com.br",
+    });
+  }
+
+  @Get("bigqueryupdate")
+  async getBQupdate(): Promise<any> {
+    return await this.bigQueryService.user.update({
+      where: { email: "rodfrutuoso" },
+      data: { email: "rodfrutuoso@ecoeletrica.com.br" },
+    });
+  }
+
+  @Get("bigqueryselect")
+  async getBQselect(): Promise<any> {
+    return await this.bigQueryService.user.select({ name: "Rodrigooo" });
   }
 }
