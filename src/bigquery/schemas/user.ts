@@ -4,6 +4,7 @@ import { BigQueryMethods } from "bigquery/bigqueryMethods";
 const datasetId_tableId = "movimentation.users";
 
 interface UserProps {
+  id?: string;
   name: string;
   email: string;
   password: string;

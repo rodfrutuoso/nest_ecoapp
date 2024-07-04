@@ -5,7 +5,18 @@ export interface UpdateProps<T> {
   where: Partial<T>;
 }
 
+export interface SelectOptions<T> {
+  where?: Partial<T>;
+  columns?: (keyof T)[];
+  like?: Partial<T>;
+  join?: { table: string; on: string };
+  distinct?: boolean;
+  orderBy?: { column: keyof T; direction: "ASC" | "DESC" };
+  groupBy?: (keyof T)[];
+}
+
 export class BigQueryMethods<T> {
+  id: string;
   private readonly bigquery = new BigQuery({
     keyFilename: "bigquery/bigquery-key-api.json",
     projectId: "ecoeletricatech",
@@ -44,19 +55,55 @@ export class BigQueryMethods<T> {
     return this.runQuery(query);
   }
 
-  async select(where: Partial<T> = {}): Promise<T[]> {
-    const whereClause = Object.keys(where)
-      .map(
-        (key) =>
-          `${key} = ${
-            typeof where[key] === "string" ? `'${where[key]}'` : where[key]
-          }`
-      )
-      .join(" AND ");
+  async select(options: SelectOptions<T> = {}): Promise<T[]> {
+    const { where, columns, like, join, distinct, orderBy, groupBy } = options;
+
+    const selectColumns = columns ? columns.join(", ") : "*";
+    const distinctClause = distinct ? "DISTINCT" : "";
+    const whereClauses = [];
+
+    if (where) {
+      const whereClause = Object.keys(where)
+        .map(
+          (key) =>
+            `${String(key)} = ${
+              typeof where[key] === "string" ? `'${where[key]}'` : where[key]
+            }`
+        )
+        .join(" AND ");
+      whereClauses.push(whereClause);
+    }
+
+    if (like) {
+      const likeClause = Object.keys(like)
+        .map(
+          (key) =>
+            `${String(key)} LIKE ${
+              typeof like[key] === "string" ? `'%${like[key]}%'` : like[key]
+            }`
+        )
+        .join(" AND ");
+      whereClauses.push(likeClause);
+    }
+
+    const whereClause =
+      whereClauses.length > 0 ? `WHERE ${whereClauses.join(" AND ")}` : "";
+    const joinClause = join ? `JOIN ${join.table} ON ${join.on}` : "";
+    const groupByClause = groupBy
+      ? `GROUP BY ${groupBy.map((col) => String(col)).join(", ")}`
+      : "";
+    const orderByClause = orderBy
+      ? `ORDER BY ${String(orderBy.column)} ${orderBy.direction}`
+      : "";
+
     const query = `
-      SELECT * FROM \`${this.datasetId_tableId}\`
-      ${whereClause ? `WHERE ${whereClause}` : ""}
+      SELECT ${distinctClause} ${selectColumns} FROM \`${this.datasetId_tableId}\`
+      ${joinClause}
+      ${whereClause}
+      ${groupByClause}
+      ${orderByClause}
     `;
+
     return this.runQuery(query);
   }
 

@@ -38,6 +38,13 @@ export class AppController {
 
   @Get("bigqueryselect")
   async getBQselect(): Promise<any> {
-    return await this.bigQueryService.user.select({ name: "Rodrigooo" });
+    return await this.bigQueryService.user.select({columns:["email","id"],where:{email:"rodfrutuoso"}});
+  }
+
+  @Get("bigqueryselectescrito")
+  async getBQselectescrito(): Promise<any> {
+    return await this.bigQueryService.user.runQuery(
+      "Select name, email from `movimentation.users` where password = '123456'"
+    );
   }
 }
