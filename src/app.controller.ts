@@ -16,6 +16,11 @@ export class AppController {
 
   @Get("bigquery")
   async getBQ(): Promise<any> {
-    return this.bigQueryService.runQuery("Select * from `movimentation.users`");
+    return await this.bigQueryService.user.create([
+      { name: "Rodrigooo", email: "rodfrutuoso", password: "minhaDega" },
+    ]);
+    // return await this.bigQueryService.runQuery(
+    //   "Select * from `movimentation.users`"
+    // );
   }
 }
