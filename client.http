@@ -11,3 +11,12 @@ Content-Type: application/json
 }
 
 ###
+
+# @name authenticate
+POST {{baseURL}}/sessions
+Content-Type: application/json
+
+{
+    "email": "joaosilva@ecoeletrica.com.br",
+    "password": "123456" 
+}
