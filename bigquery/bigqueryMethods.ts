@@ -1,4 +1,5 @@
 import { BigQuery } from "@google-cloud/bigquery";
+import { NotFoundException } from "@nestjs/common";
 
 export interface UpdateProps<T> {
   data: Partial<T>;
@@ -15,8 +16,7 @@ export interface SelectOptions<T> {
   groupBy?: (keyof T)[];
 }
 
-export class BigQueryMethods<T> {
-  id: string;
+export class BigQueryMethods<T extends Record<string, any>> {
   private readonly bigquery = new BigQuery({
     keyFilename: "bigquery/bigquery-key-api.json",
     projectId: "ecoeletricatech",
@@ -33,6 +33,9 @@ export class BigQueryMethods<T> {
   }
 
   async create(data: T[]): Promise<{}> {
+    if (data.length === 0)
+      throw new NotFoundException("Não há dados a serem retornados");
+
     const fields = Object.keys(data[0]).join(", ");
     const values = data
       .map(
@@ -60,7 +63,7 @@ export class BigQueryMethods<T> {
 
     const selectColumns = columns ? columns.join(", ") : "*";
     const distinctClause = distinct ? "DISTINCT" : "";
-    const whereClauses = [];
+    const whereClauses: string[] = [];
 
     if (where) {
       const whereClause = Object.keys(where)
