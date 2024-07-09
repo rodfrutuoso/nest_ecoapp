@@ -5,6 +5,7 @@ import { AuthModule } from "./auth/auth.module";
 import { ConfigModule } from "@nestjs/config";
 import { envSchema } from "./env";
 import { AuthenticateController } from "./controllers/authenticate.controller";
+import { RegisterMaterialController } from "./controllers/register-material.controller";
 
 @Module({
   imports: [
@@ -15,7 +16,11 @@ import { AuthenticateController } from "./controllers/authenticate.controller";
       isGlobal: true,
     }),
   ],
-  controllers: [CreateAccountController, AuthenticateController],
+  controllers: [
+    CreateAccountController,
+    AuthenticateController,
+    RegisterMaterialController,
+  ],
   providers: [],
 })
 export class AppModule {}
