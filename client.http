@@ -1,4 +1,5 @@
 @baseURL = http://localhost:3333 
+@authToken = {{authenticate.response.body.access_token}}
 
 # @name create_account
 POST {{baseURL}}/accounts
@@ -26,6 +27,4 @@ Content-Type: application/json
 # @name register_material
 POST {{baseURL}}/materials
 Content-Type: application/json
-Authorization: : Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzNTIyNzVjMi1jMzU4LTQzNjctOGY5Ny1iMjFkZThhMTcwZGEiLCJpYXQiOjE3MjA1NTE1MDB9.wJIvV4OiIDmMiAVh6iSeCN8pTRLfz27I-Rh-Hy4L3_jr_D35hcaI1jWmYM3rs2te0yVpaGTNXl3htnyoqDFv7q_HfwaNa6lcOPw6ywmVZncWUW6zyJ7uhyudwMzY5Z_JhgyxaiJU95SpULjSdUzXqLSMTXiaF55YlN1iHNJCZkgDTYq0Xl-6CVpg-_Cy-T5lT_1q8H7gmR0ogZLccPtEQcc5V-LfY1mj9l1To2XFgleRUH011w5-tS2hr88vSe7ptbHW3VpyGpikJdRwj9aFp-RAn2JnZuMtbwjhnbCe1nQWd5J-P37rQYpZymHJDHNNTs9rxdk84ptBNusuteUORA
-
-  
+Authorization: Bearer {{authToken}}

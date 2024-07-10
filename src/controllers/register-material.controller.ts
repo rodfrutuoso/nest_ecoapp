@@ -4,7 +4,7 @@ import { BigQueryService } from "src/bigquery/bigquery.service";
 import { hash } from "bcryptjs";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/pipes/zod-validation.pipe";
-import { AuthGuard } from "@nestjs/passport";
+import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 
 // const registerMaterialBodySchema = z
 //   .object({
@@ -17,7 +17,7 @@ import { AuthGuard } from "@nestjs/passport";
 // type RegisterMaterialBodySchema = z.infer<typeof registerMaterialBodySchema>;
 
 @Controller("/materials")
-@UseGuards(AuthGuard("jwt"))
+@UseGuards(JwtAuthGuard)
 export class RegisterMaterialController {
   constructor(private bigquery: BigQueryService) {}
 
