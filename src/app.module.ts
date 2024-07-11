@@ -6,6 +6,7 @@ import { ConfigModule } from "@nestjs/config";
 import { envSchema } from "./env";
 import { AuthenticateController } from "./controllers/authenticate.controller";
 import { RegisterMaterialController } from "./controllers/register-material.controller";
+import { FetchMaterialController } from "./controllers/fetch-materials.controller";
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { RegisterMaterialController } from "./controllers/register-material.cont
     CreateAccountController,
     AuthenticateController,
     RegisterMaterialController,
+    FetchMaterialController
   ],
   providers: [],
 })

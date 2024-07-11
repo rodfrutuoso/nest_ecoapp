@@ -14,6 +14,8 @@ export interface SelectOptions<T> {
   distinct?: boolean;
   orderBy?: { column: keyof T; direction: "ASC" | "DESC" };
   groupBy?: (keyof T)[];
+  limit?: number;
+  offset?: number;
 }
 
 export class BigQueryMethods<T extends Record<string, any>> {
@@ -59,7 +61,17 @@ export class BigQueryMethods<T extends Record<string, any>> {
   }
 
   async select(options: SelectOptions<T> = {}): Promise<T[]> {
-    const { where, columns, like, join, distinct, orderBy, groupBy } = options;
+    const {
+      where,
+      columns,
+      like,
+      join,
+      distinct,
+      orderBy,
+      groupBy,
+      limit,
+      offset,
+    } = options;
 
     const selectColumns = columns ? columns.join(", ") : "*";
     const distinctClause = distinct ? "DISTINCT" : "";
@@ -98,6 +110,8 @@ export class BigQueryMethods<T extends Record<string, any>> {
     const orderByClause = orderBy
       ? `ORDER BY ${String(orderBy.column)} ${orderBy.direction}`
       : "";
+    const limitClause = limit ? `LIMIT ${limit}` : "";
+    const offsetClause = offset ? `OFFSET ${offset}` : "";
 
     const query = `
       SELECT ${distinctClause} ${selectColumns} FROM \`${this.datasetId_tableId}\`
@@ -105,6 +119,8 @@ export class BigQueryMethods<T extends Record<string, any>> {
       ${whereClause}
       ${groupByClause}
       ${orderByClause}
+      ${limitClause}
+      ${offsetClause}
     `;
 
     return this.runQuery(query);

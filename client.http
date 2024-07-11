@@ -36,3 +36,15 @@ Authorization: Bearer {{authToken}}
     "unit": "CDA",
     "contractId": "352275c2-c358-4367-8f97-b21de8a170da"
 }
+
+###
+
+# @name fetch_materials
+GET {{baseURL}}/materials?page=1
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "type": "FERRAGEM",
+    "contractId": "352275c2-c358-4367-8f97-b21de8a170da"
+}
