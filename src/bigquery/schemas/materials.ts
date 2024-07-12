@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { BigQueryMethods } from "bigquery/bigqueryMethods";
 
-const datasetId_tableId = "movimentation.materials";
+const tableId = "materials";
 
 export interface MaterialProps {
   id?: string;
@@ -15,6 +15,6 @@ export interface MaterialProps {
 @Injectable()
 export class Material extends BigQueryMethods<MaterialProps> {
   constructor() {
-    super(datasetId_tableId);
+    super(tableId);
   }
 }

@@ -1,5 +1,6 @@
 import { BigQuery } from "@google-cloud/bigquery";
 import { NotFoundException } from "@nestjs/common";
+import "dotenv/config";
 
 export interface UpdateProps<T> {
   data: Partial<T>;
@@ -24,7 +25,15 @@ export class BigQueryMethods<T extends Record<string, any>> {
     projectId: "ecoeletricatech",
   });
 
-  constructor(private readonly datasetId_tableId: string) {}
+  // constructor(private readonly datasetId_tableId: string) {}
+
+  private readonly datasetId: string;
+
+  constructor(TableId: string) {
+    // Define o dataset com base na variável de ambiente
+    const datasetId = process.env.DATASET_ID_PRODUCTION;
+    this.datasetId = datasetId + "." + TableId;
+  }
 
   async runQuery(query: string) {
     const options = {
@@ -51,7 +60,7 @@ export class BigQueryMethods<T extends Record<string, any>> {
       .join(", ");
 
     const query = `
-      INSERT INTO \`${this.datasetId_tableId}\`
+      INSERT INTO \`${this.datasetId}\`
       (${fields})
       VALUES
       ${values}
@@ -114,7 +123,7 @@ export class BigQueryMethods<T extends Record<string, any>> {
     const offsetClause = offset ? `OFFSET ${offset}` : "";
 
     const query = `
-      SELECT ${distinctClause} ${selectColumns} FROM \`${this.datasetId_tableId}\`
+      SELECT ${distinctClause} ${selectColumns} FROM \`${this.datasetId}\`
       ${joinClause}
       ${whereClause}
       ${groupByClause}
@@ -145,7 +154,7 @@ export class BigQueryMethods<T extends Record<string, any>> {
       )
       .join(" AND ");
     const query = `
-      UPDATE \`${this.datasetId_tableId}\`
+      UPDATE \`${this.datasetId}\`
       SET ${setClause}
       WHERE ${whereClause}
     `;
@@ -162,7 +171,7 @@ export class BigQueryMethods<T extends Record<string, any>> {
       )
       .join(" AND ");
     const query = `
-      DELETE FROM \`${this.datasetId_tableId}\`
+      DELETE FROM \`${this.datasetId}\`
       WHERE ${whereClause}
     `;
     return this.runQuery(query);

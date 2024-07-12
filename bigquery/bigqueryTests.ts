@@ -1,0 +1,95 @@
+import { BigQuery } from "@google-cloud/bigquery";
+
+interface bigqueryTestCreateTestDataset {
+  sourceDatasetId: string;
+  testDatasetId: string;
+}
+
+export class BigqueryTests {
+  private readonly bigquery = new BigQuery({
+    keyFilename: "bigquery/bigquery-key-api.json",
+    projectId: "ecoeletricatech",
+  });
+
+  async createTestDataset(datasetsEnv: bigqueryTestCreateTestDataset) {
+    const { sourceDatasetId, testDatasetId } = datasetsEnv;
+
+    try {
+      await this.bigquery.createDataset(testDatasetId, {
+        location: "US", // Adjust as necessary
+      });
+      console.log(`Dataset ${testDatasetId} criado.`);
+      // List tables in the source dataset
+      const [sourceTables] = await this.bigquery
+        .dataset(sourceDatasetId)
+        .getTables();
+
+      for (const table of sourceTables) {
+        // Get the schema of the table
+        const [metadata] = await table.getMetadata();
+        const schema = metadata.schema;
+
+        // Create a new table in the test dataset with the same schema
+        const tableId = table.id;
+        if (tableId !== undefined) {
+          await this.bigquery
+            .dataset(testDatasetId)
+            .createTable(tableId, { schema });
+          console.log(`Tabela ${tableId} criada no dataset ${testDatasetId}.`);
+        }
+      }
+    } catch (err) {
+      console.error("Erro ao criar o dataset:", err);
+    }
+  }
+
+  async deleteTestDataset(testDatasetId: string) {
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    try {
+      console.log(`Checking if dataset ${testDatasetId} exists...`);
+      const testDataset = this.bigquery.dataset(testDatasetId);
+      const [datasetExists] = await testDataset.exists();
+
+      if (!datasetExists) {
+        console.log(`Dataset ${testDatasetId} does not exist.`);
+        return;
+      }
+
+      console.log(`Listing tables in dataset ${testDatasetId}...`);
+      const [tables] = await testDataset.getTables();
+
+      for (const table of tables) {
+        const tableId = table.id;
+        if (tableId !== undefined) {
+          console.log(
+            `Deleting table ${tableId} from dataset ${testDatasetId}...`
+          );
+          await table.delete();
+          console.log(
+            `Table ${tableId} deleted from dataset ${testDatasetId}.`
+          );
+        } else {
+          console.warn(`Table ID is undefined for table: ${table}`);
+        }
+      }
+
+      // Wait for a moment to ensure all tables are deleted
+    //   await new Promise((resolve) => setTimeout(resolve, 5000));
+
+      console.log(`Deleting dataset ${testDatasetId}...`);
+      await testDataset.delete();
+      console.log(`Dataset ${testDatasetId} deleted.`);
+    } catch (err) {
+      console.error("Erro ao deletar o dataset:", err);
+    }
+  }
+}
+
+//   // Get tables in the test dataset
+//   const [tables] = await this.bigquery.dataset(testDatasetId).getTables();
+//   // Delete each table
+//   for (const table of tables) {
+//     await table.delete();
+//     console.log(`Table ${table.id} deleted from dataset ${testDatasetId}.`);
+//   }

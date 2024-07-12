@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { BigQueryMethods } from "bigquery/bigqueryMethods";
 
-const datasetId_tableId = "movimentation.users";
+const tableId = "users";
 
 export interface UserProps {
   id?: string;
@@ -13,6 +13,6 @@ export interface UserProps {
 @Injectable()
 export class User extends BigQueryMethods<UserProps> {
   constructor() {
-    super(datasetId_tableId);
+    super(tableId);
   }
 }
