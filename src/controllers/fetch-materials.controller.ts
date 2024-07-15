@@ -45,6 +45,7 @@ export class FetchMaterialController {
       where: { type, contractId },
       limit: pageCount,
       offset: pageCount * (page - 1),
+      orderBy: { column: "code", direction: "ASC" },
     });
 
     if (materials.length < 1)
