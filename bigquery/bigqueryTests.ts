@@ -24,6 +24,7 @@ export class BigqueryTests {
         .dataset(sourceDatasetId)
         .getTables();
 
+      console.log(`Iniciada a cópia das tabelas do dataset ${testDatasetId}.`);
       for (const table of sourceTables) {
         // Get the schema of the table
         const [metadata] = await table.getMetadata();
@@ -35,9 +36,11 @@ export class BigqueryTests {
           await this.bigquery
             .dataset(testDatasetId)
             .createTable(tableId, { schema });
-          console.log(`Tabela ${tableId} criada no dataset ${testDatasetId}.`);
         }
       }
+      console.log(
+        `Finalizada a cópia das tabelas do dataset ${testDatasetId}.`
+      );
     } catch (err) {
       console.error("Erro ao criar o dataset:", err);
     }
@@ -47,39 +50,31 @@ export class BigqueryTests {
     // await new Promise((resolve) => setTimeout(resolve, 2000));
 
     try {
-      console.log(`Checking if dataset ${testDatasetId} exists...`);
       const testDataset = this.bigquery.dataset(testDatasetId);
       const [datasetExists] = await testDataset.exists();
 
       if (!datasetExists) {
-        console.log(`Dataset ${testDatasetId} does not exist.`);
+        console.log(`Dataset ${testDatasetId} não existe.`);
         return;
       }
 
-      console.log(`Listing tables in dataset ${testDatasetId}...`);
       const [tables] = await testDataset.getTables();
 
+      console.log(`Excluindo tabelas no dataset ${testDatasetId}...`);
       for (const table of tables) {
         const tableId = table.id;
         if (tableId !== undefined) {
-          console.log(
-            `Deleting table ${tableId} from dataset ${testDatasetId}...`
-          );
           await table.delete();
-          console.log(
-            `Table ${tableId} deleted from dataset ${testDatasetId}.`
-          );
         } else {
           console.warn(`Table ID is undefined for table: ${table}`);
         }
       }
 
       // Wait for a moment to ensure all tables are deleted
-    //   await new Promise((resolve) => setTimeout(resolve, 5000));
+      //   await new Promise((resolve) => setTimeout(resolve, 5000));
 
-      console.log(`Deleting dataset ${testDatasetId}...`);
+      console.log(`Excluindo dataset ${testDatasetId}...`);
       await testDataset.delete();
-      console.log(`Dataset ${testDatasetId} deleted.`);
     } catch (err) {
       console.error("Erro ao deletar o dataset:", err);
     }
