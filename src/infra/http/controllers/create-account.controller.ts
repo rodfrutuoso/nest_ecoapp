@@ -1,6 +1,6 @@
 import { ConflictException, UsePipes } from "@nestjs/common";
 import { Body, Controller, HttpCode, Post } from "@nestjs/common";
-import { BigQueryService } from "src/infra/bigquery/bigquery.service";
+import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { hash } from "bcryptjs";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
