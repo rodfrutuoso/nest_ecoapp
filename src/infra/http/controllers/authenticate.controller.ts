@@ -4,10 +4,10 @@ import {
   UsePipes,
 } from "@nestjs/common";
 import { Body, Controller, HttpCode, Post } from "@nestjs/common";
-import { BigQueryService } from "src/bigquery/bigquery.service";
+import { BigQueryService } from "src/infra/bigquery/bigquery.service";
 import { compare, hash } from "bcryptjs";
 import { z } from "zod";
-import { ZodValidationPipe } from "src/pipes/zod-validation.pipe";
+import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { JwtService } from "@nestjs/jwt";
 
 const authenticateBodySchema = z
@@ -39,8 +39,6 @@ export class AuthenticateController {
       throw new UnauthorizedException("Dados de login incorretos");
 
     const token = this.jwt.sign({ sub: user.id });
-
-    // console.log(body, user, token)
 
     return { access_token: token };
   }

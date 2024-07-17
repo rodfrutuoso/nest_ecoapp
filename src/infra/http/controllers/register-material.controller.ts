@@ -1,11 +1,11 @@
 import { ConflictException, UseGuards } from "@nestjs/common";
 import { Body, Controller, HttpCode, Post } from "@nestjs/common";
-import { BigQueryService } from "src/bigquery/bigquery.service";
+import { BigQueryService } from "src/infra/bigquery/bigquery.service";
 import { z } from "zod";
-import { ZodValidationPipe } from "src/pipes/zod-validation.pipe";
-import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
-import { CurrentUser } from "src/auth/current-user.decorator";
-import { UserPayload } from "src/auth/jwt-strategy.guard";
+import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
+import { JwtAuthGuard } from "src/infra/auth/jwt-auth.guard";
+import { CurrentUser } from "src/infra/auth/current-user.decorator";
+import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
 
 const registerMaterialBodySchema = z
   .object({
@@ -37,8 +37,6 @@ export class RegisterMaterialController {
 
     if (verifyCode.length > 0)
       throw new ConflictException("Já existe um material com esse código");
-
-    console.log(user.sub);
 
     await this.bigquery.material.create([
       { code, contractId, description, type, unit },

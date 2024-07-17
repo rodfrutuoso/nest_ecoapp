@@ -1,10 +1,11 @@
 import { INestApplication } from "@nestjs/common";
-import { AppModule } from "src/app.module";
+import { AppModule } from "src/infra/app.module";
 import { Test } from "@nestjs/testing";
 import request from "supertest";
-import { BigQueryService } from "src/bigquery/bigquery.service";
+import { BigQueryService } from "src/infra/bigquery/bigquery.service";
+import { hash } from "bcryptjs";
 
-describe("Create account (E2E)", () => {
+describe("Authenticate (E2E)", () => {
   let app: INestApplication;
   let bigquery: BigQueryService;
 
@@ -20,18 +21,21 @@ describe("Create account (E2E)", () => {
     await app.init();
   });
 
-  test("[POST] /accounts", async () => {
-    const response = await request(app.getHttpServer()).post("/accounts").send({
-      name: "Joao da Pilotinha",
+  test("[POST] /sessions", async () => {
+    await bigquery.user.create([
+      {
+        name: "Joao da Pilotinha",
+        email: "joaopilotinha@ecoeletrica.com.br",
+        password: await hash("123456", 8),
+      },
+    ]);
+
+    const response = await request(app.getHttpServer()).post("/sessions").send({
       email: "joaopilotinha@ecoeletrica.com.br",
       password: "123456",
     });
 
-    const [userDataBase] = await bigquery.user.select({
-      where: { email: "joaopilotinha@ecoeletrica.com.br" },
-    });
-
     expect(response.statusCode).toBe(201);
-    expect(userDataBase.name).toEqual("Joao da Pilotinha")
+    expect(response.body).toEqual({ access_token: expect.any(String) });
   });
 });
