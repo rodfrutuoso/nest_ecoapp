@@ -6,7 +6,7 @@ export interface MaterialRepository {
   findByCode(code: number, contractId: string): Promise<Material | null>;
   findMany(
     params: PaginationParams,
-    contractId: String,
+    contractId: string,
     type?: string
   ): Promise<Material[]>;
 }

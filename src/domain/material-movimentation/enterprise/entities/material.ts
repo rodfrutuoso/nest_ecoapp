@@ -26,6 +26,10 @@ export class Material extends Entity<MaterialProps> {
     return this.props.contractId;
   }
 
+  set contractId(contractId: UniqueEntityID) {
+    this.props.contractId = contractId;
+  }
+
   set description(description: string) {
     this.props.description = description;
   }

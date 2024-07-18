@@ -15,4 +15,15 @@ export class BqMaterialMapper {
       new UniqueEntityID(raw.id)
     );
   }
+
+  static toBigquery(material: Material): BqMaterialProps {
+    return {
+      id: material.id.toString(),
+      code: material.code,
+      contractId: material.contractId.toString(),
+      description: material.description,
+      type: material.type,
+      unit: material.unit,
+    };
+  }
 }
