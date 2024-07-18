@@ -73,9 +73,9 @@ describe("Fetch Materials (E2E)", () => {
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({
       materials: [
-        expect.objectContaining({ code: "123132" }),
-        expect.objectContaining({ code: "123133" }),
-        expect.objectContaining({ code: "123134" }),
+        expect.objectContaining({ code: 123132 }),
+        expect.objectContaining({ code: 123133 }),
+        expect.objectContaining({ code: 123134 }),
       ],
     });
   });

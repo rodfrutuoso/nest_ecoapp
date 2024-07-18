@@ -70,9 +70,6 @@ export class BigqueryTests {
         }
       }
 
-      // Wait for a moment to ensure all tables are deleted
-      //   await new Promise((resolve) => setTimeout(resolve, 5000));
-
       console.log(`Excluindo dataset ${testDatasetId}...`);
       await testDataset.delete();
     } catch (err) {
@@ -81,10 +78,3 @@ export class BigqueryTests {
   }
 }
 
-//   // Get tables in the test dataset
-//   const [tables] = await this.bigquery.dataset(testDatasetId).getTables();
-//   // Delete each table
-//   for (const table of tables) {
-//     await table.delete();
-//     console.log(`Table ${table.id} deleted from dataset ${testDatasetId}.`);
-//   }

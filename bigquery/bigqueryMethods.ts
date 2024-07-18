@@ -25,12 +25,9 @@ export class BigQueryMethods<T extends Record<string, any>> {
     projectId: "ecoeletricatech",
   });
 
-  // constructor(private readonly datasetId_tableId: string) {}
-
   private readonly datasetId: string;
 
   constructor(TableId: string) {
-    // Define o dataset com base na variável de ambiente
     const datasetId = process.env.DATASET_ID_PRODUCTION;
     this.datasetId = datasetId + "." + TableId;
   }
@@ -132,7 +129,10 @@ export class BigQueryMethods<T extends Record<string, any>> {
       ${offsetClause}
     `;
 
-    return this.runQuery(query);
+    const rows = await this.runQuery(query);
+    const schema = await this.getTableSchema();
+
+    return this.convertRows(rows, schema);
   }
 
   async update(props: UpdateProps<T>): Promise<{}> {
@@ -175,5 +175,41 @@ export class BigQueryMethods<T extends Record<string, any>> {
       WHERE ${whereClause}
     `;
     return this.runQuery(query);
+  }
+
+  private async getTableSchema() {
+    const tableId = this.datasetId.split(".")[1];
+    const [metadata] = await this.bigquery
+      .dataset(this.datasetId.split(".")[0])
+      .table(tableId)
+      .getMetadata();
+    return metadata.schema.fields;
+  }
+
+  private convertRows(rows: any[], schema: any[]): T[] {
+    return rows.map((row) => {
+      const convertedRow = {} as T;
+      for (const field of schema) {
+        const fieldName = field.name;
+        const fieldType = field.type;
+
+        let value = row[fieldName];
+
+        if (fieldType === "INTEGER") {
+          value = parseInt(value, 10);
+        } else if (
+          fieldType === "FLOAT" ||
+          fieldType === "NUMERIC" ||
+          fieldType === "BIGNUMERIC"
+        ) {
+          value = parseFloat(value);
+        } else if (fieldType === "BOOLEAN") {
+          value = value === "true";
+        }
+
+        convertedRow[fieldName as keyof T] = value;
+      }
+      return convertedRow;
+    });
   }
 }

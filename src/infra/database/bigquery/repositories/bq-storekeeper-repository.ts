@@ -2,25 +2,28 @@ import { Injectable } from "@nestjs/common";
 import { PaginationParams } from "src/core/repositories/pagination-params";
 import { StorekeeperRepository } from "src/domain/material-movimentation/application/repositories/storekeeper-repository";
 import { Storekeeper } from "src/domain/material-movimentation/enterprise/entities/storekeeper";
+import { BigQueryService } from "../bigquery.service";
 
 @Injectable()
 export class BqStorekeeperRepository implements StorekeeperRepository {
-  create(Storekeeper: Storekeeper): Promise<void> {
+  constructor(private bigquery: BigQueryService) {}
+
+  async create(Storekeeper: Storekeeper): Promise<void> {
     throw new Error("Method not implemented.");
   }
-  delete(StorekeeperId: string): Promise<void> {
+  async delete(StorekeeperId: string): Promise<void> {
     throw new Error("Method not implemented.");
   }
-  save(torekeeper: Storekeeper): Promise<void> {
+  async save(torekeeper: Storekeeper): Promise<void> {
     throw new Error("Method not implemented.");
   }
-  findById(StorekeeperId: string): Promise<Storekeeper | null> {
+  async findById(StorekeeperId: string): Promise<Storekeeper | null> {
     throw new Error("Method not implemented.");
   }
-  findByEmail(email: string): Promise<Storekeeper | null> {
+  async findByEmail(email: string): Promise<Storekeeper | null> {
     throw new Error("Method not implemented.");
   }
-  findMany(params: PaginationParams, baseId?: string): Promise<Storekeeper[]> {
+  async findMany(params: PaginationParams, baseId?: string): Promise<Storekeeper[]> {
     throw new Error("Method not implemented.");
   }
 }
