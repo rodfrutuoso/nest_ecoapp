@@ -7,7 +7,6 @@ export interface ProjectProps {
   type: string;
   baseId: UniqueEntityID;
   city: string;
-  activeAlmoxID: boolean;
 }
 
 export class Project extends Entity<ProjectProps> {
@@ -37,14 +36,6 @@ export class Project extends Entity<ProjectProps> {
 
   set city(city: string) {
     this.props.city = city;
-  }
-
-  get activeAlmoxID() {
-    return this.props.activeAlmoxID;
-  }
-
-  set activeAlmoxID(activeAlmoxID: boolean) {
-    this.props.activeAlmoxID = activeAlmoxID;
   }
 
   static create(props: ProjectProps, id?: UniqueEntityID) {

@@ -3,15 +3,20 @@ import { BigQueryMethods } from "bigquery/bigqueryMethods";
 
 const tableId = "users";
 
-export interface UserProps {
+export interface BqUserProps {
   id?: string;
   name: string;
   email: string;
   password: string;
+  cpf: string;
+  type: string;
+  status: string;
+  baseId?: string | null;
+  contractId?: string | null;
 }
 
 @Injectable()
-export class User extends BigQueryMethods<UserProps> {
+export class User extends BigQueryMethods<BqUserProps> {
   constructor() {
     super(tableId);
   }

@@ -1,9 +1,9 @@
 import { Material } from "src/domain/material-movimentation/enterprise/entities/material";
-import { MaterialProps } from "../schemas/materials";
+import { BqMaterialProps } from "../schemas/materials";
 import { UniqueEntityID } from "src/core/entities/unique-entity-id";
 
 export class BqMaterialMapper {
-  static toDamin(raw: MaterialProps): Material {
+  static toDamin(raw: BqMaterialProps): Material {
     return Material.create(
       {
         code: raw.code,
