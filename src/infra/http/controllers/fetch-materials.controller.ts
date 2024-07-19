@@ -4,12 +4,12 @@ import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { JwtAuthGuard } from "src/infra/auth/jwt-auth.guard";
 import { FetchMaterialUseCase } from "src/domain/material-movimentation/application/usse-cases/material/fetch-material";
+import { MaterialPresenter } from "../presenters/material-presenter";
 
-const fetchMaterialBodySchema = z
-  .object({
-    type: z.string().optional(),
-    contractId: z.string().uuid(),
-  });
+const fetchMaterialBodySchema = z.object({
+  type: z.string().optional(),
+  contractId: z.string().uuid(),
+});
 
 type FetchMaterialBodySchema = z.infer<typeof fetchMaterialBodySchema>;
 
@@ -38,15 +38,17 @@ export class FetchMaterialController {
   ) {
     const { type, contractId } = body;
 
-    const materials = await this.fetchMaterialUseCase.execute({
+    const result = await this.fetchMaterialUseCase.execute({
       contractId,
       page,
       type,
     });
 
-    // if (materials.length < 1)
-    //   throw new NotFoundException("Restuldado da pesquisa sem dados");
+    if (result.isLeft())
+      throw new NotFoundException("Restuldado da pesquisa sem dados");
 
-    return { materials };
+    const materials = result.value.materials;
+
+    return { materials: materials.map(MaterialPresenter.toHTTP) };
   }
 }
