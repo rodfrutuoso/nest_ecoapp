@@ -41,7 +41,6 @@ export class RegisterProjectUseCase {
       type,
       baseId: new UniqueEntityID(baseId),
       city,
-      activeAlmoxID: false,
     });
 
     await this.projectRepository.create(project);

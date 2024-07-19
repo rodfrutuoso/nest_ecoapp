@@ -24,13 +24,13 @@ Content-Type: application/json
 
 ###
 
-# @name register_material
+# @name create_material
 POST {{baseURL}}/materials
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-    "code": 122456,
+    "code": 123456,
     "description": "item poste 123",
     "type": "FERRAGEM",
     "unit": "CDA",

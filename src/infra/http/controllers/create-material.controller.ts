@@ -1,13 +1,13 @@
 import { ConflictException, UseGuards } from "@nestjs/common";
 import { Body, Controller, HttpCode, Post } from "@nestjs/common";
-import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { JwtAuthGuard } from "src/infra/auth/jwt-auth.guard";
 import { CurrentUser } from "src/infra/auth/current-user.decorator";
 import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
+import { CreateMaterialUseCase } from "src/domain/material-movimentation/application/usse-cases/material/create-material";
 
-const registerMaterialBodySchema = z
+const createMaterialBodySchema = z
   .object({
     code: z.number(),
     description: z.string(),
@@ -17,29 +17,28 @@ const registerMaterialBodySchema = z
   })
   .required();
 
-type RegisterMaterialBodySchema = z.infer<typeof registerMaterialBodySchema>;
+type CreateMaterialBodySchema = z.infer<typeof createMaterialBodySchema>;
 
 @Controller("/materials")
 @UseGuards(JwtAuthGuard)
-export class RegisterMaterialController {
-  constructor(private bigquery: BigQueryService) {}
+export class CreateMaterialController {
+  constructor(private createMaterial: CreateMaterialUseCase) {}
 
   @Post()
   @HttpCode(201)
   async handle(
     @CurrentUser() user: UserPayload,
-    @Body(new ZodValidationPipe(registerMaterialBodySchema))
-    body: RegisterMaterialBodySchema
+    @Body(new ZodValidationPipe(createMaterialBodySchema))
+    body: CreateMaterialBodySchema
   ) {
     const { code, description, type, unit, contractId } = body;
 
-    const verifyCode = await this.bigquery.material.select({ where: { code } });
-
-    if (verifyCode.length > 0)
-      throw new ConflictException("Já existe um material com esse código");
-
-    await this.bigquery.material.create([
-      { code, contractId, description, type, unit },
-    ]);
+    await this.createMaterial.execute({
+      code,
+      description,
+      type,
+      unit,
+      contractId,
+    });
   }
 }

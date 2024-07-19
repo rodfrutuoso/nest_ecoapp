@@ -8,8 +8,13 @@ import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 const createAccountBodySchema = z
   .object({
     name: z.string(),
-    email: z.string().email(),
+    email: z.string().email().optional(),
     password: z.string(),
+    cpf: z.string().regex(/^\d{11,}$/, "O CPF precisa ter 11 dígitos"),
+    type: z.string(),
+    status: z.string(),
+    baseId: z.string().optional(),
+    contractId: z.string().optional(),
   })
   .required();
 
@@ -23,7 +28,8 @@ export class CreateAccountController {
   @HttpCode(201)
   @UsePipes(new ZodValidationPipe(createAccountBodySchema))
   async handle(@Body() body: CreateAccountBodySchema) {
-    const { name, email, password } = body;
+    const { name, email, password, cpf, status, type, baseId, contractId } =
+      body;
 
     const userWithSameEmail = await this.bigquery.user.select({
       where: { email },
@@ -39,6 +45,11 @@ export class CreateAccountController {
         name,
         email,
         password: hashedPassword,
+        cpf,
+        status,
+        type,
+        baseId,
+        contractId,
       },
     ]);
   }

@@ -7,7 +7,7 @@ import { hash } from "bcryptjs";
 import { JwtService } from "@nestjs/jwt";
 import { randomUUID } from "crypto";
 
-describe("Register Material (E2E)", () => {
+describe("Create Material (E2E)", () => {
   let app: INestApplication;
   let bigquery: BigQueryService;
   let jwt: JwtService;
@@ -31,6 +31,10 @@ describe("Register Material (E2E)", () => {
         name: "Joao da Pilotinha",
         email: "joaopilotinha@ecoeletrica.com.br",
         password: await hash("123456", 8),
+        cpf: "00011122234",
+        status:"ative",
+        type: "administrator",
+        baseId: "base-1"
       },
     ]);
 

@@ -31,6 +31,10 @@ describe("Fetch Materials (E2E)", () => {
         name: "Joao da Pilotinha",
         email: "joaopilotinha@ecoeletrica.com.br",
         password: await hash("123456", 8),
+        cpf: "00011122234",
+        status:"ative",
+        type: "administrator",
+        baseId: "base-1"
       },
     ]);
 

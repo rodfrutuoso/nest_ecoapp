@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import { Eihter, left, right } from "../../../../../core/either";
 import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
 import { Material } from "../../../enterprise/entities/material";
@@ -19,6 +20,7 @@ type CreateMaterialResponse = Eihter<
   }
 >;
 
+@Injectable()
 export class CreateMaterialUseCase {
   constructor(private materialRepository: MaterialRepository) {}
 
@@ -29,7 +31,10 @@ export class CreateMaterialUseCase {
     type,
     contractId,
   }: CreateMaterialUseCaseRequest): Promise<CreateMaterialResponse> {
-    const materialSearch = await this.materialRepository.findByCode(code, contractId);
+    const materialSearch = await this.materialRepository.findByCode(
+      code,
+      contractId
+    );
 
     if (materialSearch) return left(new ResourceAlreadyRegisteredError());
 

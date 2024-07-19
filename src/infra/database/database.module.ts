@@ -8,6 +8,7 @@ import { BqMaterialRepository } from "./bigquery/repositories/bq-material-reposi
 import { BqMovimentationRepository } from "./bigquery/repositories/bq-movimentation-repository";
 import { BqPhysicalDocumentRepository } from "./bigquery/repositories/bq-physical-document-repository";
 import { BqProjectRepository } from "./bigquery/repositories/bq-project-repository";
+import { MaterialRepository } from "src/domain/material-movimentation/application/repositories/material-repository";
 
 @Module({
   imports: [BigQueryModule],
@@ -17,7 +18,7 @@ import { BqProjectRepository } from "./bigquery/repositories/bq-project-reposito
     BqBaseRepository,
     BqBudgetRepository,
     BqContractRepository,
-    BqMaterialRepository,
+    { provide: MaterialRepository, useClass: BqMaterialRepository },
     BqMovimentationRepository,
     BqPhysicalDocumentRepository,
     BqProjectRepository,
@@ -27,7 +28,7 @@ import { BqProjectRepository } from "./bigquery/repositories/bq-project-reposito
     BqBaseRepository,
     BqBudgetRepository,
     BqContractRepository,
-    BqMaterialRepository,
+    { provide: MaterialRepository, useClass: BqMaterialRepository },
     BqMovimentationRepository,
     BqPhysicalDocumentRepository,
     BqProjectRepository,
