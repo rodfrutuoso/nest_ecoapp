@@ -8,7 +8,8 @@ export default defineConfig({
     globals: true,
     root: "./",
     setupFiles: ["./test/setup-e2e.ts"],
-    testTimeout: 20000
+    testTimeout: 30000,
+    hookTimeout: 30000,
     // poolOptions: {
     //   threads: {
     //     singleThread: true,

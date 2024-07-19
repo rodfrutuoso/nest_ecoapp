@@ -25,6 +25,10 @@ describe("Create account (E2E)", () => {
       name: "Joao da Pilotinha",
       email: "joaopilotinha@ecoeletrica.com.br",
       password: "123456",
+      cpf: "00011122234",
+      status: "ative",
+      type: "administrator",
+      baseId: "base-1",
     });
 
     const [userDataBase] = await bigquery.user.select({
@@ -32,6 +36,6 @@ describe("Create account (E2E)", () => {
     });
 
     expect(response.statusCode).toBe(201);
-    expect(userDataBase.name).toEqual("Joao da Pilotinha")
+    expect(userDataBase.name).toEqual("Joao da Pilotinha");
   });
 });

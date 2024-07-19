@@ -8,7 +8,7 @@ import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 const createAccountBodySchema = z
   .object({
     name: z.string(),
-    email: z.string().email().optional(),
+    email: z.string().email(),
     password: z.string(),
     cpf: z.string().regex(/^\d{11,}$/, "O CPF precisa ter 11 dígitos"),
     type: z.string(),
@@ -16,7 +16,7 @@ const createAccountBodySchema = z
     baseId: z.string().optional(),
     contractId: z.string().optional(),
   })
-  .required();
+ 
 
 type CreateAccountBodySchema = z.infer<typeof createAccountBodySchema>;
 

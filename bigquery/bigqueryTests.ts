@@ -70,11 +70,16 @@ export class BigqueryTests {
         }
       }
 
+      this.delay(2000);
+
       console.log(`Excluindo dataset ${testDatasetId}...`);
       await testDataset.delete();
     } catch (err) {
       console.error("Erro ao deletar o dataset:", err);
     }
   }
-}
 
+  private async delay(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+}

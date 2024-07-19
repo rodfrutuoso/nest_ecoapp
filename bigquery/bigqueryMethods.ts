@@ -44,13 +44,18 @@ export class BigQueryMethods<T extends Record<string, any>> {
     if (data.length === 0)
       throw new NotFoundException("Não há dados a serem retornados");
 
-    const fields = Object.keys(data[0]).join(", ");
+    const fields = Object.keys(data[0])
+      .filter((key) => data[0][key] !== undefined)
+      .join(", ");
     const values = data
       .map(
         (row) =>
           "(" +
-          Object.values(row)
-            .map((value) => (typeof value === "string" ? `'${value}'` : value))
+          Object.entries(row)
+            .filter(([_, value]) => value !== undefined)
+            .map(([_, value]) =>
+              typeof value === "string" ? `'${value}'` : value
+            )
             .join(", ") +
           ")"
       )
