@@ -1,16 +1,15 @@
 import { Get, NotFoundException, Query, UseGuards } from "@nestjs/common";
 import { Body, Controller, HttpCode } from "@nestjs/common";
-import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { JwtAuthGuard } from "src/infra/auth/jwt-auth.guard";
+import { FetchMaterialUseCase } from "src/domain/material-movimentation/application/usse-cases/material/fetch-material";
 
 const fetchMaterialBodySchema = z
   .object({
     type: z.string().optional(),
     contractId: z.string().uuid(),
-  })
-  .required();
+  });
 
 type FetchMaterialBodySchema = z.infer<typeof fetchMaterialBodySchema>;
 
@@ -28,7 +27,7 @@ type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>;
 @Controller("/materials")
 @UseGuards(JwtAuthGuard)
 export class FetchMaterialController {
-  constructor(private bigquery: BigQueryService) {}
+  constructor(private fetchMaterialUseCase: FetchMaterialUseCase) {}
 
   @Get()
   @HttpCode(200)
@@ -39,17 +38,14 @@ export class FetchMaterialController {
   ) {
     const { type, contractId } = body;
 
-    const pageCount = 40;
-
-    const materials = await this.bigquery.material.select({
-      where: { type, contractId },
-      limit: pageCount,
-      offset: pageCount * (page - 1),
-      orderBy: { column: "code", direction: "ASC" },
+    const materials = await this.fetchMaterialUseCase.execute({
+      contractId,
+      page,
+      type,
     });
 
-    if (materials.length < 1)
-      throw new NotFoundException("Restuldado da pesquisa sem dados");
+    // if (materials.length < 1)
+    //   throw new NotFoundException("Restuldado da pesquisa sem dados");
 
     return { materials };
   }

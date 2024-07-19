@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import { Eihter, left, right } from "../../../../../core/either";
 import { Material } from "../../../enterprise/entities/material";
 import { MaterialRepository } from "../../repositories/material-repository";
@@ -16,6 +17,7 @@ type FetchMaterialUseCaseResponse = Eihter<
   }
 >;
 
+@Injectable()
 export class FetchMaterialUseCase {
   constructor(private materialRepository: MaterialRepository) {}
 

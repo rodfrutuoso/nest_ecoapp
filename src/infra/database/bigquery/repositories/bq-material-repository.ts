@@ -32,10 +32,13 @@ export class BqMaterialRepository implements MaterialRepository {
   ): Promise<Material[]> {
     const pageCount = 40;
 
+    const objectSearch = type === undefined ? {contractId} : {contractId, type}
+
     const materials = await this.bigquery.material.select({
-      where: { contractId, type },
+      where: objectSearch,
       limit: pageCount,
       offset: pageCount * (page - 1),
+      orderBy: { column: "code", direction: "ASC" },
     });
 
     return materials.map(BqMaterialMapper.toDamin);

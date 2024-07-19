@@ -5,6 +5,7 @@ import { CreateMaterialController } from "./controllers/create-material.controll
 import { FetchMaterialController } from "./controllers/fetch-materials.controller";
 import { DatabaseModule } from "../database/database.module";
 import { CreateMaterialUseCase } from "src/domain/material-movimentation/application/usse-cases/material/create-material";
+import { FetchMaterialUseCase } from "src/domain/material-movimentation/application/usse-cases/material/fetch-material";
 
 @Module({
   imports: [DatabaseModule],
@@ -14,6 +15,6 @@ import { CreateMaterialUseCase } from "src/domain/material-movimentation/applica
     CreateMaterialController,
     FetchMaterialController,
   ],
-  providers: [CreateMaterialUseCase],
+  providers: [CreateMaterialUseCase, FetchMaterialUseCase],
 })
 export class HttpModule {}
