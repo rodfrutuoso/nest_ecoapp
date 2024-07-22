@@ -9,6 +9,7 @@ export interface StorekeeperProps {
   type: string;
   baseId: UniqueEntityID;
   status: string;
+  password: string;
 }
 
 export class Storekeeper extends Entity<StorekeeperProps> {
@@ -36,6 +37,10 @@ export class Storekeeper extends Entity<StorekeeperProps> {
     return this.props.baseId;
   }
 
+  get password() {
+    return this.props.password;
+  }
+
   set type(type: string) {
     this.props.type = type;
   }
@@ -46,6 +51,10 @@ export class Storekeeper extends Entity<StorekeeperProps> {
 
   set baseId(baseId: string) {
     this.props.baseId = baseId;
+  }
+
+  set password(password: string) {
+    this.props.password = password;
   }
 
   static create(

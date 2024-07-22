@@ -1,11 +1,14 @@
 import { PaginationParams } from "../../../../core/repositories/pagination-params";
 import { Storekeeper } from "../../enterprise/entities/storekeeper";
 
-export interface StorekeeperRepository {
-  create(Storekeeper: Storekeeper): Promise<void>;
-  delete(StorekeeperId: string): Promise<void>;
-  save(torekeeper: Storekeeper): Promise<void>;
-  findById(StorekeeperId: string): Promise<Storekeeper | null>;
-  findByEmail(email: string): Promise<Storekeeper | null>;
-  findMany(params: PaginationParams, baseId?: string): Promise<Storekeeper[]>;
+export abstract class StorekeeperRepository {
+  abstract create(Storekeeper: Storekeeper): Promise<void>;
+  abstract delete(StorekeeperId: string): Promise<void>;
+  abstract save(torekeeper: Storekeeper): Promise<void>;
+  abstract findById(StorekeeperId: string): Promise<Storekeeper | null>;
+  abstract findByEmail(email: string): Promise<Storekeeper | null>;
+  abstract findMany(
+    params: PaginationParams,
+    baseId?: string
+  ): Promise<Storekeeper[]>;
 }

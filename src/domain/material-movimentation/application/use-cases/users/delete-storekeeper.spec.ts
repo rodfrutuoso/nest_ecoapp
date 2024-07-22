@@ -20,11 +20,12 @@ describe("Delete Storekeeper", () => {
     await inMemoryStorekeeperRepository.create(author);
     await inMemoryStorekeeperRepository.create(storekeeper);
 
-    await sut.execute({
+    const result = await sut.execute({
       authorId: author.id.toString(),
       storekeeperId: storekeeper.id.toString(),
     });
 
+    expect(result.isRight()).toBeTruthy()
     expect(inMemoryStorekeeperRepository.items).toHaveLength(1); // there'll be only the author
   });
 

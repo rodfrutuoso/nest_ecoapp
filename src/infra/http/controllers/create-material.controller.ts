@@ -5,7 +5,7 @@ import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { JwtAuthGuard } from "src/infra/auth/jwt-auth.guard";
 import { CurrentUser } from "src/infra/auth/current-user.decorator";
 import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
-import { CreateMaterialUseCase } from "src/domain/material-movimentation/application/usse-cases/material/create-material";
+import { CreateMaterialUseCase } from "src/domain/material-movimentation/application/use-cases/material/create-material";
 
 const createMaterialBodySchema = z
   .object({

@@ -3,7 +3,7 @@ import { Body, Controller, HttpCode } from "@nestjs/common";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { JwtAuthGuard } from "src/infra/auth/jwt-auth.guard";
-import { FetchMaterialUseCase } from "src/domain/material-movimentation/application/usse-cases/material/fetch-material";
+import { FetchMaterialUseCase } from "src/domain/material-movimentation/application/use-cases/material/fetch-material";
 import { MaterialPresenter } from "../presenters/material-presenter";
 
 const fetchMaterialBodySchema = z.object({

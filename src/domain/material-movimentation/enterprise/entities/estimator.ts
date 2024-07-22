@@ -6,11 +6,16 @@ export interface EstimatorProps {
   email: string;
   cpf: number;
   contract: UniqueEntityID;
+  password: string;
 }
 
 export class Estimator extends Entity<EstimatorProps> {
   get name() {
     return this.props.name;
+  }
+
+  get password() {
+    return this.props.password;
   }
 
   get email() {
@@ -39,6 +44,10 @@ export class Estimator extends Entity<EstimatorProps> {
 
   set base(base: string) {
     this.props.base = base;
+  }
+
+  set password(password: string) {
+    this.props.password = password;
   }
 
   static create(props: EstimatorProps, id?: UniqueEntityID) {

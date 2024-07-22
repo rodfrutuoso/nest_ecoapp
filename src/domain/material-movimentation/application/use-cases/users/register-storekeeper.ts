@@ -1,6 +1,7 @@
 import { Eihter, left, right } from "../../../../../core/either";
 import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
 import { Storekeeper } from "../../../enterprise/entities/storekeeper";
+import { HashGenerator } from "../../cryptography/hash-generator";
 import { StorekeeperRepository } from "../../repositories/storekeeper-repository";
 import { ResourceAlreadyRegisteredError } from "../errors/resource-already-registered-error";
 
@@ -10,6 +11,7 @@ interface RegisterStorekeeperUseCaseRequest {
   cpf: string;
   type: string;
   baseId: string;
+  password: string;
 }
 
 type RegisterStorekeeperResponse = Eihter<
@@ -20,7 +22,10 @@ type RegisterStorekeeperResponse = Eihter<
 >;
 
 export class RegisterStorekeeperUseCase {
-  constructor(private storekeeperRepository: StorekeeperRepository) {}
+  constructor(
+    private storekeeperRepository: StorekeeperRepository,
+    private hashGenerator: HashGenerator
+  ) {}
 
   async execute({
     name,
@@ -28,6 +33,7 @@ export class RegisterStorekeeperUseCase {
     cpf,
     type,
     baseId,
+    password,
   }: RegisterStorekeeperUseCaseRequest): Promise<RegisterStorekeeperResponse> {
     const storekeeperSearch = await this.storekeeperRepository.findByEmail(
       email
@@ -41,6 +47,7 @@ export class RegisterStorekeeperUseCase {
       cpf,
       type,
       baseId: new UniqueEntityID(baseId),
+      password: await this.hashGenerator.hash(password),
     });
 
     await this.storekeeperRepository.create(storekeeper);
