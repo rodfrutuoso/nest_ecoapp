@@ -13,6 +13,7 @@ export function makeStorekeeper(override: Partial<StorekeeperProps> = {}) {
     email: faker.internet.email({ provider: "ecoeletrica.com.br" }),
     status: faker.helpers.arrayElement(status),
     type: faker.helpers.arrayElement(types),
+    password: faker.string.uuid(),
     ...override,
   });
 
