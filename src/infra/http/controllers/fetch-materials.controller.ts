@@ -1,10 +1,17 @@
-import { Get, NotFoundException, Query, UseGuards } from "@nestjs/common";
+import {
+  BadRequestException,
+  Get,
+  NotFoundException,
+  Query,
+  UseGuards,
+} from "@nestjs/common";
 import { Body, Controller, HttpCode } from "@nestjs/common";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { JwtAuthGuard } from "src/infra/auth/jwt-auth.guard";
 import { FetchMaterialUseCase } from "src/domain/material-movimentation/application/use-cases/material/fetch-material";
 import { MaterialPresenter } from "../presenters/material-presenter";
+import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 
 const fetchMaterialBodySchema = z.object({
   type: z.string().optional(),
@@ -44,8 +51,16 @@ export class FetchMaterialController {
       type,
     });
 
-    if (result.isLeft())
-      throw new NotFoundException("Restuldado da pesquisa sem dados");
+    if (result.isLeft()) {
+      const error = result.value;
+
+      switch (error.constructor) {
+        case ResourceNotFoundError:
+          throw new NotFoundException(error.message);
+        default:
+          throw new BadRequestException();
+      }
+    }
 
     const materials = result.value.materials;
 

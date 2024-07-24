@@ -1,4 +1,8 @@
-import { ConflictException, UseGuards } from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  UseGuards,
+} from "@nestjs/common";
 import { Body, Controller, HttpCode, Post } from "@nestjs/common";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
@@ -6,6 +10,7 @@ import { JwtAuthGuard } from "src/infra/auth/jwt-auth.guard";
 import { CurrentUser } from "src/infra/auth/current-user.decorator";
 import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
 import { CreateMaterialUseCase } from "src/domain/material-movimentation/application/use-cases/material/create-material";
+import { ResourceAlreadyRegisteredError } from "src/domain/material-movimentation/application/use-cases/errors/resource-already-registered-error";
 
 const createMaterialBodySchema = z
   .object({
@@ -41,6 +46,15 @@ export class CreateMaterialController {
       contractId,
     });
 
-    if(result.isLeft()) throw new Error()
+    if (result.isLeft()) {
+      const error = result.value;
+
+      switch (error.constructor) {
+        case ResourceAlreadyRegisteredError:
+          throw new ConflictException(error.message);
+        default:
+          throw new BadRequestException();
+      }
+    }
   }
 }

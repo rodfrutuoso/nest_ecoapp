@@ -1,8 +1,13 @@
-import { UsePipes } from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  UsePipes,
+} from "@nestjs/common";
 import { Body, Controller, HttpCode, Post } from "@nestjs/common";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { RegisterStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/register-storekeeper";
+import { ResourceAlreadyRegisteredError } from "src/domain/material-movimentation/application/use-cases/errors/resource-already-registered-error";
 
 const createAccountBodySchema = z.object({
   name: z.string(),
@@ -35,6 +40,15 @@ export class CreateAccountController {
       baseId,
     });
 
-    if (result.isLeft()) throw new Error();
+    if (result.isLeft()) {
+      const error = result.value;
+
+      switch (error.constructor) {
+        case ResourceAlreadyRegisteredError:
+          throw new ConflictException(error.message);
+        default:
+          throw new BadRequestException();
+      }
+    }
   }
 }

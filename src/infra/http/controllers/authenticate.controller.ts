@@ -1,15 +1,13 @@
 import {
-  ConflictException,
+  BadRequestException,
   UnauthorizedException,
   UsePipes,
 } from "@nestjs/common";
 import { Body, Controller, HttpCode, Post } from "@nestjs/common";
-import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
-import { compare, hash } from "bcryptjs";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
-import { JwtService } from "@nestjs/jwt";
 import { AuthenticateStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/authenticate-storekeeper";
+import { WrogCredentialsError } from "src/domain/material-movimentation/application/use-cases/errors/wrong-credentials";
 
 const authenticateBodySchema = z
   .object({
@@ -35,7 +33,16 @@ export class AuthenticateController {
       password,
     });
 
-    if (result.isLeft()) throw new Error();
+    if (result.isLeft()) {
+      const error = result.value;
+
+      switch (error.constructor) {
+        case WrogCredentialsError:
+          throw new UnauthorizedException(error.message);
+        default:
+          throw new BadRequestException();
+      }
+    }
 
     const { accessToken } = result.value;
 
