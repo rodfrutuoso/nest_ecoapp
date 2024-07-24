@@ -22,7 +22,7 @@ export class BqMaterialRepository implements MaterialRepository {
 
     if (!material) return null;
 
-    return BqMaterialMapper.toDamin(material);
+    return BqMaterialMapper.toDomin(material);
   }
 
   async findMany(
@@ -41,6 +41,6 @@ export class BqMaterialRepository implements MaterialRepository {
       orderBy: { column: "code", direction: "ASC" },
     });
 
-    return materials.map(BqMaterialMapper.toDamin);
+    return materials.map(BqMaterialMapper.toDomin);
   }
 }

@@ -3,27 +3,64 @@ import { PaginationParams } from "src/core/repositories/pagination-params";
 import { StorekeeperRepository } from "src/domain/material-movimentation/application/repositories/storekeeper-repository";
 import { Storekeeper } from "src/domain/material-movimentation/enterprise/entities/storekeeper";
 import { BigQueryService } from "../bigquery.service";
+import { BqUserMapper } from "../mappers/bq-user-mapper";
 
 @Injectable()
 export class BqStorekeeperRepository implements StorekeeperRepository {
   constructor(private bigquery: BigQueryService) {}
 
   async create(Storekeeper: Storekeeper): Promise<void> {
-    throw new Error("Method not implemented.");
+    await this.bigquery.user.create([BqUserMapper.toBigquery(Storekeeper)]);
   }
   async delete(StorekeeperId: string): Promise<void> {
-    throw new Error("Method not implemented.");
+    await this.bigquery.user.delete({ id: StorekeeperId });
   }
-  async save(torekeeper: Storekeeper): Promise<void> {
-    throw new Error("Method not implemented.");
+  async save(storekeeper: Storekeeper): Promise<void> {
+    await this.bigquery.user.update({
+      data: BqUserMapper.toBigquery(storekeeper),
+      where: { id: storekeeper.id.toString() },
+    });
   }
-  async findById(StorekeeperId: string): Promise<Storekeeper | null> {
-    throw new Error("Method not implemented.");
+  async findById(storekeeperId: string): Promise<Storekeeper | null> {
+    const [storekeeper] = await this.bigquery.user.select({
+      where: { id: storekeeperId },
+    });
+
+    if (!storekeeper) return null;
+
+    const result = BqUserMapper.toDomin(storekeeper);
+
+    return result instanceof Storekeeper ? result : null;
   }
   async findByEmail(email: string): Promise<Storekeeper | null> {
-    throw new Error("Method not implemented.");
+    const [storekeeper] = await this.bigquery.user.select({
+      where: { email },
+    });
+
+    if (!storekeeper) return null;
+
+    const result = BqUserMapper.toDomin(storekeeper);
+
+    return result instanceof Storekeeper ? result : null;
   }
-  async findMany(params: PaginationParams, baseId?: string): Promise<Storekeeper[]> {
-    throw new Error("Method not implemented.");
+  async findMany(
+    { page }: PaginationParams,
+    baseId?: string
+  ): Promise<Storekeeper[]> {
+    const pageCount = 40;
+
+    const storekeepers = await this.bigquery.user.select({
+      where: { baseId: baseId },
+      limit: pageCount,
+      offset: pageCount * (page - 1),
+      orderBy: { column: "cpf", direction: "ASC" },
+    });
+
+    const storekeepersDomain = storekeepers.map(BqUserMapper.toDomin);
+    const result = storekeepersDomain.filter(
+      (storekeeper) => storekeeper instanceof Storekeeper
+    );
+
+    return result;
   }
 }

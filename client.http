@@ -7,8 +7,11 @@ Content-Type: application/json
 
 {
     "name": "Joao da Silva",
-    "email": "joaosilva@ecoeletrica.com.br",
-    "password": "123456" 
+    "email": "joaosilva2@ecoeletrica.com.br",
+    "password": "123456",
+    "cpf":"12345678912",
+    "type": "Administrator",
+    "baseId": "352275c2-c358-4367-8f97-b21de8a170da"
 }
 
 ###

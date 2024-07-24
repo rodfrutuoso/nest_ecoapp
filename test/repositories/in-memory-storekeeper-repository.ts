@@ -1,4 +1,3 @@
-import { UniqueEntityID } from "../../src/core/entities/unique-entity-id";
 import { PaginationParams } from "../../src/core/repositories/pagination-params";
 import { StorekeeperRepository } from "../../src/domain/material-movimentation/application/repositories/storekeeper-repository";
 import { Storekeeper } from "../../src/domain/material-movimentation/enterprise/entities/storekeeper";

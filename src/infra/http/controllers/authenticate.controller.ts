@@ -9,6 +9,7 @@ import { compare, hash } from "bcryptjs";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { JwtService } from "@nestjs/jwt";
+import { AuthenticateStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/authenticate-storekeeper";
 
 const authenticateBodySchema = z
   .object({
@@ -21,7 +22,7 @@ type AuthenticateBodySchema = z.infer<typeof authenticateBodySchema>;
 
 @Controller("/sessions")
 export class AuthenticateController {
-  constructor(private jwt: JwtService, private bigquery: BigQueryService) {}
+  constructor(private authenticateStorkeeper: AuthenticateStorekeeperUseCase) {}
 
   @Post()
   @HttpCode(201)
@@ -29,17 +30,15 @@ export class AuthenticateController {
   async handle(@Body() body: AuthenticateBodySchema) {
     const { email, password } = body;
 
-    const [user] = await this.bigquery.user.select({ where: { email } });
+    const result = await this.authenticateStorkeeper.execute({
+      email,
+      password,
+    });
 
-    if (!user) throw new UnauthorizedException("Dados de login incorretos");
+    if (result.isLeft()) throw new Error();
 
-    const isPasswordValid = await compare(password, user.password);
+    const { accessToken } = result.value;
 
-    if (!isPasswordValid)
-      throw new UnauthorizedException("Dados de login incorretos");
-
-    const token = this.jwt.sign({ sub: user.id });
-
-    return { access_token: token };
+    return { access_token: accessToken };
   }
 }

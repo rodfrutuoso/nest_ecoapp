@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import { Eihter, left, right } from "../../../../../core/either";
 import { Encrypter } from "../../cryptography/encrypter";
 import { HashComparer } from "../../cryptography/hash-comperer";
@@ -16,6 +17,7 @@ type AuthenticateStorekeeperResponse = Eihter<
   }
 >;
 
+@Injectable()
 export class AuthenticateStorekeeperUseCase {
   constructor(
     private storekeeperRepository: StorekeeperRepository,

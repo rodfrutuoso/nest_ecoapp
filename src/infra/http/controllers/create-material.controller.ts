@@ -33,12 +33,14 @@ export class CreateMaterialController {
   ) {
     const { code, description, type, unit, contractId } = body;
 
-    await this.createMaterial.execute({
+    const result = await this.createMaterial.execute({
       code,
       description,
       type,
       unit,
       contractId,
     });
+
+    if(result.isLeft()) throw new Error()
   }
 }

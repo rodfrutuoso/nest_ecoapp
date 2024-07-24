@@ -9,12 +9,13 @@ import { BqMovimentationRepository } from "./bigquery/repositories/bq-movimentat
 import { BqPhysicalDocumentRepository } from "./bigquery/repositories/bq-physical-document-repository";
 import { BqProjectRepository } from "./bigquery/repositories/bq-project-repository";
 import { MaterialRepository } from "src/domain/material-movimentation/application/repositories/material-repository";
+import { StorekeeperRepository } from "src/domain/material-movimentation/application/repositories/storekeeper-repository";
 
 @Module({
   imports: [BigQueryModule],
   exports: [
     BigQueryModule,
-    BqStorekeeperRepository,
+    { provide: StorekeeperRepository, useClass: BqStorekeeperRepository },
     BqBaseRepository,
     BqBudgetRepository,
     BqContractRepository,
@@ -24,7 +25,7 @@ import { MaterialRepository } from "src/domain/material-movimentation/applicatio
     BqProjectRepository,
   ],
   providers: [
-    BqStorekeeperRepository,
+    { provide: StorekeeperRepository, useClass: BqStorekeeperRepository },
     BqBaseRepository,
     BqBudgetRepository,
     BqContractRepository,

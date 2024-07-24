@@ -4,8 +4,8 @@ import { UniqueEntityID } from "../../../../core/entities/unique-entity-id";
 export interface EstimatorProps {
   name: string;
   email: string;
-  cpf: number;
-  contract: UniqueEntityID;
+  cpf: string;
+  contractId: UniqueEntityID;
   password: string;
 }
 
@@ -34,6 +34,10 @@ export class Estimator extends Entity<EstimatorProps> {
     return this.props.type;
   }
 
+  get contractId() {
+    return this.props.contractId;
+  }
+
   set type(type: string) {
     this.props.type = type;
   }
@@ -48,6 +52,10 @@ export class Estimator extends Entity<EstimatorProps> {
 
   set password(password: string) {
     this.props.password = password;
+  }
+
+  set contractId(contractId: string) {
+    this.props.contractId = contractId;
   }
 
   static create(props: EstimatorProps, id?: UniqueEntityID) {
