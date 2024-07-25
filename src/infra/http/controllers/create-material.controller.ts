@@ -1,12 +1,7 @@
-import {
-  BadRequestException,
-  ConflictException,
-  UseGuards,
-} from "@nestjs/common";
+import { BadRequestException, ConflictException } from "@nestjs/common";
 import { Body, Controller, HttpCode, Post } from "@nestjs/common";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
-import { JwtAuthGuard } from "src/infra/auth/jwt-auth.guard";
 import { CurrentUser } from "src/infra/auth/current-user.decorator";
 import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
 import { CreateMaterialUseCase } from "src/domain/material-movimentation/application/use-cases/material/create-material";
@@ -25,7 +20,6 @@ const createMaterialBodySchema = z
 type CreateMaterialBodySchema = z.infer<typeof createMaterialBodySchema>;
 
 @Controller("/materials")
-@UseGuards(JwtAuthGuard)
 export class CreateMaterialController {
   constructor(private createMaterial: CreateMaterialUseCase) {}
 

@@ -4,10 +4,11 @@
 # @name create_account
 POST {{baseURL}}/accounts
 Content-Type: application/json
+Authorization: Bearer {{authToken}}
 
 {
     "name": "Joao da Silva",
-    "email": "joaosilva2@ecoeletrica.com.br",
+    "email": "joaosilva3@ecoeletrica.com.br",
     "password": "123456",
     "cpf":"12345678912",
     "type": "Administrator",

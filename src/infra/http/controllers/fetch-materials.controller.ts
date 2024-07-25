@@ -3,12 +3,10 @@ import {
   Get,
   NotFoundException,
   Query,
-  UseGuards,
 } from "@nestjs/common";
 import { Body, Controller, HttpCode } from "@nestjs/common";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
-import { JwtAuthGuard } from "src/infra/auth/jwt-auth.guard";
 import { FetchMaterialUseCase } from "src/domain/material-movimentation/application/use-cases/material/fetch-material";
 import { MaterialPresenter } from "../presenters/material-presenter";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
@@ -32,7 +30,6 @@ const queryValidationPipe = new ZodValidationPipe(pageQueryParamSchema);
 type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>;
 
 @Controller("/materials")
-@UseGuards(JwtAuthGuard)
 export class FetchMaterialController {
   constructor(private fetchMaterialUseCase: FetchMaterialUseCase) {}
 

@@ -19,6 +19,7 @@ import { CryptographyModule } from "../cryptography/cryptography.module";
     FetchMaterialController,
   ],
   providers: [
+    
     CreateMaterialUseCase,
     FetchMaterialUseCase,
     AuthenticateStorekeeperUseCase,

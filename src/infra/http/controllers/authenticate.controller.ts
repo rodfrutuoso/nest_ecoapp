@@ -8,6 +8,7 @@ import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { AuthenticateStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/authenticate-storekeeper";
 import { WrogCredentialsError } from "src/domain/material-movimentation/application/use-cases/errors/wrong-credentials";
+import { Public } from "../../auth/public.guard";
 
 const authenticateBodySchema = z
   .object({
@@ -19,6 +20,7 @@ const authenticateBodySchema = z
 type AuthenticateBodySchema = z.infer<typeof authenticateBodySchema>;
 
 @Controller("/sessions")
+@Public()
 export class AuthenticateController {
   constructor(private authenticateStorkeeper: AuthenticateStorekeeperUseCase) {}
 
