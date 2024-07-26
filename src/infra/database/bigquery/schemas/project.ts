@@ -6,7 +6,7 @@ const tableId = "project";
 export interface BqProjectProps {
   id?: string;
   project_number: string;
-  description?: number | null;
+  description?: string | null;
   type: string;
   baseId: string;
   city: string;

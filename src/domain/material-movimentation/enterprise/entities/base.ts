@@ -3,7 +3,7 @@ import { UniqueEntityID } from "../../../../core/entities/unique-entity-id";
 
 export interface BaseProps {
   baseName: string;
-  contractID: UniqueEntityID;
+  contractId: UniqueEntityID;
 }
 
 export class Base extends Entity<BaseProps> {
@@ -11,8 +11,12 @@ export class Base extends Entity<BaseProps> {
     return this.props.baseName;
   }
 
-  get contractID() {
-    return this.props.contractID;
+  get contractId() {
+    return this.props.contractId;
+  }
+
+  set contractId(contractId: UniqueEntityID) {
+    this.props.contractId = contractId;
   }
 
   static create(props: BaseProps, id?: UniqueEntityID) {

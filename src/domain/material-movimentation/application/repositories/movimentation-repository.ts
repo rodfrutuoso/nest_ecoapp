@@ -8,7 +8,7 @@ export interface MovimentationRepository {
   ): Promise<Movimentation[]>;
   findManyHistory(
     params: PaginationParams,
-    baseID: string,
+    baseId: string,
     storekeeperId?: string,
     projectId?: string,
     materialId?: string,

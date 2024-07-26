@@ -13,7 +13,7 @@ export class BqMovimentationRepository implements MovimentationRepository {
   }
   findManyHistory(
     params: PaginationParams,
-    baseID: string,
+    baseId: string,
     storekeeperId?: string,
     projectId?: string,
     materialId?: string,

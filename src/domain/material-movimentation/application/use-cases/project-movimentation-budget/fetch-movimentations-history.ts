@@ -5,7 +5,7 @@ import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 
 interface FetchMovimentationHistoryUseCaseRequest {
   page: number;
-  baseID: string;
+  baseId: string;
   storekeeperId?: string;
   projectId?: string;
   materialId?: string;
@@ -25,7 +25,7 @@ export class FetchMovimentationHistoryUseCase {
 
   async execute({
     page,
-    baseID,
+    baseId,
     storekeeperId,
     projectId,
     materialId,
@@ -36,7 +36,7 @@ export class FetchMovimentationHistoryUseCase {
       {
         page,
       },
-      baseID,
+      baseId,
       storekeeperId,
       projectId,
       materialId,

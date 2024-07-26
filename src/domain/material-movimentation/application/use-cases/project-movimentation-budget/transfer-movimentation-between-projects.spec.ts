@@ -31,7 +31,7 @@ describe("Transfer Material between projects", () => {
       materialId: "Material-teste",
       storekeeperId: "5",
       observation: "transferencia para terminar obra prioritária",
-      baseID: "ID-BASE-VCA",
+      baseId: "ID-BASE-VCA",
       value: 4,
     });
 
@@ -61,7 +61,7 @@ describe("Transfer Material between projects", () => {
       materialId: "Material-teste",
       storekeeperId: "5",
       observation: "transferencia para terminar obra prioritária",
-      baseID: "ID-BASE-VCA",
+      baseId: "ID-BASE-VCA",
       value: 4,
     });
 

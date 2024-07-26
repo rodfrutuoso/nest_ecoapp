@@ -16,14 +16,14 @@ describe("Create Base", () => {
   it("sould be able to create a base", async () => {
     const result = await sut.execute({
       baseName: "Vitória da Conquista",
-      contractID: "Contrato 1",
+      contractId: "Contrato 1",
     });
 
     expect(result.isRight()).toBeTruthy();
     expect(inMemoryBaseRepository.items[0].baseName).toEqual(
       "Vitória da Conquista"
     );
-    expect(inMemoryBaseRepository.items[0].contractID).toBeInstanceOf(
+    expect(inMemoryBaseRepository.items[0].contractId).toBeInstanceOf(
       UniqueEntityID
     );
   });
@@ -35,12 +35,12 @@ describe("Create Base", () => {
 
     await registerBase.execute({
       baseName: "Vitória da Conquista",
-      contractID: "Contrato 1",
+      contractId: "Contrato 1",
     });
 
     const result = await registerBase.execute({
       baseName: "Vitória da Conquista",
-      contractID: "Contrato 1",
+      contractId: "Contrato 1",
     });
 
     expect(result.isLeft()).toBeTruthy();

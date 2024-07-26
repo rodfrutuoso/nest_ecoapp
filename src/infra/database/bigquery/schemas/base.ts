@@ -5,11 +5,7 @@ const tableId = "base";
 
 export interface BqBaseProps {
   id?: string;
-  projectId: string;
-  materialId: string;
-  value: number;
-  createdAt: Date;
-  userId: string;
+  baseName: string;
   contractId: string;
 }
 

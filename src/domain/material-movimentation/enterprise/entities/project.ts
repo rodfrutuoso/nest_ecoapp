@@ -3,7 +3,7 @@ import { UniqueEntityID } from "../../../../core/entities/unique-entity-id";
 
 export interface ProjectProps {
   project_number: string;
-  description: string;
+  description?: string | null;
   type: string;
   baseId: UniqueEntityID;
   city: string;
@@ -26,7 +26,7 @@ export class Project extends Entity<ProjectProps> {
     return this.props.baseId;
   }
 
-  set baseId(baseId: string) {
+  set baseId(baseId: UniqueEntityID) {
     this.props.baseId = baseId;
   }
 

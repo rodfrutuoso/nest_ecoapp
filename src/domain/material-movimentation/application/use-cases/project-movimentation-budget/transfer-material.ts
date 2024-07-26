@@ -8,7 +8,7 @@ interface TransferMaterialUseCaseRequest {
   materialId: string;
   projectId: string;
   observation: string;
-  baseID: string;
+  baseId: string;
   value: number;
 }
 
@@ -27,7 +27,7 @@ export class TransferMaterialUseCase {
     materialId,
     projectId,
     observation,
-    baseID,
+    baseId,
     value,
   }: TransferMaterialUseCaseRequest): Promise<TransferMaterialResponse> {
     const movimentation = Movimentation.create({
@@ -35,7 +35,7 @@ export class TransferMaterialUseCase {
       materialId: new UniqueEntityID(materialId),
       storekeeperId: new UniqueEntityID(storekeeperId),
       observation,
-      baseID: new UniqueEntityID(baseID),
+      baseId: new UniqueEntityID(baseId),
       value,
     });
 

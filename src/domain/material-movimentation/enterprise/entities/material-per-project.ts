@@ -15,8 +15,12 @@ export abstract class MaterialPerProject<
     return this.props.projectId;
   }
 
-  set projecId(projecId: UniqueEntityID) {
-    this.props.projecId = projecId;
+  set projectId(projectId: UniqueEntityID) {
+    this.props.projectId = projectId;
+  }
+
+  set materialId(materialId: UniqueEntityID) {
+    this.props.materialId = materialId;
   }
 
   get materialId() {

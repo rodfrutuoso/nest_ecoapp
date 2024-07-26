@@ -19,7 +19,7 @@ describe("Transfer Material", () => {
       materialId: "4",
       storekeeperId: "5",
       observation: "Material Movimentado",
-      baseID: "ID-BASE-VCA",
+      baseId: "ID-BASE-VCA",
       value: 5,
     });
 

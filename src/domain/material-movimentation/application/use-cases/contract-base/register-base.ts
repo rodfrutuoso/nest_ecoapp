@@ -6,7 +6,7 @@ import { ResourceAlreadyRegisteredError } from "../errors/resource-already-regis
 
 interface RegisterBaseUseCaseRequest {
   baseName: string;
-  contractID: string;
+  contractId: string;
 }
 
 type RegisterBaseResponse = Eihter<
@@ -21,7 +21,7 @@ export class RegisterBaseUseCase {
 
   async execute({
     baseName,
-    contractID,
+    contractId,
   }: RegisterBaseUseCaseRequest): Promise<RegisterBaseResponse> {
     const baseSearch = await this.baseRepository.findByBaseName(baseName);
 
@@ -29,7 +29,7 @@ export class RegisterBaseUseCase {
 
     const base = Base.create({
       baseName,
-      contractID: new UniqueEntityID(contractID),
+      contractId: new UniqueEntityID(contractId),
     });
 
     await this.baseRepository.create(base);

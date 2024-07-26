@@ -10,7 +10,7 @@ interface TransferMovimentationBetweenProjectsUseCaseRequest {
   projectIdOut: string;
   projectIdIn: string;
   observation: string;
-  baseID: string;
+  baseId: string;
   value: number;
 }
 
@@ -31,7 +31,7 @@ export class TransferMovimentationBetweenProjectsUseCase {
     projectIdOut,
     projectIdIn,
     observation,
-    baseID,
+    baseId,
     value,
   }: TransferMovimentationBetweenProjectsUseCaseRequest): Promise<TransferMovimentationBetweenProjectsResponse> {
     const movimentationVerificationOut =
@@ -51,7 +51,7 @@ export class TransferMovimentationBetweenProjectsUseCase {
       materialId: new UniqueEntityID(materialId),
       storekeeperId: new UniqueEntityID(storekeeperId),
       observation,
-      baseID: new UniqueEntityID(baseID),
+      baseId: new UniqueEntityID(baseId),
       value: -Math.abs(value),
     });
 
@@ -62,7 +62,7 @@ export class TransferMovimentationBetweenProjectsUseCase {
       materialId: new UniqueEntityID(materialId),
       storekeeperId: new UniqueEntityID(storekeeperId),
       observation,
-      baseID: new UniqueEntityID(baseID),
+      baseId: new UniqueEntityID(baseId),
       value: Math.abs(value),
     });
 

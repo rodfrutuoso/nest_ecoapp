@@ -5,8 +5,12 @@ const tableId = "budget";
 
 export interface BqBudgetProps {
   id?: string;
-  budgetName: string;
-  contractId: Date;
+  userId: string;
+  contractId: string;
+  projectId: string;
+  materialId: string;
+  value: number;
+  createdAt: Date;
 }
 
 @Injectable()

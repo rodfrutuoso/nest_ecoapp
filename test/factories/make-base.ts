@@ -7,7 +7,7 @@ import { faker } from "@faker-js/faker";
 
 export function makeBase(override: Partial<BaseProps> = {}) {
   const base = Base.create({
-    contractID: new UniqueEntityID(),
+    contractId: new UniqueEntityID(),
     baseName: faker.location.city(),
     ...override,
   });
