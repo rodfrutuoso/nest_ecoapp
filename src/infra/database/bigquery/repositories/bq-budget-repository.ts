@@ -1,13 +1,25 @@
 import { Injectable } from "@nestjs/common";
 import { BudgetRepository } from "src/domain/material-movimentation/application/repositories/budget-repository";
 import { Budget } from "src/domain/material-movimentation/enterprise/entities/budget";
+import { BigQueryService } from "../bigquery.service";
+import { BqBudgetMapper } from "../mappers/bq-budget-mapper";
 
 @Injectable()
 export class BqBudgetRepository implements BudgetRepository {
-  findByProject(projectid: string): Promise<Budget[]> {
-    throw new Error("Method not implemented.");
+  constructor(private bigquery: BigQueryService) {}
+
+  async findByProject(projectId: string): Promise<Budget[]> {
+    const budgets = await this.bigquery.budget.select({
+      where: { projectId },
+    });
+
+    const budgetsMapped = budgets.map(BqBudgetMapper.toDomin);
+
+    return budgetsMapped;
   }
-  create(budget: Budget): Promise<void> {
-    throw new Error("Method not implemented.");
+  async create(budget: Budget): Promise<void> {
+    const data = BqBudgetMapper.toBigquery(budget);
+
+    await this.bigquery.budget.create([data]);
   }
 }

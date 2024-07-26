@@ -6,6 +6,7 @@ import { Budget } from "./schemas/budget";
 import { Movimentation } from "./schemas/movimentation";
 import { PhysicalDocument } from "./schemas/physical-document";
 import { Project } from "./schemas/project";
+import { Contract } from "./schemas/contract";
 
 @Injectable()
 export class BigQueryService {
@@ -16,6 +17,7 @@ export class BigQueryService {
     public readonly budget: Budget,
     public readonly movimentation: Movimentation,
     public readonly physicalDocument: PhysicalDocument,
-    public readonly project: Project
+    public readonly project: Project,
+    public readonly contract: Contract
   ) {}
 }

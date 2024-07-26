@@ -12,15 +12,18 @@ export class BqStorekeeperRepository implements StorekeeperRepository {
   async create(Storekeeper: Storekeeper): Promise<void> {
     await this.bigquery.user.create([BqUserMapper.toBigquery(Storekeeper)]);
   }
+
   async delete(StorekeeperId: string): Promise<void> {
     await this.bigquery.user.delete({ id: StorekeeperId });
   }
+
   async save(storekeeper: Storekeeper): Promise<void> {
     await this.bigquery.user.update({
       data: BqUserMapper.toBigquery(storekeeper),
       where: { id: storekeeper.id.toString() },
     });
   }
+
   async findById(storekeeperId: string): Promise<Storekeeper | null> {
     const [storekeeper] = await this.bigquery.user.select({
       where: { id: storekeeperId },
@@ -32,6 +35,7 @@ export class BqStorekeeperRepository implements StorekeeperRepository {
 
     return result instanceof Storekeeper ? result : null;
   }
+
   async findByEmail(email: string): Promise<Storekeeper | null> {
     const [storekeeper] = await this.bigquery.user.select({
       where: { email },
@@ -43,6 +47,7 @@ export class BqStorekeeperRepository implements StorekeeperRepository {
 
     return result instanceof Storekeeper ? result : null;
   }
+
   async findMany(
     { page }: PaginationParams,
     baseId?: string
