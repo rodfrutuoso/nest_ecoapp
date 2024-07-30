@@ -38,9 +38,11 @@ describe("Fetch budgets and Movimentations by project", () => {
     });
     const newMovimentation3 = makeMovimentation({});
 
-    await inMemoryMovimentationRepository.create(newMovimentation1);
-    await inMemoryMovimentationRepository.create(newMovimentation2);
-    await inMemoryMovimentationRepository.create(newMovimentation3);
+    await inMemoryMovimentationRepository.create([
+      newMovimentation1,
+      newMovimentation2,
+      newMovimentation3,
+    ]);
 
     const newBudget1 = makeBudget({
       projectId: newProject.id,
@@ -78,9 +80,11 @@ describe("Fetch budgets and Movimentations by project", () => {
     });
     const newMovimentation3 = makeMovimentation({});
 
-    await inMemoryMovimentationRepository.create(newMovimentation1);
-    await inMemoryMovimentationRepository.create(newMovimentation2);
-    await inMemoryMovimentationRepository.create(newMovimentation3);
+    await inMemoryMovimentationRepository.create([
+      newMovimentation1,
+      newMovimentation2,
+      newMovimentation3,
+    ]);
 
     const newBudget1 = makeBudget({
       projectId: newProject.id,
@@ -99,6 +103,6 @@ describe("Fetch budgets and Movimentations by project", () => {
     });
 
     expect(result.isLeft()).toBeTruthy();
-      expect(result.value).toBeInstanceOf(ResourceNotFoundError);
+    expect(result.value).toBeInstanceOf(ResourceNotFoundError);
   });
 });

@@ -55,8 +55,6 @@ export class TransferMovimentationBetweenProjectsUseCase {
       value: -Math.abs(value),
     });
 
-    await this.movimentationRepository.create(movimentationOut);
-
     const movimentationIn = Movimentation.create({
       projectId: new UniqueEntityID(projectIdIn),
       materialId: new UniqueEntityID(materialId),
@@ -66,7 +64,10 @@ export class TransferMovimentationBetweenProjectsUseCase {
       value: Math.abs(value),
     });
 
-    await this.movimentationRepository.create(movimentationIn);
+    await this.movimentationRepository.create([
+      movimentationOut,
+      movimentationIn,
+    ]);
 
     return right({ movimentationIn, movimentationOut });
   }

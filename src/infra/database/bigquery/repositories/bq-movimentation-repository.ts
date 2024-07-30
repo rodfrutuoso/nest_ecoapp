@@ -10,10 +10,18 @@ export class BqMovimentationRepository implements MovimentationRepository {
   constructor(private bigquery: BigQueryService) {}
 
   async findByProject(
-    projectid: string,
+    projectId: string,
     materialId?: string
   ): Promise<Movimentation[]> {
-    throw new Error("Method not implemented.");
+    const movimentations = await this.bigquery.movimentation.select({
+      where: { projectId, materialId },
+    });
+
+    const movimentationsMapped = movimentations.map(
+      BqMovimentationMapper.toDomin
+    );
+
+    return movimentationsMapped;
   }
 
   async findManyHistory(
@@ -27,28 +35,21 @@ export class BqMovimentationRepository implements MovimentationRepository {
   ): Promise<Movimentation[]> {
     const pageCount = 40;
 
-    const baseSearch = `baseId = '${baseId} '`;
-    const userSearch = storekeeperId === undefined ? `` : `userId`
-
-    const query =
-      "SELECT * FROM `movimentation.movimentation` where " +
-      baseSearch +
-      " and userId = '' and projectId = '' and materialId = '' and createdAt > '2024-05-04' and createdAt < '2024-06-04' order by createdAt desc limit 40 offset 0 ";
-
-    const movimentations = await this.bigquery.movimentation.runQuery(query);
-    // .select({
-    //   where: { baseId, userId: storekeeperId, projectId, materialId, },
-    //   limit: pageCount,
-    //   offset: pageCount * (page - 1),
-    //   orderBy: { column: "materialId", direction: "ASC" },
-    // });
+    const movimentations = await this.bigquery.movimentation.select({
+      where: { baseId, userId: storekeeperId, projectId, materialId },
+      greaterOrEqualThan: { createdAt: startDate },
+      lessOrEqualThan: { createdAt: endDate },
+      limit: pageCount,
+      offset: pageCount * (page - 1),
+      orderBy: { column: "materialId", direction: "ASC" },
+    });
 
     return movimentations.map(BqMovimentationMapper.toDomin);
   }
 
-  async create(movimentation: Movimentation): Promise<void> {
-    const data = BqMovimentationMapper.toBigquery(movimentation);
+  async create(movimentations: Movimentation[]): Promise<void> {
+    const data = movimentations.map(BqMovimentationMapper.toBigquery);
 
-    await this.bigquery.movimentation.create([data]);
+    await this.bigquery.movimentation.create(data);
   }
 }

@@ -15,5 +15,5 @@ export interface MovimentationRepository {
     startDate?: Date,
     endDate?: Date
   ): Promise<Movimentation[]>;
-  create(movimentation: Movimentation): Promise<void>;
+  create(movimentations: Movimentation[]): Promise<void>;
 }

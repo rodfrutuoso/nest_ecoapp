@@ -15,32 +15,31 @@ interface TransferMaterialUseCaseRequest {
 type TransferMaterialResponse = Eihter<
   null,
   {
-    movimentation: Movimentation;
+    movimentations: Movimentation[];
   }
 >;
 
 export class TransferMaterialUseCase {
   constructor(private movimentationRepository: MovimentationRepository) {}
 
-  async execute({
-    storekeeperId,
-    materialId,
-    projectId,
-    observation,
-    baseId,
-    value,
-  }: TransferMaterialUseCaseRequest): Promise<TransferMaterialResponse> {
-    const movimentation = Movimentation.create({
-      projectId: new UniqueEntityID(projectId),
-      materialId: new UniqueEntityID(materialId),
-      storekeeperId: new UniqueEntityID(storekeeperId),
-      observation,
-      baseId: new UniqueEntityID(baseId),
-      value,
-    });
+  async execute(
+    transferMaterialUseCaseRequest: TransferMaterialUseCaseRequest[]
+  ): Promise<TransferMaterialResponse> {
+    const movimentations = transferMaterialUseCaseRequest.map(
+      (movimentation) => {
+        return Movimentation.create({
+          projectId: new UniqueEntityID(movimentation.projectId),
+          materialId: new UniqueEntityID(movimentation.materialId),
+          storekeeperId: new UniqueEntityID(movimentation.storekeeperId),
+          observation: movimentation.observation,
+          baseId: new UniqueEntityID(movimentation.baseId),
+          value: movimentation.value,
+        });
+      }
+    );
 
-    await this.movimentationRepository.create(movimentation);
+    await this.movimentationRepository.create(movimentations);
 
-    return right({ movimentation });
+    return right({ movimentations });
   }
 }

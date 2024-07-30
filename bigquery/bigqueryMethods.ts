@@ -9,6 +9,8 @@ export interface UpdateProps<T> {
 
 export interface SelectOptions<T> {
   where?: Partial<T>;
+  greaterOrEqualThan?: Partial<T>;
+  lessOrEqualThan?: Partial<T>;
   columns?: (keyof T)[];
   like?: Partial<T>;
   join?: { table: string; on: string };
@@ -74,6 +76,8 @@ export class BigQueryMethods<T extends Record<string, any>> {
   async select(options: SelectOptions<T> = {}): Promise<T[]> {
     const {
       where,
+      greaterOrEqualThan,
+      lessOrEqualThan,
       columns,
       like,
       join,
@@ -98,6 +102,34 @@ export class BigQueryMethods<T extends Record<string, any>> {
         )
         .join(" AND ");
       whereClauses.push(whereClause);
+    }
+
+    if (greaterOrEqualThan) {
+      const greaterOrEqualThanClause = Object.keys(greaterOrEqualThan)
+        .map(
+          (key) =>
+            `${String(key)} >= ${
+              typeof greaterOrEqualThan[key] === "string"
+                ? `'${greaterOrEqualThan[key]}'`
+                : greaterOrEqualThan[key]
+            }`
+        )
+        .join(" AND ");
+      whereClauses.push(greaterOrEqualThanClause);
+    }
+
+    if (lessOrEqualThan) {
+      const lessOrEqualThanClause = Object.keys(lessOrEqualThan)
+        .map(
+          (key) =>
+            `${String(key)} <= ${
+              typeof lessOrEqualThan[key] === "string"
+                ? `'${lessOrEqualThan[key]}'`
+                : lessOrEqualThan[key]
+            }`
+        )
+        .join(" AND ");
+      whereClauses.push(lessOrEqualThanClause);
     }
 
     if (like) {

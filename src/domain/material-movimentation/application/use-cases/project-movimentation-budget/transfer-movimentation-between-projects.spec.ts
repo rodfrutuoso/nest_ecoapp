@@ -23,7 +23,7 @@ describe("Transfer Material between projects", () => {
       value: 5,
     });
 
-    await inMemoryMovimentationRepository.create(movimentation);
+    await inMemoryMovimentationRepository.create([movimentation]);
 
     const result = await sut.execute({
       projectIdOut: "Projeto-origem",
@@ -53,7 +53,7 @@ describe("Transfer Material between projects", () => {
       value: 3,
     });
 
-    await inMemoryMovimentationRepository.create(movimentation);
+    await inMemoryMovimentationRepository.create([movimentation]);
 
     const result = await sut.execute({
       projectIdOut: "Projeto-origem",
@@ -66,6 +66,6 @@ describe("Transfer Material between projects", () => {
     });
 
     expect(result.isLeft()).toBeTruthy();
-    expect(result.value).toBeInstanceOf(ResourceNotFoundError)
+    expect(result.value).toBeInstanceOf(ResourceNotFoundError);
   });
 });

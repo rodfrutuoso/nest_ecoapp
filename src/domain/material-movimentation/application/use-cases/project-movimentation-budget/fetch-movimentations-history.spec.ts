@@ -27,13 +27,15 @@ describe("Fetch Movimentations History", () => {
       baseId: new UniqueEntityID("base-1"),
     });
 
-    await inMemoryMovimentationRepository.create(newMovimentation1);
-    await inMemoryMovimentationRepository.create(newMovimentation2);
-    await inMemoryMovimentationRepository.create(newMovimentation3);
+    await inMemoryMovimentationRepository.create([
+      newMovimentation1,
+      newMovimentation2,
+      newMovimentation3,
+    ]);
 
     const result = await sut.execute({
       page: 1,
-      baseId: "base-1"
+      baseId: "base-1",
     });
 
     expect(result.isRight()).toBeTruthy();
@@ -53,101 +55,106 @@ describe("Fetch Movimentations History", () => {
 
   it("should be able to fetch paginated movimentations history", async () => {
     for (let i = 1; i <= 45; i++) {
-      await inMemoryMovimentationRepository.create(makeMovimentation({baseId: new UniqueEntityID("base-1")}));
+      await inMemoryMovimentationRepository.create([
+        makeMovimentation({ baseId: new UniqueEntityID("base-1") }),
+      ]);
     }
 
     const result = await sut.execute({
       page: 2,
-      baseId: "base-1"
+      baseId: "base-1",
     });
     if (result.isRight()) expect(result.value.movimentations).toHaveLength(5);
   });
-  
+
   it("should be able to fetch movimentations history by project", async () => {
     const newMovimentation1 = makeMovimentation({
       baseId: new UniqueEntityID("base-1"),
-      projectId: new UniqueEntityID("projeto-1")
+      projectId: new UniqueEntityID("projeto-1"),
     });
     const newMovimentation2 = makeMovimentation({
       baseId: new UniqueEntityID("base-1"),
-      projectId: new UniqueEntityID("projeto-1")
+      projectId: new UniqueEntityID("projeto-1"),
     });
     const newMovimentation3 = makeMovimentation({
       baseId: new UniqueEntityID("base-1"),
-      projectId: new UniqueEntityID("projeto-2")
+      projectId: new UniqueEntityID("projeto-2"),
     });
 
-    await inMemoryMovimentationRepository.create(newMovimentation1);
-    await inMemoryMovimentationRepository.create(newMovimentation2);
-    await inMemoryMovimentationRepository.create(newMovimentation3);
+    await inMemoryMovimentationRepository.create([
+      newMovimentation1,
+      newMovimentation2,
+      newMovimentation3,
+    ]);
 
     const result = await sut.execute({
       page: 1,
       baseId: "base-1",
-      projectId: "projeto-1"
+      projectId: "projeto-1",
     });
 
     expect(result.isRight()).toBeTruthy();
-    if (result.isRight())
-      expect(result.value.movimentations).toHaveLength(2)
+    if (result.isRight()) expect(result.value.movimentations).toHaveLength(2);
   });
 
   it("should be able to fetch movimentations history by material", async () => {
     const newMovimentation1 = makeMovimentation({
       baseId: new UniqueEntityID("base-1"),
-      materialId: new UniqueEntityID("material-1")
+      materialId: new UniqueEntityID("material-1"),
     });
     const newMovimentation2 = makeMovimentation({
       baseId: new UniqueEntityID("base-1"),
-      materialId: new UniqueEntityID("material-1")
+      materialId: new UniqueEntityID("material-1"),
     });
     const newMovimentation3 = makeMovimentation({
       baseId: new UniqueEntityID("base-1"),
-      materialId: new UniqueEntityID("material-2")
+      materialId: new UniqueEntityID("material-2"),
     });
 
-    await inMemoryMovimentationRepository.create(newMovimentation1);
-    await inMemoryMovimentationRepository.create(newMovimentation2);
-    await inMemoryMovimentationRepository.create(newMovimentation3);
+    await inMemoryMovimentationRepository.create([
+      newMovimentation1,
+      newMovimentation2,
+      newMovimentation3,
+    ]);
 
     const result = await sut.execute({
       page: 1,
       baseId: "base-1",
-      materialId: "material-1"
+      materialId: "material-1",
     });
 
     expect(result.isRight()).toBeTruthy();
-    if (result.isRight())
-      expect(result.value.movimentations).toHaveLength(2)
+    if (result.isRight()) expect(result.value.movimentations).toHaveLength(2);
   });
 
   it("should be able to fetch movimentations history by storkeeper", async () => {
     const newMovimentation1 = makeMovimentation({
       baseId: new UniqueEntityID("base-1"),
-      storekeeperId: new UniqueEntityID("storekeeper-1")
+      storekeeperId: new UniqueEntityID("storekeeper-1"),
     });
     const newMovimentation2 = makeMovimentation({
       baseId: new UniqueEntityID("base-1"),
-      storekeeperId: new UniqueEntityID("storekeeper-1")
+      storekeeperId: new UniqueEntityID("storekeeper-1"),
     });
     const newMovimentation3 = makeMovimentation({
       baseId: new UniqueEntityID("base-1"),
-      storekeeperId: new UniqueEntityID("storekeeper-2")
+      storekeeperId: new UniqueEntityID("storekeeper-2"),
     });
 
-    await inMemoryMovimentationRepository.create(newMovimentation1);
-    await inMemoryMovimentationRepository.create(newMovimentation2);
-    await inMemoryMovimentationRepository.create(newMovimentation3);
+    await inMemoryMovimentationRepository.create([
+      newMovimentation1,
+      newMovimentation2,
+      newMovimentation3,
+    ]);
 
     const result = await sut.execute({
       page: 1,
       baseId: "base-1",
-      storekeeperId: "storekeeper-1"
+      storekeeperId: "storekeeper-1",
     });
 
     expect(result.isRight()).toBeTruthy();
-    if (result.isRight())
-      expect(result.value.movimentations).toHaveLength(2)
+    if (result.isRight()) expect(result.value.movimentations).toHaveLength(2);
   });
 
   it("should be able to fetch movimentations history by a range of dates", async () => {
@@ -164,19 +171,20 @@ describe("Fetch Movimentations History", () => {
       createdAt: new Date(2024, 5, 13),
     });
 
-    await inMemoryMovimentationRepository.create(newMovimentation1);
-    await inMemoryMovimentationRepository.create(newMovimentation2);
-    await inMemoryMovimentationRepository.create(newMovimentation3);
+    await inMemoryMovimentationRepository.create([
+      newMovimentation1,
+      newMovimentation2,
+      newMovimentation3,
+    ]);
 
     const result = await sut.execute({
       page: 1,
       baseId: "base-1",
-      startDate: new Date(2024,5,13),
-      endDate: new Date(2024,5,16)
+      startDate: new Date(2024, 5, 13),
+      endDate: new Date(2024, 5, 16),
     });
 
     expect(result.isRight()).toBeTruthy();
-    if (result.isRight())
-      expect(result.value.movimentations).toHaveLength(2)
+    if (result.isRight()) expect(result.value.movimentations).toHaveLength(2);
   });
 });

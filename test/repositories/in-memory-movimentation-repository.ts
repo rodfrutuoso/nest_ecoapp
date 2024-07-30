@@ -40,7 +40,8 @@ export class InMemoryMovimentationRepository
       )
       .filter(
         (movimentation) =>
-          !storekeeperId || movimentation.storekeeperId.toString() === storekeeperId
+          !storekeeperId ||
+          movimentation.storekeeperId.toString() === storekeeperId
       )
       .filter(
         (movimentation) =>
@@ -56,7 +57,7 @@ export class InMemoryMovimentationRepository
     return movimentations;
   }
 
-  async create(movimentation: Movimentation) {
-    this.items.push(movimentation);
+  async create(movimentations: Movimentation[]) {
+    movimentations.map((movimentation) => this.items.push(movimentation));
   }
 }
