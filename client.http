@@ -52,3 +52,10 @@ Authorization: Bearer {{authToken}}
     "type": "FERRAGEM",
     "contractId": "352275c2-c358-4367-8f97-b21de8a170da"
 }
+
+###
+
+# @name get_user_by_id
+GET {{baseURL}}/accounts/7c1e6690-6c20-428f-9bdc-b1fdcdca5ab5
+Content-Type: application/json
+Authorization: Bearer {{authToken}}

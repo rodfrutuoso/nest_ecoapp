@@ -1,15 +1,15 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { GetStorekeeperByEmailUseCase } from "./get-storekeeper-by-email";
+import { GetStorekeeperByIdUseCase } from "./get-storekeeper-by-id";
 import { InMemoryStorekeeperRepository } from "../../../../../../test/repositories/in-memory-storekeeper-repository";
 import { makeStorekeeper } from "../../../../../../test/factories/make-storekeeper";
 
 let inMemoryStorekeeperRepository: InMemoryStorekeeperRepository;
-let sut: GetStorekeeperByEmailUseCase;
+let sut: GetStorekeeperByIdUseCase;
 
 describe("Fetch Storekeepers History", () => {
   beforeEach(() => {
     inMemoryStorekeeperRepository = new InMemoryStorekeeperRepository();
-    sut = new GetStorekeeperByEmailUseCase(inMemoryStorekeeperRepository);
+    sut = new GetStorekeeperByIdUseCase(inMemoryStorekeeperRepository);
   });
 
   it("should be able to fetch physical documents history sorting by name", async () => {
@@ -20,11 +20,11 @@ describe("Fetch Storekeepers History", () => {
     await inMemoryStorekeeperRepository.create(newStorekeeper1);
 
     const result = await sut.execute({
-      email: "rodrigo@ecoeletrica.com.br",
+      storekeeperId: newStorekeeper1.id.toString(),
     });
 
     expect(result.isRight()).toBeTruthy();
     if (result.isRight())
-      expect(result.value.storekeepers.email).toEqual("rodrigo@ecoeletrica.com.br");
+      expect(result.value.storekeeper.id).toEqual(newStorekeeper1.id);
   });
 });

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, test } from "vitest";
 import { EditStorekeeperUseCase } from "./edit-storekeeper";
 import { InMemoryStorekeeperRepository } from "../../../../../../test/repositories/in-memory-storekeeper-repository";
 import { makeStorekeeper } from "../../../../../../test/factories/make-storekeeper";
+import { UniqueEntityID } from "src/core/entities/unique-entity-id";
 
 let inMemoryStorekeeperRepository: InMemoryStorekeeperRepository;
 let sut: EditStorekeeperUseCase;
@@ -27,7 +28,7 @@ describe("Edit Storekeeper", () => {
 
     expect(inMemoryStorekeeperRepository.items[1]).toMatchObject({
       props: {
-        baseId: "Vitória da Conquista",
+        baseId: new UniqueEntityID("Vitória da Conquista"),
       },
     });
   });

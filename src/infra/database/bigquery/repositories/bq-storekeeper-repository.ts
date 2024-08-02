@@ -32,7 +32,6 @@ export class BqStorekeeperRepository implements StorekeeperRepository {
     if (!storekeeper) return null;
 
     const result = BqUserMapper.toDomin(storekeeper);
-
     return result instanceof Storekeeper ? result : null;
   }
 

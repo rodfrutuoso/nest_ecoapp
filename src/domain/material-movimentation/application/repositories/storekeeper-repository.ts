@@ -5,7 +5,7 @@ export abstract class StorekeeperRepository {
   abstract create(Storekeeper: Storekeeper): Promise<void>;
   abstract delete(StorekeeperId: string): Promise<void>;
   abstract save(torekeeper: Storekeeper): Promise<void>;
-  abstract findById(StorekeeperId: string): Promise<Storekeeper | null>;
+  abstract findById(storekeeperId: string): Promise<Storekeeper | null>;
   abstract findByEmail(email: string): Promise<Storekeeper | null>;
   abstract findMany(
     params: PaginationParams,

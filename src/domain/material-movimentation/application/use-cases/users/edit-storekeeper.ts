@@ -40,7 +40,7 @@ export class EditStorekeeperUseCase {
     if (!storekeeper) return left(new ResourceNotFoundError());
 
     storekeeper.type = type ?? storekeeper.type;
-    storekeeper.baseId = baseId ?? storekeeper.baseId;
+    storekeeper.baseId = new UniqueEntityID(baseId) ?? storekeeper.baseId;
     storekeeper.status = status ?? storekeeper.status;
 
     await this.storekeeperRepository.save(storekeeper);

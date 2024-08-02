@@ -49,7 +49,7 @@ export class Storekeeper extends Entity<StorekeeperProps> {
     this.props.status = status;
   }
 
-  set baseId(baseId: string) {
+  set baseId(baseId: UniqueEntityID) {
     this.props.baseId = baseId;
   }
 

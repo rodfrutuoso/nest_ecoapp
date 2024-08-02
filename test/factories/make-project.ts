@@ -12,7 +12,6 @@ export function makeProject(override: Partial<ProjectProps> = {}) {
     type: faker.helpers.arrayElement(types),
     baseId: new UniqueEntityID(),
     city: faker.location.city(),
-    activeAlmoxID: faker.datatype.boolean(),
     ...override,
   });
 
