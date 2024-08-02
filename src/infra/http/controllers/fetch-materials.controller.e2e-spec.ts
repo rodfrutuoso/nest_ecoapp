@@ -6,68 +6,57 @@ import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { hash } from "bcryptjs";
 import { JwtService } from "@nestjs/jwt";
 import { randomUUID } from "crypto";
+import { StorekeeperFactory } from "test/factories/make-storekeeper";
+import { MaterialFactory } from "test/factories/make-material";
+import { UniqueEntityID } from "src/core/entities/unique-entity-id";
+import { DatabaseModule } from "src/infra/database/database.module";
 
 describe("Fetch Materials (E2E)", () => {
   let app: INestApplication;
   let bigquery: BigQueryService;
   let jwt: JwtService;
+  let storekeeperFactory: StorekeeperFactory;
+  let materialFactory: MaterialFactory;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [AppModule, DatabaseModule],
+      providers: [StorekeeperFactory, MaterialFactory],
     }).compile();
 
     app = moduleRef.createNestApplication();
 
     bigquery = moduleRef.get(BigQueryService);
     jwt = moduleRef.get(JwtService);
+    storekeeperFactory = moduleRef.get(StorekeeperFactory);
+    materialFactory = moduleRef.get(MaterialFactory);
 
     await app.init();
   });
 
   test("[GET] /materials", async () => {
-    await bigquery.user.create([
-      {
-        name: "Joao da Pilotinha",
-        email: "joaopilotinha@ecoeletrica.com.br",
-        password: await hash("123456", 8),
-        cpf: "00011122234",
-        status:"ative",
-        type: "administrator",
-        baseId: "base-1"
-      },
-    ]);
+    const user = await storekeeperFactory.makeBqStorekeeper({});
 
-    const [user] = await bigquery.user.select({
-      where: { email: "joaopilotinha@ecoeletrica.com.br" },
-    });
-
-    const accessToken = jwt.sign({ sub: user.id });
+    const accessToken = jwt.sign({ sub: user.id.toString() });
     const contractId = randomUUID();
 
-    await bigquery.material.create([
-      {
-        code: 123132,
-        description: "material de teste 1",
-        type: "concreto",
-        unit: "CDA",
-        contractId: contractId,
-      },
-      {
-        code: 123133,
-        description: "material de teste 2",
-        type: "concreto",
-        unit: "CDA",
-        contractId: contractId,
-      },
-      {
-        code: 123134,
-        description: "material de teste 3",
-        type: "concreto",
-        unit: "CDA",
-        contractId: contractId,
-      },
-    ]);
+    await materialFactory.makeBqMaterial({
+      code: 123132,
+      type: "concreto",
+      contractId: new UniqueEntityID(contractId),
+    });
+
+    await materialFactory.makeBqMaterial({
+      code: 123133,
+      type: "concreto",
+      contractId: new UniqueEntityID(contractId),
+    });
+
+    await materialFactory.makeBqMaterial({
+      code: 123134,
+      type: "concreto",
+      contractId: new UniqueEntityID(contractId),
+    });
 
     const response = await request(app.getHttpServer())
       .get("/materials")
