@@ -15,7 +15,7 @@ const createAccountBodySchema = z.object({
   password: z.string(),
   cpf: z.string().regex(/^\d{11,}$/, "O CPF precisa ter 11 dígitos"),
   type: z.string(),
-  baseId: z.string(),
+  baseId: z.string().uuid(),
   contractId: z.string().optional(),
 });
 

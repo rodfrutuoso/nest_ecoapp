@@ -3,7 +3,6 @@ import { AppModule } from "src/infra/app.module";
 import { Test } from "@nestjs/testing";
 import request from "supertest";
 import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
-import { hash } from "bcryptjs";
 import { JwtService } from "@nestjs/jwt";
 import { randomUUID } from "crypto";
 import { StorekeeperFactory } from "test/factories/make-storekeeper";

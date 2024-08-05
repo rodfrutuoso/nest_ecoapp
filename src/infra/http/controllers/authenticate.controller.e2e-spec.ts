@@ -4,35 +4,33 @@ import { Test } from "@nestjs/testing";
 import request from "supertest";
 import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { hash } from "bcryptjs";
+import { StorekeeperFactory } from "test/factories/make-storekeeper";
+import { DatabaseModule } from "src/infra/database/database.module";
 
 describe("Authenticate (E2E)", () => {
   let app: INestApplication;
   let bigquery: BigQueryService;
+  let storekeeperFactory: StorekeeperFactory;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [AppModule, DatabaseModule],
+      providers: [StorekeeperFactory],
     }).compile();
 
     app = moduleRef.createNestApplication();
 
     bigquery = moduleRef.get(BigQueryService);
+    storekeeperFactory = moduleRef.get(StorekeeperFactory);
 
     await app.init();
   });
 
   test("[POST] /sessions", async () => {
-    await bigquery.user.create([
-      {
-        name: "Joao da Pilotinha",
-        email: "joaopilotinha@ecoeletrica.com.br",
-        password: await hash("123456", 8),
-        cpf: "00011122234",
-        status: "ative",
-        type: "administrator",
-        baseId: "base-1",
-      },
-    ]);
+    await storekeeperFactory.makeBqStorekeeper({
+      email: "joaopilotinha@ecoeletrica.com.br",
+      password: await hash("123456", 8),
+    });
 
     const response = await request(app.getHttpServer()).post("/sessions").send({
       email: "joaopilotinha@ecoeletrica.com.br",

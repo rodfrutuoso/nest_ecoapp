@@ -6,43 +6,34 @@ import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { hash } from "bcryptjs";
 import { JwtService } from "@nestjs/jwt";
 import { randomUUID } from "crypto";
+import { StorekeeperFactory } from "test/factories/make-storekeeper";
+import { DatabaseModule } from "src/infra/database/database.module";
 
 describe("Create Material (E2E)", () => {
   let app: INestApplication;
   let bigquery: BigQueryService;
   let jwt: JwtService;
+  let storekeeperFactory: StorekeeperFactory;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [AppModule, DatabaseModule],
+      providers: [StorekeeperFactory],
     }).compile();
 
     app = moduleRef.createNestApplication();
 
     bigquery = moduleRef.get(BigQueryService);
     jwt = moduleRef.get(JwtService);
+    storekeeperFactory = moduleRef.get(StorekeeperFactory);
 
     await app.init();
   });
 
   test("[POST] /materials", async () => {
-    await bigquery.user.create([
-      {
-        name: "Joao da Pilotinha",
-        email: "joaopilotinha@ecoeletrica.com.br",
-        password: await hash("123456", 8),
-        cpf: "00011122234",
-        status:"ative",
-        type: "administrator",
-        baseId: "base-1"
-      },
-    ]);
+    const user = await storekeeperFactory.makeBqStorekeeper({});
 
-    const [user] = await bigquery.user.select({
-      where: { email: "joaopilotinha@ecoeletrica.com.br" },
-    });
-
-    const accessToken = jwt.sign({ sub: user.id });
+    const accessToken = jwt.sign({ sub: user.id.toString() });
 
     const response = await request(app.getHttpServer())
       .post("/materials")
