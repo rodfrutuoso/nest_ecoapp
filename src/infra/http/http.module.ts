@@ -11,6 +11,8 @@ import { RegisterStorekeeperUseCase } from "src/domain/material-movimentation/ap
 import { CryptographyModule } from "../cryptography/cryptography.module";
 import { GetStorekeeperByidController } from "./controllers/get-account-by-id.controller";
 import { GetStorekeeperByIdUseCase } from "src/domain/material-movimentation/application/use-cases/users/get-storekeeper-by-id";
+import { EditAccountController } from "./controllers/edit-account.controller";
+import { EditStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/edit-storekeeper";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -20,6 +22,7 @@ import { GetStorekeeperByIdUseCase } from "src/domain/material-movimentation/app
     CreateMaterialController,
     FetchMaterialController,
     GetStorekeeperByidController,
+    EditAccountController,
   ],
   providers: [
     CreateMaterialUseCase,
@@ -27,6 +30,7 @@ import { GetStorekeeperByIdUseCase } from "src/domain/material-movimentation/app
     AuthenticateStorekeeperUseCase,
     RegisterStorekeeperUseCase,
     GetStorekeeperByIdUseCase,
+    EditStorekeeperUseCase,
   ],
 })
 export class HttpModule {}
