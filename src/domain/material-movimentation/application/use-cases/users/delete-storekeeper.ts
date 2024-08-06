@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import { Eihter, left, right } from "../../../../../core/either";
 import { StorekeeperRepository } from "../../repositories/storekeeper-repository";
 import { NotAllowedError } from "../errors/not-allowed-error";
@@ -13,6 +14,7 @@ type DeleteStorekeeperResponse = Eihter<
   null
 >;
 
+@Injectable()
 export class DeleteStorekeeperUseCase {
   constructor(private storekeeperRepository: StorekeeperRepository) {}
 
