@@ -32,26 +32,36 @@ export class BqUserMapper {
         new UniqueEntityID(raw.id)
       );
     }
-    
   }
 
   static toBigquery(
     storekeeperOrEstimator: Storekeeper | Estimator
   ): BqUserProps {
-    return {
-      id: storekeeperOrEstimator.id.toString(),
-      cpf: storekeeperOrEstimator.cpf,
-      email: storekeeperOrEstimator.email,
-      name: storekeeperOrEstimator.name,
-      password: storekeeperOrEstimator.password,
-      status: storekeeperOrEstimator.status,
-      type: storekeeperOrEstimator.type,
-      ...(storekeeperOrEstimator.hasOwnProperty("contractId") && {
-        contractId: (storekeeperOrEstimator as Estimator).contractId.toString(),
-      }),
-      ...(storekeeperOrEstimator.hasOwnProperty("baseId") && {
-        baseId: (storekeeperOrEstimator as Storekeeper).baseId.toString(),
-      }),
-    };
+    if (storekeeperOrEstimator instanceof Storekeeper)
+      return {
+        id: storekeeperOrEstimator.id.toString(),
+        cpf: storekeeperOrEstimator.cpf,
+        email: storekeeperOrEstimator.email,
+        name: storekeeperOrEstimator.name,
+        password: storekeeperOrEstimator.password,
+        status: storekeeperOrEstimator.status,
+        type: storekeeperOrEstimator.type,
+        baseId: storekeeperOrEstimator.baseId.toString(),
+      };
+
+    if (storekeeperOrEstimator instanceof Estimator) {
+      return {
+        id: storekeeperOrEstimator.id.toString(),
+        cpf: storekeeperOrEstimator.cpf,
+        email: storekeeperOrEstimator.email,
+        name: storekeeperOrEstimator.name,
+        password: storekeeperOrEstimator.password,
+        status: storekeeperOrEstimator.status,
+        type: storekeeperOrEstimator.type,
+        contractId: storekeeperOrEstimator.contractId.toString(),
+      };
+    } else {
+      throw new Error();
+    }
   }
 }

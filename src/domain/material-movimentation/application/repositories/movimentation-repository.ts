@@ -1,12 +1,12 @@
 import { PaginationParams } from "../../../../core/repositories/pagination-params";
 import { Movimentation } from "../../enterprise/entities/movimentation";
 
-export interface MovimentationRepository {
-  findByProject(
+export abstract class MovimentationRepository {
+  abstract findByProject(
     projectid: string,
     materialId?: string
   ): Promise<Movimentation[]>;
-  findManyHistory(
+  abstract findManyHistory(
     params: PaginationParams,
     baseId: string,
     storekeeperId?: string,
@@ -15,5 +15,5 @@ export interface MovimentationRepository {
     startDate?: Date,
     endDate?: Date
   ): Promise<Movimentation[]>;
-  create(movimentations: Movimentation[]): Promise<void>;
+  abstract create(movimentations: Movimentation[]): Promise<void>;
 }

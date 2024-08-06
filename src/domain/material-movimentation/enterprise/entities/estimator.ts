@@ -46,15 +46,11 @@ export class Estimator extends Entity<EstimatorProps> {
     this.props.status = status;
   }
 
-  set base(base: string) {
-    this.props.base = base;
-  }
-
   set password(password: string) {
     this.props.password = password;
   }
 
-  set contractId(contractId: string) {
+  set contractId(contractId: UniqueEntityID) {
     this.props.contractId = contractId;
   }
 

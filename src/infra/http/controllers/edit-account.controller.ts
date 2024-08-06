@@ -4,7 +4,6 @@ import {
   Param,
   Put,
   UnauthorizedException,
-  UsePipes,
 } from "@nestjs/common";
 import { Body, Controller, HttpCode } from "@nestjs/common";
 import { z } from "zod";
@@ -20,6 +19,7 @@ const editAccountBodySchema = z.object({
   type: z.string().optional(),
   baseId: z.string().uuid().optional(),
   contractId: z.string().uuid().optional(),
+  password: z.string().optional(),
 });
 
 type EditAccountBodySchema = z.infer<typeof editAccountBodySchema>;
@@ -30,13 +30,13 @@ export class EditAccountController {
 
   @Put()
   @HttpCode(204)
-  @UsePipes(new ZodValidationPipe(editAccountBodySchema))
   async handle(
-    @Body() body: EditAccountBodySchema,
+    @Body(new ZodValidationPipe(editAccountBodySchema))
+    body: EditAccountBodySchema,
     @CurrentUser() user: UserPayload,
     @Param("id") userId: string
   ) {
-    const { status, type, baseId, contractId } = body;
+    const { password, status, type, baseId, contractId } = body;
 
     const result = await this.editStorekeeper.execute({
       storekeeperId: userId,
@@ -44,6 +44,7 @@ export class EditAccountController {
       type,
       baseId,
       status,
+      password,
     });
 
     if (result.isLeft()) {

@@ -7,8 +7,8 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-    "name": "Joao da Silva",
-    "email": "joaosilva3@ecoeletrica.com.br",
+    "name": "Rodrigo",
+    "email": "rodrigo3@ecoeletrica.com.br",
     "password": "123456",
     "cpf":"12345678912",
     "type": "Administrator",
@@ -22,7 +22,7 @@ POST {{baseURL}}/sessions
 Content-Type: application/json
 
 {
-    "email": "joaosilva@ecoeletrica.com.br",
+    "email": "rodrigo@ecoeletrica.com.br",
     "password": "123456" 
 }
 
@@ -59,3 +59,17 @@ Authorization: Bearer {{authToken}}
 GET {{baseURL}}/accounts/7c1e6690-6c20-428f-9bdc-b1fdcdca5ab5
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
+
+###
+
+# @name edit_account
+PUT {{baseURL}}/accounts/eeeb2452-3010-4d98-bb20-cf663e5eab49
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "password": "123456",
+    "type": "Almox",
+    "baseId": "352275c2-c358-4367-8f97-b21de8a170da"
+}
+

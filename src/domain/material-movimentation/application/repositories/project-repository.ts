@@ -1,7 +1,7 @@
 import { Project } from "../../enterprise/entities/project";
 
-export interface ProjectRepository {
-  findByProjectNumber(project_number: string): Promise<Project | null>;
-  findByID(id: string): Promise<Project | null>;
-  create(project: Project): Promise<void>;
+export abstract class ProjectRepository {
+  abstract findByProjectNumber(project_number: string): Promise<Project | null>;
+  abstract findByID(id: string): Promise<Project | null>;
+  abstract create(project: Project): Promise<void>;
 }

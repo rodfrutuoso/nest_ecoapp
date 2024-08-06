@@ -4,6 +4,7 @@ import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
 import { StorekeeperRepository } from "../../repositories/storekeeper-repository";
 import { NotAllowedError } from "../errors/not-allowed-error";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
+import { HashGenerator } from "../../cryptography/hash-generator";
 
 interface EditStorekeeperUseCaseRequest {
   storekeeperId: string;
@@ -11,6 +12,7 @@ interface EditStorekeeperUseCaseRequest {
   type?: string;
   baseId?: string;
   status?: string;
+  password?: string;
 }
 
 type EditStorekeeperResponse = Eihter<
@@ -20,7 +22,10 @@ type EditStorekeeperResponse = Eihter<
 
 @Injectable()
 export class EditStorekeeperUseCase {
-  constructor(private storekeeperRepository: StorekeeperRepository) {}
+  constructor(
+    private storekeeperRepository: StorekeeperRepository,
+    private hashGenerator: HashGenerator
+  ) {}
 
   async execute({
     storekeeperId,
@@ -28,6 +33,7 @@ export class EditStorekeeperUseCase {
     type,
     baseId,
     status,
+    password,
   }: EditStorekeeperUseCaseRequest): Promise<EditStorekeeperResponse> {
     const author = await this.storekeeperRepository.findById(authorId);
 
@@ -42,8 +48,13 @@ export class EditStorekeeperUseCase {
     if (!storekeeper) return left(new ResourceNotFoundError());
 
     storekeeper.type = type ?? storekeeper.type;
-    storekeeper.baseId = new UniqueEntityID(baseId) ?? storekeeper.baseId;
+    storekeeper.baseId =
+      baseId === undefined ? storekeeper.baseId : new UniqueEntityID(baseId);
     storekeeper.status = status ?? storekeeper.status;
+    storekeeper.password =
+      password === undefined
+        ? storekeeper.password
+        : await this.hashGenerator.hash(password);
 
     await this.storekeeperRepository.save(storekeeper);
 
