@@ -101,5 +101,14 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-    "contractName": "Centro-Oeste Bahia"
+    "contractName": "Oeste Pernambuco"
 }
+
+
+###
+
+# @name fetch_contracts
+GET {{baseURL}}/contracts?page=1
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+

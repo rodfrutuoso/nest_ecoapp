@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import { Eihter, left, right } from "../../../../../core/either";
 import { Contract } from "../../../enterprise/entities/contract";
 import { ContractRepository } from "../../repositories/contract-repository";
@@ -14,6 +15,7 @@ type FetchContractUseCaseResponse = Eihter<
   }
 >;
 
+@Injectable()
 export class FetchContractUseCase {
   constructor(private contractRepository: ContractRepository) {}
 
