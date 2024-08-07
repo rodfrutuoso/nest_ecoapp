@@ -8,7 +8,7 @@ import { Body, Controller, HttpCode } from "@nestjs/common";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { FetchMaterialUseCase } from "src/domain/material-movimentation/application/use-cases/material/fetch-material";
-import { MaterialPresenter } from "../presenters/material-presenter";
+import { MaterialPresenter } from "../../../presenters/material-presenter";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 
 const fetchMaterialBodySchema = z.object({

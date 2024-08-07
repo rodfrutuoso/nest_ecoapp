@@ -7,7 +7,7 @@ import {
 import { Controller, HttpCode } from "@nestjs/common";
 import { GetStorekeeperByIdUseCase } from "src/domain/material-movimentation/application/use-cases/users/get-storekeeper-by-id";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
-import { UserPresenter } from "../presenters/user-presentar";
+import { UserPresenter } from "../../../presenters/user-presentar";
 
 @Controller("/accounts/:id")
 export class GetStorekeeperByidController {

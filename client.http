@@ -7,12 +7,12 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-    "name": "Rodrigo",
-    "email": "rodrigo3@ecoeletrica.com.br",
+    "name": "Max",
+    "email": "max@ecoeletrica.com.br",
     "password": "123456",
     "cpf":"12345678912",
     "type": "Administrator",
-    "baseId": "352275c2-c358-4367-8f97-b21de8a170da"
+    "baseId": "35cf180f-140b-4aa6-855f-7e2f1117a0e8"
 }
 
 ###
@@ -22,7 +22,7 @@ POST {{baseURL}}/sessions
 Content-Type: application/json
 
 {
-    "email": "rodrigo@ecoeletrica.com.br",
+    "email": "rodrigo1@ecoeletrica.com.br",
     "password": "123456" 
 }
 
@@ -56,7 +56,7 @@ Authorization: Bearer {{authToken}}
 ###
 
 # @name get_user_by_id
-GET {{baseURL}}/accounts/7c1e6690-6c20-428f-9bdc-b1fdcdca5ab5
+GET {{baseURL}}/accounts/7ddd9b43-93f2-4474-9a8a-847bce3c1e6e
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
@@ -76,7 +76,18 @@ Authorization: Bearer {{authToken}}
 ###
 
 # @name delete_user_by_id
-DELETE  {{baseURL}}/accounts/7c1e6690-6c20-428f-9bdc-b1fdcdca5ab5
+DELETE  {{baseURL}}/accounts/2d8c64e4-0ae3-448e-8fa4-eb4edaaaf963
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
+
+###
+
+# @name fetch_account
+GET {{baseURL}}/accounts?page=1
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "baseId": "352275c2-c358-4367-8f97-b21de8a170da"
+}

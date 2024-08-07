@@ -94,6 +94,7 @@ export class BigQueryMethods<T extends Record<string, any>> {
 
     if (where) {
       const whereClause = Object.keys(where)
+        .filter((key) => where[key] !== undefined)
         .map(
           (key) =>
             `${String(key)} = ${
@@ -101,7 +102,7 @@ export class BigQueryMethods<T extends Record<string, any>> {
             }`
         )
         .join(" AND ");
-      whereClauses.push(whereClause);
+      if (whereClause) whereClauses.push(whereClause);
     }
 
     if (greaterOrEqualThan) {

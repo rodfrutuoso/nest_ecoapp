@@ -54,7 +54,7 @@ export class BqStorekeeperRepository implements StorekeeperRepository {
     const pageCount = 40;
 
     const storekeepers = await this.bigquery.user.select({
-      where: { baseId: baseId },
+      where: { baseId },
       limit: pageCount,
       offset: pageCount * (page - 1),
       orderBy: { column: "cpf", direction: "ASC" },
