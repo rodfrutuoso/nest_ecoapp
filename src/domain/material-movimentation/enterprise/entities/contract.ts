@@ -10,6 +10,10 @@ export class Contract extends Entity<ContractProps> {
     return this.props.contractName;
   }
 
+  set contractName(contractName: string) {
+    this.props.contractName = contractName;
+  }
+
   static create(props: ContractProps, id?: UniqueEntityID) {
     const contract = new Contract(props, id);
 

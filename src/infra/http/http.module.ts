@@ -17,6 +17,8 @@ import { DeleteStorekeeperUseCase } from "src/domain/material-movimentation/appl
 import { DeleteAccountController } from "./controllers/material-movimentation/users/delete-account.controller";
 import { FetchAccountsController } from "./controllers/material-movimentation/users/fetch-accounts.controller";
 import { FetchStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/fetch-storekeeper";
+import { RegisterContractController } from "./controllers/material-movimentation/contract-base/register-contract.controller";
+import { RegisterContractUseCase } from "src/domain/material-movimentation/application/use-cases/contract-base/register-contract";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -29,6 +31,7 @@ import { FetchStorekeeperUseCase } from "src/domain/material-movimentation/appli
     EditAccountController,
     DeleteAccountController,
     FetchAccountsController,
+    RegisterContractController
   ],
   providers: [
     CreateMaterialUseCase,
@@ -39,6 +42,7 @@ import { FetchStorekeeperUseCase } from "src/domain/material-movimentation/appli
     EditStorekeeperUseCase,
     DeleteStorekeeperUseCase,
     FetchStorekeeperUseCase,
+    RegisterContractUseCase
   ],
 })
 export class HttpModule {}

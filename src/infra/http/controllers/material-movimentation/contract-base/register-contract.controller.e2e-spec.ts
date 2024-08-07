@@ -4,11 +4,10 @@ import { Test } from "@nestjs/testing";
 import request from "supertest";
 import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { JwtService } from "@nestjs/jwt";
-import { randomUUID } from "crypto";
 import { StorekeeperFactory } from "test/factories/make-storekeeper";
 import { DatabaseModule } from "src/infra/database/database.module";
 
-describe("Create Material (E2E)", () => {
+describe("Register Contract (E2E)", () => {
   let app: INestApplication;
   let bigquery: BigQueryService;
   let jwt: JwtService;
@@ -29,27 +28,23 @@ describe("Create Material (E2E)", () => {
     await app.init();
   });
 
-  test("[POST] /materials", async () => {
+  test("[POST] /contracts", async () => {
     const user = await storekeeperFactory.makeBqStorekeeper({});
 
     const accessToken = jwt.sign({ sub: user.id.toString() });
 
     const response = await request(app.getHttpServer())
-      .post("/materials")
+      .post("/contracts")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({
-        code: 123132,
-        description: "material de teste",
-        type: "concreto",
-        unit: "CDA",
-        contractId: randomUUID(),
+        contractName: "Contrato numero 1",
       });
 
-    const [MaterialDataBase] = await bigquery.material.select({
-      where: { code: 123132 },
+    const [contractDataBase] = await bigquery.contract.select({
+      where: { contractName: "Contrato numero 1" },
     });
 
     expect(response.statusCode).toBe(201);
-    expect(MaterialDataBase.description).toEqual("material de teste");
+    expect(contractDataBase.contractName).toEqual("Contrato numero 1");
   });
 });

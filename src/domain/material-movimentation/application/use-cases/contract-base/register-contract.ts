@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import { Eihter, left, right } from "../../../../../core/either";
 import { Contract } from "../../../enterprise/entities/contract";
 import { ContractRepository } from "../../repositories/contract-repository";
@@ -14,6 +15,7 @@ type RegisterContractResponse = Eihter<
   }
 >;
 
+@Injectable()
 export class RegisterContractUseCase {
   constructor(private contractRepository: ContractRepository) {}
 
@@ -23,7 +25,6 @@ export class RegisterContractUseCase {
     const contractSearch = await this.contractRepository.findByContractName(
       contractName
     );
-
     if (contractSearch) return left(new ResourceAlreadyRegisteredError());
 
     const contract = Contract.create({

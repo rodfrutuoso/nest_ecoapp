@@ -91,3 +91,15 @@ Authorization: Bearer {{authToken}}
 {
     "baseId": "352275c2-c358-4367-8f97-b21de8a170da"
 }
+
+
+###
+
+# @name register_contract
+POST {{baseURL}}/contracts
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "contractName": "Centro-Oeste Bahia"
+}

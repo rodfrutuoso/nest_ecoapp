@@ -19,6 +19,8 @@ export class BqContractRepository implements ContractRepository {
       where: { contractName },
     });
 
+    if (!contract) return null;
+
     return BqContractMapper.toDomin(contract);
   }
   async findMany({ page }: PaginationParams): Promise<Contract[]> {
