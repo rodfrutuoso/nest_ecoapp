@@ -4,20 +4,21 @@ import { Test } from "@nestjs/testing";
 import request from "supertest";
 import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { JwtService } from "@nestjs/jwt";
-import { randomUUID } from "crypto";
 import { StorekeeperFactory } from "test/factories/make-storekeeper";
 import { DatabaseModule } from "src/infra/database/database.module";
+import { PhysicalDocumentFactory } from "test/factories/make-physical-document";
 
-describe("Fetch Accounts (E2E)", () => {
+describe("Fetch Physical Documents (E2E)", () => {
   let app: INestApplication;
   let bigquery: BigQueryService;
   let jwt: JwtService;
   let storekeeperFactory: StorekeeperFactory;
+  let physicalDocumentFactory: PhysicalDocumentFactory;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StorekeeperFactory],
+      providers: [StorekeeperFactory, PhysicalDocumentFactory],
     }).compile();
 
     app = moduleRef.createNestApplication();
@@ -25,32 +26,26 @@ describe("Fetch Accounts (E2E)", () => {
     bigquery = moduleRef.get(BigQueryService);
     jwt = moduleRef.get(JwtService);
     storekeeperFactory = moduleRef.get(StorekeeperFactory);
+    physicalDocumentFactory = moduleRef.get(PhysicalDocumentFactory);
 
     await app.init();
   });
 
-  test("[GET] /accounts", async () => {
-    const user = await storekeeperFactory.makeBqStorekeeper({
-      name: "rodrigo",
-    });
-    await storekeeperFactory.makeBqStorekeeper({ name: "max" });
-    await storekeeperFactory.makeBqStorekeeper({ name: "rafael" });
+  test("[GET] /physical-documents", async () => {
+    const user = await storekeeperFactory.makeBqStorekeeper({});
+
+    await physicalDocumentFactory.makeBqPhysicalDocument({ identifier: 2 });
+    await physicalDocumentFactory.makeBqPhysicalDocument({ identifier: 2 });
+    await physicalDocumentFactory.makeBqPhysicalDocument({ identifier: 2 });
 
     const accessToken = jwt.sign({ sub: user.id.toString() });
-    const contractId = randomUUID();
 
     const response = await request(app.getHttpServer())
-      .get("/accounts?page=1")
+      .get("/physical-documents?page=1")
       .set("Authorization", `Bearer ${accessToken}`)
-      .send({ contractId, type: "concreto" });
+      .send({ identifier: 2 });
 
     expect(response.statusCode).toBe(200);
-    expect(response.body).toEqual({
-      users: expect.arrayContaining([
-        expect.objectContaining({ name: "rodrigo" }),
-        expect.objectContaining({ name: "rafael" }),
-        expect.objectContaining({ name: "max" }),
-      ]),
-    });
+    expect(response.body.physicalDocuments).toHaveLength(3);
   });
 });

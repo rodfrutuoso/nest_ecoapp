@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import { Eihter, left, right } from "../../../../../core/either";
 import { PhysicalDocument } from "../../../enterprise/entities/physical-document";
 import { PhysicalDocumentRepository } from "../../repositories/physical-document-repository";
@@ -16,6 +17,7 @@ type FetchPhysicalDocumentUseCaseResponse = Eihter<
   }
 >;
 
+@Injectable()
 export class FetchPhysicalDocumentUseCase {
   constructor(private physicaldocumentRepository: PhysicalDocumentRepository) {}
 

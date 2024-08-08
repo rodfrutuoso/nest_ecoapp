@@ -137,11 +137,23 @@ Authorization: Bearer {{authToken}}
 ###
 
 # @name identifier_attribution
-POST {{baseURL}}/physical-document
+POST {{baseURL}}/physical-documents
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
     "projectId": "e816f105-e022-4560-b32c-d2af40c18351",
-    "identifier": 2
+    "identifier": 1
+}
+
+
+###
+
+# @name fetch_physical_documents
+GET {{baseURL}}/physical-documents?page=1
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "projectId": "e816f105-e022-4560-b32c-d2af40c18351"
 }
