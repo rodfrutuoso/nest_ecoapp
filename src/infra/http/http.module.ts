@@ -21,6 +21,8 @@ import { RegisterContractController } from "./controllers/material-movimentation
 import { RegisterContractUseCase } from "src/domain/material-movimentation/application/use-cases/contract-base/register-contract";
 import { FetchContractController } from "./controllers/material-movimentation/contract-base/fetch-contracts.controller";
 import { FetchContractUseCase } from "src/domain/material-movimentation/application/use-cases/contract-base/fetch-contract";
+import { RegisterBaseUseCase } from "src/domain/material-movimentation/application/use-cases/contract-base/register-base";
+import { RegisterBaseController } from "./controllers/material-movimentation/contract-base/register-base.controller";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -35,6 +37,7 @@ import { FetchContractUseCase } from "src/domain/material-movimentation/applicat
     FetchAccountsController,
     RegisterContractController,
     FetchContractController,
+    RegisterBaseController,
   ],
   providers: [
     CreateMaterialUseCase,
@@ -47,6 +50,7 @@ import { FetchContractUseCase } from "src/domain/material-movimentation/applicat
     FetchStorekeeperUseCase,
     RegisterContractUseCase,
     FetchContractUseCase,
+    RegisterBaseUseCase,
   ],
 })
 export class HttpModule {}

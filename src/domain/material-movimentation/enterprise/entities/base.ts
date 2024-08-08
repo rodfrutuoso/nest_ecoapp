@@ -15,6 +15,10 @@ export class Base extends Entity<BaseProps> {
     return this.props.contractId;
   }
 
+  set baseName(baseName: string) {
+    this.props.baseName = baseName;
+  }
+
   set contractId(contractId: UniqueEntityID) {
     this.props.contractId = contractId;
   }

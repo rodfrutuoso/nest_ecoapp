@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import { Eihter, left, right } from "../../../../../core/either";
 import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
 import { Base } from "../../../enterprise/entities/base";
@@ -16,6 +17,7 @@ type RegisterBaseResponse = Eihter<
   }
 >;
 
+@Injectable()
 export class RegisterBaseUseCase {
   constructor(private baseRepository: BaseRepository) {}
 

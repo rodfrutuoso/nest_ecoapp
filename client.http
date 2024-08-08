@@ -112,3 +112,15 @@ GET {{baseURL}}/contracts?page=1
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
+
+###
+
+# @name register_base
+POST {{baseURL}}/bases
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "baseName": "Itaberaba",
+    "contractId": "e816f105-e022-4560-b32c-d2af40c18351"
+}
