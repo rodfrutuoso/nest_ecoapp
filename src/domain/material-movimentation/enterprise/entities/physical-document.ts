@@ -21,6 +21,10 @@ export class PhysicalDocument extends Entity<PhysicalDocumentProps> {
     return this.props.unitized;
   }
 
+  set projectId(projectId: UniqueEntityID) {
+    this.props.projectId = projectId;
+  }
+
   set identifier(identifier: number) {
     this.props.identifier = identifier;
   }

@@ -132,3 +132,16 @@ Authorization: Bearer {{authToken}}
 GET {{baseURL}}/bases?page=1
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
+
+
+###
+
+# @name identifier_attribution
+POST {{baseURL}}/physical-document
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "projectId": "e816f105-e022-4560-b32c-d2af40c18351",
+    "identifier": 2
+}

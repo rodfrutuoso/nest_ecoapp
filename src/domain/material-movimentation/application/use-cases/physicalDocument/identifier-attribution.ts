@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import { Eihter, left, right } from "../../../../../core/either";
 import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
 import { PhysicalDocument } from "../../../enterprise/entities/physical-document";
@@ -16,6 +17,7 @@ type IdentifierAttributionResponse = Eihter<
   }
 >;
 
+@Injectable()
 export class IdentifierAttributionUseCase {
   constructor(private physicaldocumentRepository: PhysicalDocumentRepository) {}
 
