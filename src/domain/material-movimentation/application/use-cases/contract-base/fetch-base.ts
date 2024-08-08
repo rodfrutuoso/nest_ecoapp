@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import { Eihter, left, right } from "../../../../../core/either";
 import { Base } from "../../../enterprise/entities/base";
 import { BaseRepository } from "../../repositories/base-repository";
@@ -14,6 +15,7 @@ type FetchBaseUseCaseResponse = Eihter<
   }
 >;
 
+@Injectable()
 export class FetchBaseUseCase {
   constructor(private baseRepository: BaseRepository) {}
 

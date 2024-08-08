@@ -121,6 +121,14 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-    "baseName": "Itaberaba",
+    "baseName": "Irecê",
     "contractId": "e816f105-e022-4560-b32c-d2af40c18351"
 }
+
+
+###
+
+# @name fetch_bases
+GET {{baseURL}}/bases?page=1
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
