@@ -177,3 +177,35 @@ Authorization: Bearer {{authToken}}
 DELETE  {{baseURL}}/physical-documents/88b6a558-046d-47bf-be45-11fccec6d328
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
+
+
+###
+
+# @name transfer_material
+POST  {{baseURL}}/movimentation
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+[
+    {
+        "materialId": "88b6a558-046d-47bf-be45-11fccec6d328",
+        "projectId": "88b6a558-046d-47bf-be45-11fccec6d328",
+        "observation": "nao sei das quantas",
+        "baseId": "88b6a558-046d-47bf-be45-11fccec6d328",
+        "value": 5
+    },
+    {
+        "materialId": "88b6a558-046d-47bf-be45-11fccec6d328",
+        "projectId": "88b6a558-046d-47bf-be45-11fccec6d328",
+        "observation": "nao sei das quantas",
+        "baseId": "88b6a558-046d-47bf-be45-11fccec6d328",
+        "value": 2
+    },
+    {
+        "materialId": "88b6a558-046d-47bf-be45-11fccec6d328",
+        "projectId": "88b6a558-046d-47bf-be45-11fccec6d328",
+        "observation": "nao sei das quantas",
+        "baseId": "88b6a558-046d-47bf-be45-11fccec6d328",
+        "value": -1
+    }
+]

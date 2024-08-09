@@ -56,7 +56,11 @@ export class BigQueryMethods<T extends Record<string, any>> {
           Object.entries(row)
             .filter(([_, value]) => value !== undefined)
             .map(([_, value]) =>
-              typeof value === "string" ? `'${value}'` : value
+              typeof value === "string"
+                ? `'${value}'`
+                : value instanceof Date
+                ? `'${value.toISOString()}'` // Converte o Date para o formato ISO 8601 do bigquery
+                : value
             )
             .join(", ") +
           ")"
@@ -241,7 +245,7 @@ export class BigQueryMethods<T extends Record<string, any>> {
           fieldType === "BIGNUMERIC"
         ) {
           value = parseFloat(value);
-        } 
+        }
 
         convertedRow[fieldName as keyof T] = value;
       }

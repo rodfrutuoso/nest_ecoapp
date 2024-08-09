@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import { Eihter, right } from "../../../../../core/either";
 import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
 import { Movimentation } from "../../../enterprise/entities/movimentation";
@@ -19,6 +20,7 @@ type TransferMaterialResponse = Eihter<
   }
 >;
 
+@Injectable()
 export class TransferMaterialUseCase {
   constructor(private movimentationRepository: MovimentationRepository) {}
 

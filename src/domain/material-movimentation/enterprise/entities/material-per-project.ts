@@ -23,6 +23,10 @@ export abstract class MaterialPerProject<
     this.props.materialId = materialId;
   }
 
+  set createdAt(createdAt: Date) {
+    this.props.createdAt = createdAt;
+  }
+
   get materialId() {
     return this.props.materialId;
   }
