@@ -29,6 +29,8 @@ import { IdentifierAttributionUseCase } from "src/domain/material-movimentation/
 import { IdentifierAttributionController } from "./controllers/material-movimentation/physicalDocument/identifier-attribution.controller";
 import { FetchPhysicalDocumentsController } from "./controllers/material-movimentation/physicalDocument/fetch-physical-document.controller";
 import { FetchPhysicalDocumentUseCase } from "src/domain/material-movimentation/application/use-cases/physicalDocument/fetch-physical-document";
+import { UnitizePhysicalDocumentController } from "./controllers/material-movimentation/physicalDocument/unitize-physical-document.controller";
+import { UnitizePhysicalDocumentUseCase } from "src/domain/material-movimentation/application/use-cases/physicalDocument/unitize-physical-document";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -47,6 +49,7 @@ import { FetchPhysicalDocumentUseCase } from "src/domain/material-movimentation/
     FetchBaseController,
     IdentifierAttributionController,
     FetchPhysicalDocumentsController,
+    UnitizePhysicalDocumentController,
   ],
   providers: [
     CreateMaterialUseCase,
@@ -63,6 +66,7 @@ import { FetchPhysicalDocumentUseCase } from "src/domain/material-movimentation/
     FetchBaseUseCase,
     IdentifierAttributionUseCase,
     FetchPhysicalDocumentUseCase,
+    UnitizePhysicalDocumentUseCase,
   ],
 })
 export class HttpModule {}

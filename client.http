@@ -157,3 +157,15 @@ Authorization: Bearer {{authToken}}
 {
     "projectId": "e816f105-e022-4560-b32c-d2af40c18351"
 }
+
+
+###
+
+# @name uniteze_physical_documents
+PUT {{baseURL}}/physical-documents/fc13dc69-7493-4644-9667-576cfaf85735
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "unitized": true
+}

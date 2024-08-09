@@ -21,7 +21,7 @@ describe("Unitize PhysicalDocument", () => {
     await inMemoryPhysicalDocumentRepository.create(physicaldocument);
 
     const result = await sut.execute({
-      id: physicaldocument.id.toString(),
+      physicaldDocumentid: physicaldocument.id.toString(),
       unitized: true,
     });
 

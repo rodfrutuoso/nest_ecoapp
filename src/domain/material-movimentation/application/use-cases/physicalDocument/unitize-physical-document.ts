@@ -1,22 +1,26 @@
+import { Injectable } from "@nestjs/common";
 import { Eihter, left, right } from "../../../../../core/either";
 import { PhysicalDocumentRepository } from "../../repositories/physical-document-repository";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 
 interface UnitizePhysicalDocumentUseCaseRequest {
-  id: string;
+  physicaldDocumentid: string;
   unitized: boolean;
 }
 
 type UnitizePhysicalDocumentResponse = Eihter<ResourceNotFoundError, null>;
 
+@Injectable()
 export class UnitizePhysicalDocumentUseCase {
   constructor(private physicaldocumentRepository: PhysicalDocumentRepository) {}
 
   async execute({
-    id,
+    physicaldDocumentid,
     unitized,
   }: UnitizePhysicalDocumentUseCaseRequest): Promise<UnitizePhysicalDocumentResponse> {
-    const physicalDocument = await this.physicaldocumentRepository.findByID(id);
+    const physicalDocument = await this.physicaldocumentRepository.findByID(
+      physicaldDocumentid
+    );
 
     if (!physicalDocument) return left(new ResourceNotFoundError());
 

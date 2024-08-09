@@ -241,9 +241,7 @@ export class BigQueryMethods<T extends Record<string, any>> {
           fieldType === "BIGNUMERIC"
         ) {
           value = parseFloat(value);
-        } else if (fieldType === "BOOLEAN") {
-          value = value === "true";
-        }
+        } 
 
         convertedRow[fieldName as keyof T] = value;
       }
