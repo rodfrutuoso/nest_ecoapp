@@ -142,8 +142,8 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-    "projectId": "e816f105-e022-4560-b32c-d2af40c18351",
-    "identifier": 1
+    "projectId": "352275c2-c358-4367-8f97-b21de8a170da",
+    "identifier": 3
 }
 
 
@@ -169,3 +169,11 @@ Authorization: Bearer {{authToken}}
 {
     "unitized": true
 }
+
+
+###
+
+# @name delete_physical_document
+DELETE  {{baseURL}}/physical-documents/88b6a558-046d-47bf-be45-11fccec6d328
+Content-Type: application/json
+Authorization: Bearer {{authToken}}

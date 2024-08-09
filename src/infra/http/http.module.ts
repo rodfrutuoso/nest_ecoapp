@@ -31,6 +31,8 @@ import { FetchPhysicalDocumentsController } from "./controllers/material-movimen
 import { FetchPhysicalDocumentUseCase } from "src/domain/material-movimentation/application/use-cases/physicalDocument/fetch-physical-document";
 import { UnitizePhysicalDocumentController } from "./controllers/material-movimentation/physicalDocument/unitize-physical-document.controller";
 import { UnitizePhysicalDocumentUseCase } from "src/domain/material-movimentation/application/use-cases/physicalDocument/unitize-physical-document";
+import { DeletePhysicalDocumentController } from "./controllers/material-movimentation/physicalDocument/delete-physical-document..controller";
+import { DeletePhysicalDocumentUseCase } from "src/domain/material-movimentation/application/use-cases/physicalDocument/delete-physical-document";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -50,6 +52,7 @@ import { UnitizePhysicalDocumentUseCase } from "src/domain/material-movimentatio
     IdentifierAttributionController,
     FetchPhysicalDocumentsController,
     UnitizePhysicalDocumentController,
+    DeletePhysicalDocumentController,
   ],
   providers: [
     CreateMaterialUseCase,
@@ -67,6 +70,7 @@ import { UnitizePhysicalDocumentUseCase } from "src/domain/material-movimentatio
     IdentifierAttributionUseCase,
     FetchPhysicalDocumentUseCase,
     UnitizePhysicalDocumentUseCase,
+    DeletePhysicalDocumentUseCase,
   ],
 })
 export class HttpModule {}

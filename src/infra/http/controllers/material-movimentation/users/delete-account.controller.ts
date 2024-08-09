@@ -1,14 +1,14 @@
 import {
   BadRequestException,
-  ConflictException,
   Delete,
+  NotFoundException,
   Param,
 } from "@nestjs/common";
 import { Controller, HttpCode } from "@nestjs/common";
-import { ResourceAlreadyRegisteredError } from "src/domain/material-movimentation/application/use-cases/errors/resource-already-registered-error";
 import { CurrentUser } from "src/infra/auth/current-user.decorator";
 import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
 import { DeleteStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/delete-storekeeper";
+import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 
 @Controller("/accounts/:id")
 export class DeleteAccountController {
@@ -26,8 +26,8 @@ export class DeleteAccountController {
       const error = result.value;
 
       switch (error.constructor) {
-        case ResourceAlreadyRegisteredError:
-          throw new ConflictException(error.message);
+        case ResourceNotFoundError:
+          throw new NotFoundException(error.message);
         default:
           throw new BadRequestException();
       }
