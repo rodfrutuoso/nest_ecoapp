@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import { Eihter, left, right } from "../../../../../core/either";
 import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
 import { Project } from "../../../enterprise/entities/project";
@@ -19,6 +20,7 @@ type RegisterProjectResponse = Eihter<
   }
 >;
 
+@Injectable()
 export class RegisterProjectUseCase {
   constructor(private projectRepository: ProjectRepository) {}
 

@@ -6,9 +6,8 @@ import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { JwtService } from "@nestjs/jwt";
 import { StorekeeperFactory } from "test/factories/make-storekeeper";
 import { DatabaseModule } from "src/infra/database/database.module";
-import { randomUUID } from "crypto";
 
-describe("Transfer Material (E2E)", () => {
+describe("Register Project (E2E)", () => {
   let app: INestApplication;
   let bigquery: BigQueryService;
   let jwt: JwtService;
@@ -29,47 +28,27 @@ describe("Transfer Material (E2E)", () => {
     await app.init();
   });
 
-  test("[POST] /movimentation", async () => {
+  test("[POST] /projects", async () => {
     const user = await storekeeperFactory.makeBqStorekeeper({});
 
     const accessToken = jwt.sign({ sub: user.id.toString() });
 
-    const projectId = randomUUID();
-    const baseId = randomUUID();
-    const materialId = randomUUID();
-
     const response = await request(app.getHttpServer())
-      .post("/movimentation")
+      .post("/projects")
       .set("Authorization", `Bearer ${accessToken}`)
-      .send([
-        {
-          materialId,
-          projectId,
-          observation: "observação 1",
-          baseId,
-          value: 5,
-        },
-        {
-          materialId,
-          projectId,
-          observation: "observação 2",
-          baseId,
-          value: 2,
-        },
-        {
-          materialId,
-          projectId,
-          observation: "observação 3",
-          baseId,
-          value: -1,
-        },
-      ]);
+      .send({
+        project_number: "B-12345678",
+        description: "MP-NUM-SEI-DAS-QUANTAS",
+        type: "obra",
+        baseId: "88b6a558-046d-47bf-be45-11fccec6d328",
+        city: "Ituí",
+      });
 
-    const movimentationDataBase = await bigquery.movimentation.select({
-      where: { projectId },
+    const [projectDataBase] = await bigquery.project.select({
+      where: { project_number: "B-12345678" },
     });
 
     expect(response.statusCode).toBe(201);
-    expect(movimentationDataBase).toHaveLength(3);
+    expect(projectDataBase.description).toEqual("MP-NUM-SEI-DAS-QUANTAS");
   });
 });

@@ -209,3 +209,19 @@ Authorization: Bearer {{authToken}}
         "value": -1
     }
 ]
+
+
+###
+
+# @name register_project
+POST  {{baseURL}}/projects
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "project_number": "B-12345678",
+    "description": "MP-NUM-SEI-DAS-QUANTAS",
+    "type": "obra",
+    "baseId": "88b6a558-046d-47bf-be45-11fccec6d328",
+    "city": "Ituí"
+}

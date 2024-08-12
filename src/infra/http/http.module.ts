@@ -35,6 +35,8 @@ import { DeletePhysicalDocumentController } from "./controllers/material-movimen
 import { DeletePhysicalDocumentUseCase } from "src/domain/material-movimentation/application/use-cases/physicalDocument/delete-physical-document";
 import { TransferMaterialController } from "./controllers/material-movimentation/project-movimentation-budget/transfer-material.controller";
 import { TransferMaterialUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/transfer-material";
+import { RegisterProjectUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/register-project";
+import { RegisterProjectController } from "./controllers/material-movimentation/project-movimentation-budget/register-project.controller";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -56,6 +58,7 @@ import { TransferMaterialUseCase } from "src/domain/material-movimentation/appli
     UnitizePhysicalDocumentController,
     DeletePhysicalDocumentController,
     TransferMaterialController,
+    RegisterProjectController,
   ],
   providers: [
     CreateMaterialUseCase,
@@ -75,6 +78,7 @@ import { TransferMaterialUseCase } from "src/domain/material-movimentation/appli
     UnitizePhysicalDocumentUseCase,
     DeletePhysicalDocumentUseCase,
     TransferMaterialUseCase,
+    RegisterProjectUseCase,
   ],
 })
 export class HttpModule {}
