@@ -17,57 +17,78 @@ interface TransferMovimentationBetweenProjectsUseCaseRequest {
 type TransferMovimentationBetweenProjectsResponse = Eihter<
   ResourceNotFoundError,
   {
-    movimentationIn: Movimentation;
-    movimentationOut: Movimentation;
+    movimentationIn: Movimentation[];
+    movimentationOut: Movimentation[];
   }
 >;
 
 export class TransferMovimentationBetweenProjectsUseCase {
   constructor(private movimentationRepository: MovimentationRepository) {}
 
-  async execute({
-    storekeeperId,
-    materialId,
-    projectIdOut,
-    projectIdIn,
-    observation,
-    baseId,
-    value,
-  }: TransferMovimentationBetweenProjectsUseCaseRequest): Promise<TransferMovimentationBetweenProjectsResponse> {
-    const movimentationVerificationOut =
-      await this.movimentationRepository.findByProject(
-        projectIdOut,
-        materialId
+  async execute(
+    transferMovimentationBetweenProjectsUseCaseRequest: TransferMovimentationBetweenProjectsUseCaseRequest[]
+  ): Promise<TransferMovimentationBetweenProjectsResponse> {
+    let movimentationIn: Movimentation[] = [];
+    let movimentationOut: Movimentation[] = [];
+    let movimentationVerificationOut: Movimentation[] = [];
+    let countErrors = 0;
+
+    const projectsId = [
+      ...new Set(
+        transferMovimentationBetweenProjectsUseCaseRequest.map(
+          (transfer) => transfer.projectIdOut
+        )
+      ),
+    ];
+
+    await projectsId.forEach(async (project) => {
+      const projectId = await this.movimentationRepository.findByProject(
+        project
+      );
+      movimentationVerificationOut =
+        movimentationVerificationOut.concat(projectId);
+    });
+
+    transferMovimentationBetweenProjectsUseCaseRequest.forEach((request) => {
+      const valueSumRepository = movimentationVerificationOut
+        .filter(
+          (movRepo) =>
+            movRepo.projectId.toString() === request.projectIdOut &&
+            movRepo.materialId.toString() === request.materialId
+        )
+        .reduce((a, b) => a + b.value, 0);
+
+      if (valueSumRepository < request.value) countErrors += 1;
+    });
+
+    if (countErrors > 0) return left(new ResourceNotFoundError());
+
+    transferMovimentationBetweenProjectsUseCaseRequest.map(async (transfer) => {
+      movimentationOut.push(
+        Movimentation.create({
+          projectId: new UniqueEntityID(transfer.projectIdOut),
+          materialId: new UniqueEntityID(transfer.materialId),
+          storekeeperId: new UniqueEntityID(transfer.storekeeperId),
+          observation: transfer.observation,
+          baseId: new UniqueEntityID(transfer.baseId),
+          value: -Math.abs(transfer.value),
+        })
       );
 
-    if (
-      !movimentationVerificationOut ||
-      movimentationVerificationOut[0].value < value
-    )
-      return left(new ResourceNotFoundError());
-
-    const movimentationOut = Movimentation.create({
-      projectId: new UniqueEntityID(projectIdOut),
-      materialId: new UniqueEntityID(materialId),
-      storekeeperId: new UniqueEntityID(storekeeperId),
-      observation,
-      baseId: new UniqueEntityID(baseId),
-      value: -Math.abs(value),
+      movimentationIn.push(
+        Movimentation.create({
+          projectId: new UniqueEntityID(transfer.projectIdIn),
+          materialId: new UniqueEntityID(transfer.materialId),
+          storekeeperId: new UniqueEntityID(transfer.storekeeperId),
+          observation: transfer.observation,
+          baseId: new UniqueEntityID(transfer.baseId),
+          value: Math.abs(transfer.value),
+        })
+      );
     });
 
-    const movimentationIn = Movimentation.create({
-      projectId: new UniqueEntityID(projectIdIn),
-      materialId: new UniqueEntityID(materialId),
-      storekeeperId: new UniqueEntityID(storekeeperId),
-      observation,
-      baseId: new UniqueEntityID(baseId),
-      value: Math.abs(value),
-    });
-
-    await this.movimentationRepository.create([
-      movimentationOut,
-      movimentationIn,
-    ]);
+    await this.movimentationRepository.create(movimentationOut);
+    await this.movimentationRepository.create(movimentationIn);
 
     return right({ movimentationIn, movimentationOut });
   }

@@ -25,7 +25,7 @@ describe("Transfer Material between projects", () => {
 
     await inMemoryMovimentationRepository.create([movimentation]);
 
-    const result = await sut.execute({
+    const result = await sut.execute([{
       projectIdOut: "Projeto-origem",
       projectIdIn: "Projeto-destino",
       materialId: "Material-teste",
@@ -33,13 +33,13 @@ describe("Transfer Material between projects", () => {
       observation: "transferencia para terminar obra prioritária",
       baseId: "ID-BASE-VCA",
       value: 4,
-    });
+    }]);
 
     expect(result.isRight()).toBeTruthy();
     if (result.isRight()) {
-      expect(result.value.movimentationIn.value).toEqual(4);
-      expect(result.value.movimentationOut.value).toEqual(-4);
-      expect(result.value.movimentationOut.observation).toEqual(
+      expect(result.value.movimentationIn[0].value).toEqual(4);
+      expect(result.value.movimentationOut[0].value).toEqual(-4);
+      expect(result.value.movimentationOut[0].observation).toEqual(
         "transferencia para terminar obra prioritária"
       );
     }
@@ -55,7 +55,7 @@ describe("Transfer Material between projects", () => {
 
     await inMemoryMovimentationRepository.create([movimentation]);
 
-    const result = await sut.execute({
+    const result = await sut.execute([{
       projectIdOut: "Projeto-origem",
       projectIdIn: "Projeto-destino",
       materialId: "Material-teste",
@@ -63,7 +63,7 @@ describe("Transfer Material between projects", () => {
       observation: "transferencia para terminar obra prioritária",
       baseId: "ID-BASE-VCA",
       value: 4,
-    });
+    }]);
 
     expect(result.isLeft()).toBeTruthy();
     expect(result.value).toBeInstanceOf(ResourceNotFoundError);
