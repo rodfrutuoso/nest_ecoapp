@@ -225,3 +225,22 @@ Authorization: Bearer {{authToken}}
     "baseId": "88b6a558-046d-47bf-be45-11fccec6d328",
     "city": "Ituí"
 }
+
+
+###
+
+# @name transfer_movimentation_between_projects
+POST  {{baseURL}}/transfer-movimentation
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+[
+    {
+        "materialId": "88b6a558-046d-47bf-be45-11fccec6d328",
+        "projectIdOut": "88b6a558-046d-47bf-be45-11fccec6d328",
+        "projectIdIn": "30d2f9c4-decc-418a-bc5d-0fb16db7af57",
+        "observation": "Num sei das quantas",
+        "baseId": "88b6a558-046d-47bf-be45-11fccec6d328",
+        "value": 5
+    }
+]

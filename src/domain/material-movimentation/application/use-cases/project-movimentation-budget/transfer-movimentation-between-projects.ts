@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import { Eihter, left, right } from "../../../../../core/either";
 import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
 import { Movimentation } from "../../../enterprise/entities/movimentation";
@@ -22,6 +23,7 @@ type TransferMovimentationBetweenProjectsResponse = Eihter<
   }
 >;
 
+@Injectable()
 export class TransferMovimentationBetweenProjectsUseCase {
   constructor(private movimentationRepository: MovimentationRepository) {}
 
@@ -33,6 +35,7 @@ export class TransferMovimentationBetweenProjectsUseCase {
     let movimentationVerificationOut: Movimentation[] = [];
     let countErrors = 0;
 
+    //create array with unique values os projectsId
     const projectsId = [
       ...new Set(
         transferMovimentationBetweenProjectsUseCaseRequest.map(
@@ -41,14 +44,15 @@ export class TransferMovimentationBetweenProjectsUseCase {
       ),
     ];
 
-    await projectsId.forEach(async (project) => {
-      const projectId = await this.movimentationRepository.findByProject(
-        project
-      );
+    // searh all movimentation of the informed projects and insert on movimentationRepository
+    for (const project of projectsId) {
+      const movimentationProject =
+        await this.movimentationRepository.findByProject(project);
       movimentationVerificationOut =
-        movimentationVerificationOut.concat(projectId);
-    });
+        movimentationVerificationOut.concat(movimentationProject);
+    }
 
+    // verify if in any case of transference there're enough materials in the origin project
     transferMovimentationBetweenProjectsUseCaseRequest.forEach((request) => {
       const valueSumRepository = movimentationVerificationOut
         .filter(
@@ -61,6 +65,7 @@ export class TransferMovimentationBetweenProjectsUseCase {
       if (valueSumRepository < request.value) countErrors += 1;
     });
 
+    // counter of cases that there're enough materials in the origin project
     if (countErrors > 0) return left(new ResourceNotFoundError());
 
     transferMovimentationBetweenProjectsUseCaseRequest.map(async (transfer) => {
@@ -87,8 +92,9 @@ export class TransferMovimentationBetweenProjectsUseCase {
       );
     });
 
-    await this.movimentationRepository.create(movimentationOut);
-    await this.movimentationRepository.create(movimentationIn);
+    const concatMovimentations = movimentationOut.concat(movimentationIn);
+
+    await this.movimentationRepository.create(concatMovimentations);
 
     return right({ movimentationIn, movimentationOut });
   }

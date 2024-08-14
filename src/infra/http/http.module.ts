@@ -37,6 +37,8 @@ import { TransferMaterialController } from "./controllers/material-movimentation
 import { TransferMaterialUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/transfer-material";
 import { RegisterProjectUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/register-project";
 import { RegisterProjectController } from "./controllers/material-movimentation/project-movimentation-budget/register-project.controller";
+import { TransferMovimentationBetweenProjectsController } from "./controllers/material-movimentation/project-movimentation-budget/transfer-movimentation-between-projects.controller";
+import { TransferMovimentationBetweenProjectsUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/transfer-movimentation-between-projects";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -59,6 +61,7 @@ import { RegisterProjectController } from "./controllers/material-movimentation/
     DeletePhysicalDocumentController,
     TransferMaterialController,
     RegisterProjectController,
+    TransferMovimentationBetweenProjectsController,
   ],
   providers: [
     CreateMaterialUseCase,
@@ -79,6 +82,7 @@ import { RegisterProjectController } from "./controllers/material-movimentation/
     DeletePhysicalDocumentUseCase,
     TransferMaterialUseCase,
     RegisterProjectUseCase,
+    TransferMovimentationBetweenProjectsUseCase,
   ],
 })
 export class HttpModule {}
