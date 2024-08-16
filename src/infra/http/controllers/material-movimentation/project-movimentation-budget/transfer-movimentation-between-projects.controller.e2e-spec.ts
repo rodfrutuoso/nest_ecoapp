@@ -97,14 +97,14 @@ describe("Transfer Movimentation Between Projects (E2E)", () => {
         },
       ]);
 
-    const movimentationDataBaseOut = await bigquery.movimentation.select({
+    let movimentationDataBaseOut = await bigquery.movimentation.select({
       where: { projectId: projectIdOut },
     });
-    let movimentationDataBaseIn = await bigquery.movimentation.select({
+    const movimentationDataBaseIn = await bigquery.movimentation.select({
       where: { projectId: projectIdIn },
     });
 
-    movimentationDataBaseIn = movimentationDataBaseIn.reduce((a, b) => {
+    movimentationDataBaseOut = movimentationDataBaseOut.reduce((a, b) => {
       const existingMaterial = a.find(
         (item) => item.materialId === b.materialId
       );
@@ -118,23 +118,20 @@ describe("Transfer Movimentation Between Projects (E2E)", () => {
       return a;
     }, [] as BqMovimentationProps[]);
 
-    console.log("movimentationDataBaseOut: ", movimentationDataBaseOut);
-    console.log("movimentationDataBaseIn: ", movimentationDataBaseIn);
-
     expect(response.statusCode).toBe(201);
-    expect(movimentationDataBaseOut).toEqual({
-      materials: expect.arrayContaining([
+    expect(movimentationDataBaseOut).toEqual(
+      expect.arrayContaining([
         expect.objectContaining({ materialId: materialId1, value: 1 }),
         expect.objectContaining({ materialId: materialId2, value: 0 }),
         expect.objectContaining({ materialId: materialId3, value: 2 }),
-      ]),
-    });
-    expect(movimentationDataBaseIn).toEqual({
-      materials: expect.arrayContaining([
+      ])
+    );
+    expect(movimentationDataBaseIn).toEqual(
+      expect.arrayContaining([
         expect.objectContaining({ materialId: materialId1, value: 4 }),
         expect.objectContaining({ materialId: materialId2, value: 6 }),
         expect.objectContaining({ materialId: materialId3, value: 8 }),
-      ]),
-    });
+      ])
+    );
   });
 });
