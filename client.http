@@ -34,7 +34,7 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-    "code": 123456,
+    "code": 1123456,
     "description": "item poste 123",
     "type": "FERRAGEM",
     "unit": "CDA",

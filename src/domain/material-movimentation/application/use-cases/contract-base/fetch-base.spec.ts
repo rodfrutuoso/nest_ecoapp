@@ -2,25 +2,38 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { FetchBaseUseCase } from "./fetch-base";
 import { InMemoryBaseRepository } from "../../../../../../test/repositories/in-memory-base-repository";
 import { makeBase } from "../../../../../../test/factories/make-base";
+import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
+import { makeContract } from "test/factories/make-contract";
 
+let inMemorycontractRepository: InMemoryContractRepository;
 let inMemoryBaseRepository: InMemoryBaseRepository;
 let sut: FetchBaseUseCase;
 
 describe("Fetch Bases History", () => {
   beforeEach(() => {
-    inMemoryBaseRepository = new InMemoryBaseRepository();
+    inMemorycontractRepository = new InMemoryContractRepository();
+    inMemoryBaseRepository = new InMemoryBaseRepository(
+      inMemorycontractRepository
+    );
     sut = new FetchBaseUseCase(inMemoryBaseRepository);
   });
 
   it("should be able to fetch physical documents history sorting by baseName", async () => {
+    const contract = makeContract({ contractName: "Centro-Oeste" });
+
+    inMemorycontractRepository.create(contract);
+
     const newBase1 = makeBase({
       baseName: "Conquista",
+      contractId: contract.id,
     });
     const newBase2 = makeBase({
       baseName: "Petrolina",
+      contractId: contract.id,
     });
     const newBase3 = makeBase({
       baseName: "Itaberaba",
+      contractId: contract.id,
     });
 
     await inMemoryBaseRepository.create(newBase1);
@@ -35,20 +48,33 @@ describe("Fetch Bases History", () => {
     if (result.isRight())
       expect(result.value.bases).toEqual([
         expect.objectContaining({
-          props: expect.objectContaining({ baseName: "Conquista" }),
+          props: expect.objectContaining({
+            baseName: "Conquista",
+            contractName: "Centro-Oeste",
+          }),
         }),
         expect.objectContaining({
-          props: expect.objectContaining({ baseName: "Itaberaba" }),
+          props: expect.objectContaining({
+            baseName: "Itaberaba",
+            contractName: "Centro-Oeste",
+          }),
         }),
         expect.objectContaining({
-          props: expect.objectContaining({ baseName: "Petrolina" }),
+          props: expect.objectContaining({
+            baseName: "Petrolina",
+            contractName: "Centro-Oeste",
+          }),
         }),
       ]);
   });
 
   it("should be able to fetch paginated bases", async () => {
+    const contract = makeContract({ contractName: "Centro-Oeste" });
+
+    inMemorycontractRepository.create(contract);
+
     for (let i = 1; i <= 45; i++) {
-      await inMemoryBaseRepository.create(makeBase());
+      await inMemoryBaseRepository.create(makeBase({contractId: contract.id}));
     }
 
     const result = await sut.execute({

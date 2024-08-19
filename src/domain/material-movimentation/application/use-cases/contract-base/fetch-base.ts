@@ -3,6 +3,7 @@ import { Eihter, left, right } from "../../../../../core/either";
 import { Base } from "../../../enterprise/entities/base";
 import { BaseRepository } from "../../repositories/base-repository";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
+import { BaseWithContract } from "src/domain/material-movimentation/enterprise/entities/value-objects/base-with-contract";
 
 interface FetchBaseUseCaseRequest {
   page: number;
@@ -11,7 +12,7 @@ interface FetchBaseUseCaseRequest {
 type FetchBaseUseCaseResponse = Eihter<
   ResourceNotFoundError,
   {
-    bases: Base[];
+    bases: BaseWithContract[];
   }
 >;
 
@@ -22,7 +23,7 @@ export class FetchBaseUseCase {
   async execute({
     page,
   }: FetchBaseUseCaseRequest): Promise<FetchBaseUseCaseResponse> {
-    const bases = await this.baseRepository.findMany({
+    const bases = await this.baseRepository.findManyWithContract({
       page,
     });
 

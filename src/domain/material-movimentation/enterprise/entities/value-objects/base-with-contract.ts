@@ -1,7 +1,8 @@
+import { UniqueEntityID } from "src/core/entities/unique-entity-id";
 import { ValueObject } from "src/core/entities/value-object";
 
 export interface BaseWithContractProps {
-  baseId: string;
+  baseId: UniqueEntityID;
   baseName: string;
   contractName: string;
 }

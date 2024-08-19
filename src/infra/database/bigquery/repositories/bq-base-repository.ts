@@ -4,6 +4,8 @@ import { BaseRepository } from "src/domain/material-movimentation/application/re
 import { Base } from "src/domain/material-movimentation/enterprise/entities/base";
 import { BqBaseMapper } from "../mappers/bq-base-mapper";
 import { BigQueryService } from "../bigquery.service";
+import { BqBaseWithContractMapper } from "../mappers/bq-base-with-contract-mapper";
+import { BaseWithContract } from "src/domain/material-movimentation/enterprise/entities/value-objects/base-with-contract";
 
 @Injectable()
 export class BqBaseRepository implements BaseRepository {
@@ -35,5 +37,25 @@ export class BqBaseRepository implements BaseRepository {
     });
 
     return bases.map(BqBaseMapper.toDomin);
+  }
+
+  async findManyWithContract({
+    page,
+  }: PaginationParams): Promise<BaseWithContract[]> {
+    const pageCount = 40;
+
+    const bases = await this.bigquery.base.select({
+      limit: pageCount,
+      offset: pageCount * (page - 1),
+      orderBy: { column: "baseName", direction: "ASC" },
+      include: {
+        contract: {
+          join: { table: "contracts", on: "bases.contractId = contracts.id" },
+          relationType: "one-to-one",
+        },
+      },
+    });
+
+    return bases.map(BqBaseWithContractMapper.toDomin);
   }
 }

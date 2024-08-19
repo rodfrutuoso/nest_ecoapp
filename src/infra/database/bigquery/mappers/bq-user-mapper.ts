@@ -13,6 +13,8 @@ export class BqUserMapper {
           email: raw.email,
           name: raw.name,
           password: raw.password,
+          type: raw.type,
+          status: raw.status,
         },
         new UniqueEntityID(raw.id)
       );

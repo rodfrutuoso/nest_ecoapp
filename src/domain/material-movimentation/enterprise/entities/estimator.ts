@@ -5,6 +5,8 @@ export interface EstimatorProps {
   name: string;
   email: string;
   cpf: string;
+  status: string;
+  type: string;
   contractId: UniqueEntityID;
   password: string;
 }

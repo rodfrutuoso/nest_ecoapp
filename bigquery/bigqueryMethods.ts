@@ -19,6 +19,12 @@ export interface SelectOptions<T> {
   groupBy?: (keyof T)[];
   limit?: number;
   offset?: number;
+  include?: { [K in keyof T]?: IncludeOptions<T[K]> };
+}
+
+export interface IncludeOptions<T> {
+  join: { table: string; on: string };
+  relationType: "one-to-one" | "one-to-many" | "many-to-many";
 }
 
 export class BigQueryMethods<T extends Record<string, any>> {
@@ -90,6 +96,7 @@ export class BigQueryMethods<T extends Record<string, any>> {
       groupBy,
       limit,
       offset,
+      include,
     } = options;
 
     const selectColumns = columns ? columns.join(", ") : "*";
@@ -173,10 +180,15 @@ export class BigQueryMethods<T extends Record<string, any>> {
       ${offsetClause}
     `;
 
-    const rows = await this.runQuery(query);
+    let rows = await this.runQuery(query);
     const schema = await this.getTableSchema();
+    rows = this.convertRows(rows, schema);
 
-    return this.convertRows(rows, schema);
+    if (include) {
+      rows = await this.selectIncludes(options, rows);
+    }
+
+    return rows;
   }
 
   async update(props: UpdateProps<T>): Promise<{}> {
@@ -252,12 +264,58 @@ export class BigQueryMethods<T extends Record<string, any>> {
           fieldType === "TIMESTAMP" ||
           fieldType === "DATETIME"
         ) {
-          value = value?.value; // Acessa o campo "value" do objeto de data retornado pelo BigQuery
+          value = new Date(value.value); // Acessa o campo "value" do objeto de data retornado pelo BigQuery
         }
 
         convertedRow[fieldName as keyof T] = value;
       }
       return convertedRow;
     });
+  }
+
+  private async selectIncludes(
+    options: SelectOptions<T>,
+    primaryRows: T[]
+  ): Promise<T[]> {
+    if (!options.include) return primaryRows;
+
+    for (const [key, includeOptions] of Object.entries(options.include)) {
+      if (!includeOptions) continue;
+
+      const includedRows = await this.runIncludeQuery(
+        includeOptions,
+        primaryRows
+      );
+
+      if (includeOptions.relationType === "one-to-one") {
+        primaryRows = primaryRows.map((row, index) => ({
+          ...row,
+          [key]: includedRows[index] || null,
+        }));
+      } else {
+        primaryRows = primaryRows.map((row, index) => ({
+          ...row,
+          [key]: includedRows.filter(
+            (includeRow) => includeRow[index] === row[index]
+          ),
+        }));
+      }
+    }
+
+    return primaryRows;
+  }
+
+  private async runIncludeQuery(
+    includeOptions: IncludeOptions<any>,
+    primaryRows: T[]
+  ) {
+    const { table, on } = includeOptions.join;
+    const ids = primaryRows.map((row) => row[on.split(".")[0]]);
+    const query = `SELECT * FROM \`${table}\` WHERE ${
+      on.split(".")[1]
+    } IN (${ids.join(", ")})`;
+
+    const rows = await this.runQuery(query);
+    return rows;
   }
 }
