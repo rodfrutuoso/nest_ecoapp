@@ -111,6 +111,7 @@ export class BigQueryMethods<T extends Record<string, any>> {
 
     if (greaterOrEqualThan) {
       const greaterOrEqualThanClause = Object.keys(greaterOrEqualThan)
+        .filter((key) => greaterOrEqualThan[key] !== undefined)
         .map(
           (key) =>
             `${String(key)} >= ${
@@ -120,11 +121,12 @@ export class BigQueryMethods<T extends Record<string, any>> {
             }`
         )
         .join(" AND ");
-      whereClauses.push(greaterOrEqualThanClause);
+      if (greaterOrEqualThanClause) whereClauses.push(greaterOrEqualThanClause);
     }
 
     if (lessOrEqualThan) {
       const lessOrEqualThanClause = Object.keys(lessOrEqualThan)
+        .filter((key) => lessOrEqualThan[key] !== undefined)
         .map(
           (key) =>
             `${String(key)} <= ${
@@ -134,7 +136,7 @@ export class BigQueryMethods<T extends Record<string, any>> {
             }`
         )
         .join(" AND ");
-      whereClauses.push(lessOrEqualThanClause);
+      if (lessOrEqualThanClause) whereClauses.push(lessOrEqualThanClause);
     }
 
     if (like) {
@@ -245,6 +247,12 @@ export class BigQueryMethods<T extends Record<string, any>> {
           fieldType === "BIGNUMERIC"
         ) {
           value = parseFloat(value);
+        } else if (
+          fieldType === "DATE" ||
+          fieldType === "TIMESTAMP" ||
+          fieldType === "DATETIME"
+        ) {
+          value = value?.value; // Acessa o campo "value" do objeto de data retornado pelo BigQuery
         }
 
         convertedRow[fieldName as keyof T] = value;

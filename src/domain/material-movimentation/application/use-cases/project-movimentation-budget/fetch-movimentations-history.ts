@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import { Eihter, left, right } from "../../../../../core/either";
 import { Movimentation } from "../../../enterprise/entities/movimentation";
 import { MovimentationRepository } from "../../repositories/movimentation-repository";
@@ -20,6 +21,7 @@ type FetchMovimentationHistoryUseCaseResponse = Eihter<
   }
 >;
 
+@Injectable()
 export class FetchMovimentationHistoryUseCase {
   constructor(private movimentationRepository: MovimentationRepository) {}
 

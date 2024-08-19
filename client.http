@@ -244,3 +244,14 @@ Authorization: Bearer {{authToken}}
         "value": 5
     }
 ]
+
+###
+
+# @name fetch_movimentations
+GET {{baseURL}}/movimentations?page=1
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "baseId": "88b6a558-046d-47bf-be45-11fccec6d328"
+}
