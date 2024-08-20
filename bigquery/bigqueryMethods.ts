@@ -41,6 +41,7 @@ export class BigQueryMethods<T extends Record<string, any>> {
   }
 
   async runQuery(query: string) {
+    console.log(query);
     const options = {
       query,
     };
@@ -160,7 +161,9 @@ export class BigQueryMethods<T extends Record<string, any>> {
 
     const whereClause =
       whereClauses.length > 0 ? `WHERE ${whereClauses.join(" AND ")}` : "";
-    const joinClause = join ? `JOIN ${join.table} ON ${join.on}` : "";
+    const joinClause = join
+      ? `JOIN \`${this.datasetId.split(".")[0]}.${join.table}\` ON ${join.on}`
+      : "";
     const groupByClause = groupBy
       ? `GROUP BY ${groupBy.map((col) => String(col)).join(", ")}`
       : "";
@@ -287,16 +290,36 @@ export class BigQueryMethods<T extends Record<string, any>> {
         primaryRows
       );
 
+      const [primaryTable, primaryKey] = includeOptions.join.on
+        .split("=")[0]
+        .trim()
+        .split(".");
+      const [foreignTable, foreignKey] = includeOptions.join.on
+        .split("=")[1]
+        .trim()
+        .split(".");
+
+      if (!primaryKey || !foreignKey) {
+        throw new Error(
+          "A chave primária ou estrangeira não está definida corretamente."
+        );
+      }
+
       if (includeOptions.relationType === "one-to-one") {
-        primaryRows = primaryRows.map((row, index) => ({
-          ...row,
-          [key]: includedRows[index] || null,
-        }));
+        primaryRows = primaryRows.map((row) => {
+          const includedRow = includedRows.find(
+            (includeRow) => includeRow[foreignKey] === row[primaryKey]
+          );
+          return {
+            ...row,
+            [key]: includedRow || null,
+          };
+        });
       } else {
-        primaryRows = primaryRows.map((row, index) => ({
+        primaryRows = primaryRows.map((row) => ({
           ...row,
           [key]: includedRows.filter(
-            (includeRow) => includeRow[index] === row[index]
+            (includeRow) => includeRow[foreignKey] === row[primaryKey]
           ),
         }));
       }
@@ -310,10 +333,24 @@ export class BigQueryMethods<T extends Record<string, any>> {
     primaryRows: T[]
   ) {
     const { table, on } = includeOptions.join;
-    const ids = primaryRows.map((row) => row[on.split(".")[0]]);
-    const query = `SELECT * FROM \`${table}\` WHERE ${
-      on.split(".")[1]
-    } IN (${ids.join(", ")})`;
+
+    const [primaryCondition, foreignCondition] = on.split("=");
+
+    const primaryColumn = primaryCondition.trim().split(".")[1];
+    const foreignColumn = foreignCondition.trim().split(".")[1];
+
+    const ids = primaryRows.map((row) => row[primaryColumn]).filter(Boolean);
+
+    if (ids.length === 0) {
+      return [];
+    }
+
+    const fullTableName = `\`${this.datasetId.split(".")[0]}.${table}\``;
+
+    const query = `
+  SELECT * FROM ${fullTableName} 
+  WHERE ${foreignColumn} IN (${ids.map((id) => `'${id}'`).join(", ")})
+  `;
 
     const rows = await this.runQuery(query);
     return rows;

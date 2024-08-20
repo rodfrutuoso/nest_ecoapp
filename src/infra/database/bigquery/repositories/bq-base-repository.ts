@@ -50,7 +50,7 @@ export class BqBaseRepository implements BaseRepository {
       orderBy: { column: "baseName", direction: "ASC" },
       include: {
         contract: {
-          join: { table: "contracts", on: "bases.contractId = contracts.id" },
+          join: { table: "contract", on: "base.contractId = contract.id" },
           relationType: "one-to-one",
         },
       },

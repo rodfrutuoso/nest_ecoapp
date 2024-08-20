@@ -1,11 +1,11 @@
-import { Base } from "src/domain/material-movimentation/enterprise/entities/base";
+import { BaseWithContract } from "src/domain/material-movimentation/enterprise/entities/value-objects/base-with-contract";
 
 export class BasePresenter {
-  static toHTTP(base: Base) {
+  static toHTTP(baseWithContract: BaseWithContract) {
     return {
-      id: base.id.toString(),
-      baseName: base.baseName,
-      contractId: base.contractId.toString()
+      id: baseWithContract.baseId.toString(),
+      base: baseWithContract.baseName,
+      contract: baseWithContract.contractName,
     };
   }
 }
