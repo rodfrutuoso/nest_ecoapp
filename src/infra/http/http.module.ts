@@ -41,6 +41,8 @@ import { TransferMovimentationBetweenProjectsController } from "./controllers/ma
 import { TransferMovimentationBetweenProjectsUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/transfer-movimentation-between-projects";
 import { FetchMovimentationHistoryController } from "./controllers/material-movimentation/project-movimentation-budget/fetch-movimentations-history.controller";
 import { FetchMovimentationHistoryUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/fetch-movimentations-history";
+import { FetchBudgetMovimentationByProjectController } from "./controllers/material-movimentation/project-movimentation-budget/fetch-budget-movimentations-by-project.controller";
+import { FetchBudgetMovimentationByProjectUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/fetch-budget-movimentations-by-project";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -65,6 +67,7 @@ import { FetchMovimentationHistoryUseCase } from "src/domain/material-movimentat
     RegisterProjectController,
     TransferMovimentationBetweenProjectsController,
     FetchMovimentationHistoryController,
+    FetchBudgetMovimentationByProjectController,
   ],
   providers: [
     CreateMaterialUseCase,
@@ -87,6 +90,7 @@ import { FetchMovimentationHistoryUseCase } from "src/domain/material-movimentat
     RegisterProjectUseCase,
     TransferMovimentationBetweenProjectsUseCase,
     FetchMovimentationHistoryUseCase,
+    FetchBudgetMovimentationByProjectUseCase,
   ],
 })
 export class HttpModule {}

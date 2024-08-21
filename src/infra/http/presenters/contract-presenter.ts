@@ -4,7 +4,7 @@ export class ContractPresenter {
   static toHTTP(contract: Contract) {
     return {
       id: contract.id.toString(),
-      contractName: contract.contractName,
+      contract: contract.contractName,
     };
   }
 }

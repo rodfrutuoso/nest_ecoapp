@@ -4,21 +4,21 @@ import { makeMovimentation } from "../../../../../../test/factories/make-movimen
 import { makeBudget } from "../../../../../../test/factories/make-budget";
 import { InMemoryProjectRepository } from "../../../../../../test/repositories/in-memory-project-repository";
 import { InMemoryBudgetRepository } from "../../../../../../test/repositories/in-memory-budget-repository";
-import { FetchBudgetMovimentationByProjecUseCase } from "./fetch-budget-movimentations-by-project";
+import { FetchBudgetMovimentationByProjectUseCase } from "./fetch-budget-movimentations-by-project";
 import { makeProject } from "../../../../../../test/factories/make-project";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 
 let inMemoryMovimentationRepository: InMemoryMovimentationRepository;
 let inMemoryProjectRepository: InMemoryProjectRepository;
 let inMemoryBudgetRepository: InMemoryBudgetRepository;
-let sut: FetchBudgetMovimentationByProjecUseCase;
+let sut: FetchBudgetMovimentationByProjectUseCase;
 
 describe("Fetch budgets and Movimentations by project", () => {
   beforeEach(() => {
     inMemoryMovimentationRepository = new InMemoryMovimentationRepository();
     inMemoryProjectRepository = new InMemoryProjectRepository();
     inMemoryBudgetRepository = new InMemoryBudgetRepository();
-    sut = new FetchBudgetMovimentationByProjecUseCase(
+    sut = new FetchBudgetMovimentationByProjectUseCase(
       inMemoryMovimentationRepository,
       inMemoryProjectRepository,
       inMemoryBudgetRepository
