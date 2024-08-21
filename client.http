@@ -266,3 +266,14 @@ Authorization: Bearer {{authToken}}
 {
     "project_number": "B-12345678"
 }
+
+###
+
+# @name fetch_budgets
+GET {{baseURL}}/budgets
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "project_number": "B-12345678"
+}

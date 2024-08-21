@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import { Eihter, left, right } from "../../../../../core/either";
 import { Budget } from "../../../enterprise/entities/budget";
 import { BudgetRepository } from "../../repositories/budget-repository";
@@ -15,6 +16,7 @@ type FetchBudgetByProjectNameUseCaseResponse = Eihter<
   }
 >;
 
+@Injectable()
 export class FetchBudgetByProjectNameUseCase {
   constructor(
     private budgetRepository: BudgetRepository,
