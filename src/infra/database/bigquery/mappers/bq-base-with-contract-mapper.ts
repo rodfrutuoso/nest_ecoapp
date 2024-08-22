@@ -7,7 +7,7 @@ export class BqBaseWithContractMapper {
     return BaseWithContract.create({
       baseName: raw.baseName,
       baseId: new UniqueEntityID(raw.id),
-      contractName: raw.contract?.contractName ?? "",
+      contract: {id: new UniqueEntityID(raw.contract?.id), contractName: raw.contract?.contractName ?? ""},
     });
   }
 }

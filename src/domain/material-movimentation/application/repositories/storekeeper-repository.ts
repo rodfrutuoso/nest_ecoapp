@@ -1,5 +1,6 @@
 import { PaginationParams } from "../../../../core/repositories/pagination-params";
 import { Storekeeper } from "../../enterprise/entities/storekeeper";
+import { StorekeeperWithBase } from "../../enterprise/entities/value-objects/storekeeper-with-base";
 
 export abstract class StorekeeperRepository {
   abstract create(Storekeeper: Storekeeper): Promise<void>;
@@ -11,4 +12,8 @@ export abstract class StorekeeperRepository {
     params: PaginationParams,
     baseId?: string
   ): Promise<Storekeeper[]>;
+  abstract findManyWithBase(
+    params: PaginationParams,
+    baseId?: string
+  ): Promise<StorekeeperWithBase[]>;
 }

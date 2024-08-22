@@ -10,6 +10,7 @@ import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { FetchStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/fetch-storekeeper";
 import { UserPresenter } from "src/infra/http/presenters/user-presentar";
+import { UserWithBaseContractPresenter } from "src/infra/http/presenters/user-with-base-contract-presenter";
 
 const fetchAccountsBodySchema = z.object({
   baseId: z.string().uuid().optional(),
@@ -42,10 +43,10 @@ export class FetchAccountsController {
     const { baseId } = body;
 
     const result = await this.FetchStorekeeper.execute({
-        page,
-        baseId,
+      page,
+      baseId,
     });
-    
+
     if (result.isLeft()) {
       const error = result.value;
 
@@ -59,6 +60,6 @@ export class FetchAccountsController {
 
     const users = result.value.storekeepers;
 
-    return { users: users.map(UserPresenter.toHTTP) };
+    return { users: users.map(UserWithBaseContractPresenter.toHTTP) };
   }
 }

@@ -4,6 +4,11 @@ import { ValueObject } from "src/core/entities/value-object";
 export interface BaseWithContractProps {
   baseId: UniqueEntityID;
   baseName: string;
+  contract: contractInBase;
+}
+
+export interface contractInBase {
+  id: UniqueEntityID;
   contractName: string;
 }
 
@@ -14,8 +19,8 @@ export class BaseWithContract extends ValueObject<BaseWithContractProps> {
   get baseName() {
     return this.props.baseName;
   }
-  get contractName() {
-    return this.props.contractName;
+  get contract() {
+    return this.props.contract;
   }
 
   static create(props: BaseWithContractProps) {

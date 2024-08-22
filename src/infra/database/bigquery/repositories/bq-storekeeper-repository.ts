@@ -4,6 +4,8 @@ import { StorekeeperRepository } from "src/domain/material-movimentation/applica
 import { Storekeeper } from "src/domain/material-movimentation/enterprise/entities/storekeeper";
 import { BigQueryService } from "../bigquery.service";
 import { BqUserMapper } from "../mappers/bq-user-mapper";
+import { StorekeeperWithBase } from "src/domain/material-movimentation/enterprise/entities/value-objects/storekeeper-with-base";
+import { BqUserWithBaseContractMapper } from "../mappers/bq-user-with-base-contract-mapper";
 
 @Injectable()
 export class BqStorekeeperRepository implements StorekeeperRepository {
@@ -66,5 +68,32 @@ export class BqStorekeeperRepository implements StorekeeperRepository {
     );
 
     return result;
+  }
+
+  async findManyWithBase(
+    { page }: PaginationParams,
+    baseId?: string
+  ): Promise<StorekeeperWithBase[]> {
+    const pageCount = 40;
+
+    const storekeepers = await this.bigquery.user.select({
+      where: { baseId },
+      limit: pageCount,
+      offset: pageCount * (page - 1),
+      orderBy: { column: "cpf", direction: "ASC" },
+      include: {
+        base: {
+          join: { table: "base", on: "user.baseId = base.id" },
+          relationType: "one-to-one",
+        },
+      },
+    });
+
+    const storekeepersDomain = storekeepers.map(BqUserWithBaseContractMapper.toDomin);
+    const result = storekeepersDomain.filter(
+      (storekeeper) => storekeeper instanceof StorekeeperWithBase
+    );
+
+    return result
   }
 }

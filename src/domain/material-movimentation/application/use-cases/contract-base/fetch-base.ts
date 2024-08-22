@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { Eihter, left, right } from "../../../../../core/either";
-import { Base } from "../../../enterprise/entities/base";
 import { BaseRepository } from "../../repositories/base-repository";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 import { BaseWithContract } from "src/domain/material-movimentation/enterprise/entities/value-objects/base-with-contract";

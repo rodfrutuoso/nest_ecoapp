@@ -5,7 +5,10 @@ export class BasePresenter {
     return {
       id: baseWithContract.baseId.toString(),
       base: baseWithContract.baseName,
-      contract: baseWithContract.contractName,
+      contract: {
+        contractName: baseWithContract.contract.contractName,
+        id: baseWithContract.contract.id.toString(),
+      },
     };
   }
 }

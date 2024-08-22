@@ -13,7 +13,7 @@ describe("Fetch Materials", () => {
     sut = new FetchMaterialUseCase(inMemoryMaterialRepository);
   });
 
-  it("should be able to fetch physical documents sorting by name", async () => {
+  it("should be able to fetch materials sorting by code", async () => {
     const newMaterial1 = makeMaterial({
       code: 123456,
       contractId: new UniqueEntityID("contrato-1"),

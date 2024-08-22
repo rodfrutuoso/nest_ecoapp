@@ -50,19 +50,19 @@ describe("Fetch Bases History", () => {
         expect.objectContaining({
           props: expect.objectContaining({
             baseName: "Conquista",
-            contractName: "Centro-Oeste",
+            contract: expect.objectContaining({ contractName: "Centro-Oeste" }),
           }),
         }),
         expect.objectContaining({
           props: expect.objectContaining({
             baseName: "Itaberaba",
-            contractName: "Centro-Oeste",
+            contract: expect.objectContaining({ contractName: "Centro-Oeste" }),
           }),
         }),
         expect.objectContaining({
           props: expect.objectContaining({
             baseName: "Petrolina",
-            contractName: "Centro-Oeste",
+            contract: expect.objectContaining({ contractName: "Centro-Oeste" }),
           }),
         }),
       ]);
@@ -74,7 +74,9 @@ describe("Fetch Bases History", () => {
     inMemorycontractRepository.create(contract);
 
     for (let i = 1; i <= 45; i++) {
-      await inMemoryBaseRepository.create(makeBase({contractId: contract.id}));
+      await inMemoryBaseRepository.create(
+        makeBase({ contractId: contract.id })
+      );
     }
 
     const result = await sut.execute({
