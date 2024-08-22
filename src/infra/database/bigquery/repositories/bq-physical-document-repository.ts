@@ -4,6 +4,8 @@ import { PhysicalDocumentRepository } from "src/domain/material-movimentation/ap
 import { PhysicalDocument } from "src/domain/material-movimentation/enterprise/entities/physical-document";
 import { BigQueryService } from "../bigquery.service";
 import { BqPhysicalDocumentMapper } from "../mappers/bq-physical-document-mapper";
+import { PhysicalDocumentWithProject } from "src/domain/material-movimentation/enterprise/entities/value-objects/physical-document-with-project";
+import { BqPhysicalDocumentWithProjectMapper } from "../mappers/bq-physical-document-with-project-mapper";
 
 @Injectable()
 export class BqPhysicalDocumentRepository
@@ -59,6 +61,32 @@ export class BqPhysicalDocumentRepository
     });
 
     return physicalDocuments.map(BqPhysicalDocumentMapper.toDomin);
+  }
+
+  async findManyWithProject(
+    { page }: PaginationParams,
+    identifier?: number,
+    projectId?: string
+  ): Promise<PhysicalDocumentWithProject[]> {
+    const pageCount = 40;
+
+    const physicalDocuments = await this.bigquery.physicalDocument.select({
+      where: { projectId, identifier },
+      limit: pageCount,
+      offset: pageCount * (page - 1),
+      orderBy: { column: "identifier", direction: "ASC" },
+      include: {
+        project: {
+          join: {
+            table: "project",
+            on: "physical-document.projectId = project.id",
+          },
+          relationType: "one-to-one",
+        },
+      },
+    });
+
+    return physicalDocuments.map(BqPhysicalDocumentWithProjectMapper.toDomin);
   }
 
   async delete(physicalDocumentId: string): Promise<void> {

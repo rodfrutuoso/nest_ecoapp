@@ -9,7 +9,7 @@ import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { FetchPhysicalDocumentUseCase } from "src/domain/material-movimentation/application/use-cases/physicalDocument/fetch-physical-document";
-import { PhysicalDocumentPresenter } from "src/infra/http/presenters/physical-document-presenter";
+import { PhysicalDocumentWithProjectPresenter } from "src/infra/http/presenters/physical-document-with-project-presenter";
 
 const fetchPhysicalDocumentsBodySchema = z.object({
   projectId: z.string().uuid().optional(),
@@ -65,7 +65,7 @@ export class FetchPhysicalDocumentsController {
 
     return {
       physicalDocuments: physicalDocuments.map(
-        PhysicalDocumentPresenter.toHTTP
+        PhysicalDocumentWithProjectPresenter.toHTTP
       ),
     };
   }

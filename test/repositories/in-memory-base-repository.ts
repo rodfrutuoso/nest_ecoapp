@@ -47,7 +47,7 @@ export class InMemoryBaseRepository implements BaseRepository {
         return BaseWithContract.create({
           baseId: base.id,
           baseName: base.baseName,
-          contract: contract,
+          contract,
         });
       });
 
