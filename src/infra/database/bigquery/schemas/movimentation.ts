@@ -1,5 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { BigQueryMethods } from "bigquery/bigqueryMethods";
+import { BqBaseProps } from "./base";
+import { BqUserProps } from "./user";
+import { BqMaterialProps } from "./materials";
+import { BqProjectProps } from "./project";
 
 const tableId = "movimentation";
 
@@ -12,6 +16,11 @@ export interface BqMovimentationProps {
   userId: string;
   observation: string;
   baseId: string;
+
+  base?: BqBaseProps;
+  user?: BqUserProps;
+  material?: BqMaterialProps;
+  project?: BqProjectProps;
 }
 
 @Injectable()

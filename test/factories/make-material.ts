@@ -33,8 +33,11 @@ export function makeMaterial(
 export class MaterialFactory {
   constructor(private bigquery: BigQueryService) {}
 
-  async makeBqMaterial(data: Partial<MaterialProps> = {}): Promise<Material> {
-    const material = makeMaterial(data);
+  async makeBqMaterial(
+    data: Partial<MaterialProps> = {},
+    id?: UniqueEntityID
+  ): Promise<Material> {
+    const material = makeMaterial(data, id);
 
     await this.bigquery.material.create([
       BqMaterialMapper.toBigquery(material),

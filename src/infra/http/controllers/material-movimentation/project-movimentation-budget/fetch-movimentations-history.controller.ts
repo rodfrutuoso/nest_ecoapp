@@ -9,7 +9,7 @@ import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { FetchMovimentationHistoryUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/fetch-movimentations-history";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
-import { MovimentationPresenter } from "src/infra/http/presenters/movimentation-presenter";
+import { MovimentationWithDetailsPresenter } from "src/infra/http/presenters/movimentation-with-details-presenter";
 
 const fetchMovimentationHistoryBodySchema = z.object({
   baseId: z.string(),
@@ -74,7 +74,9 @@ export class FetchMovimentationHistoryController {
     const movimentations = result.value.movimentations;
 
     return {
-      movimentations: movimentations.map(MovimentationPresenter.toHTTP),
+      movimentations: movimentations.map(
+        MovimentationWithDetailsPresenter.toHTTP
+      ),
     };
   }
 }
