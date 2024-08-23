@@ -5,15 +5,15 @@ import { makeBase } from "../../../../../../test/factories/make-base";
 import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
 import { makeContract } from "test/factories/make-contract";
 
-let inMemorycontractRepository: InMemoryContractRepository;
+let inMemoryContractRepository: InMemoryContractRepository;
 let inMemoryBaseRepository: InMemoryBaseRepository;
 let sut: FetchBaseUseCase;
 
 describe("Fetch Bases History", () => {
   beforeEach(() => {
-    inMemorycontractRepository = new InMemoryContractRepository();
+    inMemoryContractRepository = new InMemoryContractRepository();
     inMemoryBaseRepository = new InMemoryBaseRepository(
-      inMemorycontractRepository
+      inMemoryContractRepository
     );
     sut = new FetchBaseUseCase(inMemoryBaseRepository);
   });
@@ -21,7 +21,7 @@ describe("Fetch Bases History", () => {
   it("should be able to fetch physical documents history sorting by baseName", async () => {
     const contract = makeContract({ contractName: "Centro-Oeste" });
 
-    inMemorycontractRepository.create(contract);
+    inMemoryContractRepository.create(contract);
 
     const newBase1 = makeBase({
       baseName: "Conquista",
@@ -71,7 +71,7 @@ describe("Fetch Bases History", () => {
   it("should be able to fetch paginated bases", async () => {
     const contract = makeContract({ contractName: "Centro-Oeste" });
 
-    inMemorycontractRepository.create(contract);
+    inMemoryContractRepository.create(contract);
 
     for (let i = 1; i <= 45; i++) {
       await inMemoryBaseRepository.create(

@@ -3,28 +3,85 @@ import { FetchMovimentationHistoryUseCase } from "./fetch-movimentations-history
 import { InMemoryMovimentationRepository } from "../../../../../../test/repositories/in-memory-movimentation-repository";
 import { makeMovimentation } from "../../../../../../test/factories/make-movimentation";
 import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
+import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
+import { InMemoryMaterialRepository } from "test/repositories/in-memory-material-repository";
+import { InMemoryProjectRepository } from "test/repositories/in-memory-project-repository";
+import { InMemoryStorekeeperRepository } from "test/repositories/in-memory-storekeeper-repository";
+import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
+import { makeContract } from "test/factories/make-contract";
+import { makeBase } from "test/factories/make-base";
+import { makeStorekeeper } from "test/factories/make-storekeeper";
+import { makeMaterial } from "test/factories/make-material";
+import { makeProject } from "test/factories/make-project";
 
 let inMemoryMovimentationRepository: InMemoryMovimentationRepository;
+let inMemoryBaseRepository: InMemoryBaseRepository;
+let inMemoryMaterialRepository: InMemoryMaterialRepository;
+let inMemoryProjectRepository: InMemoryProjectRepository;
+let inMemoryStorekeeperRepository: InMemoryStorekeeperRepository;
+let inMemoryContractRepository: InMemoryContractRepository;
 let sut: FetchMovimentationHistoryUseCase;
 
 describe("Fetch Movimentations History", () => {
   beforeEach(() => {
-    inMemoryMovimentationRepository = new InMemoryMovimentationRepository();
+    inMemoryContractRepository = new InMemoryContractRepository();
+    inMemoryBaseRepository = new InMemoryBaseRepository(
+      inMemoryContractRepository
+    );
+    inMemoryMaterialRepository = new InMemoryMaterialRepository();
+    inMemoryProjectRepository = new InMemoryProjectRepository();
+    inMemoryStorekeeperRepository = new InMemoryStorekeeperRepository(
+      inMemoryBaseRepository
+    );
+    inMemoryMovimentationRepository = new InMemoryMovimentationRepository(
+      inMemoryStorekeeperRepository,
+      inMemoryMaterialRepository,
+      inMemoryProjectRepository,
+      inMemoryBaseRepository
+    );
     sut = new FetchMovimentationHistoryUseCase(inMemoryMovimentationRepository);
   });
 
   it("should be able to fetch movimentations history sorting by date", async () => {
+    // entity creation for details
+    const contract = makeContract();
+    inMemoryContractRepository.create(contract);
+
+    const base = makeBase(
+      { contractId: contract.id },
+      new UniqueEntityID("base-1")
+    );
+    inMemoryBaseRepository.create(base);
+
+    const storekeeper = makeStorekeeper({ baseId: base.id });
+    inMemoryStorekeeperRepository.create(storekeeper);
+
+    const material = makeMaterial();
+    inMemoryMaterialRepository.create(material);
+
+    const project = makeProject();
+    inMemoryProjectRepository.create(project);
+
     const newMovimentation1 = makeMovimentation({
       createdAt: new Date(2024, 5, 17),
-      baseId: new UniqueEntityID("base-1"),
+      baseId: base.id,
+      materialId: material.id,
+      projectId: project.id,
+      storekeeperId: storekeeper.id,
     });
     const newMovimentation2 = makeMovimentation({
       createdAt: new Date(2024, 5, 19),
-      baseId: new UniqueEntityID("base-1"),
+      baseId: base.id,
+      materialId: material.id,
+      projectId: project.id,
+      storekeeperId: storekeeper.id,
     });
     const newMovimentation3 = makeMovimentation({
       createdAt: new Date(2024, 5, 16),
-      baseId: new UniqueEntityID("base-1"),
+      baseId: base.id,
+      materialId: material.id,
+      projectId: project.id,
+      storekeeperId: storekeeper.id,
     });
 
     await inMemoryMovimentationRepository.create([
@@ -54,9 +111,33 @@ describe("Fetch Movimentations History", () => {
   });
 
   it("should be able to fetch paginated movimentations history", async () => {
+    // entity creation for details
+    const contract = makeContract();
+    inMemoryContractRepository.create(contract);
+
+    const base = makeBase(
+      { contractId: contract.id },
+      new UniqueEntityID("base-1")
+    );
+    inMemoryBaseRepository.create(base);
+
+    const storekeeper = makeStorekeeper({ baseId: base.id });
+    inMemoryStorekeeperRepository.create(storekeeper);
+
+    const material = makeMaterial();
+    inMemoryMaterialRepository.create(material);
+
+    const project = makeProject();
+    inMemoryProjectRepository.create(project);
+
     for (let i = 1; i <= 45; i++) {
       await inMemoryMovimentationRepository.create([
-        makeMovimentation({ baseId: new UniqueEntityID("base-1") }),
+        makeMovimentation({
+          baseId: base.id,
+          materialId: material.id,
+          projectId: project.id,
+          storekeeperId: storekeeper.id,
+        }),
       ]);
     }
 
@@ -68,17 +149,44 @@ describe("Fetch Movimentations History", () => {
   });
 
   it("should be able to fetch movimentations history by project", async () => {
+    // entity creation for details
+    const contract = makeContract();
+    inMemoryContractRepository.create(contract);
+
+    const base = makeBase(
+      { contractId: contract.id },
+      new UniqueEntityID("base-1")
+    );
+    inMemoryBaseRepository.create(base);
+
+    const storekeeper = makeStorekeeper({ baseId: base.id });
+    inMemoryStorekeeperRepository.create(storekeeper);
+
+    const material = makeMaterial();
+    inMemoryMaterialRepository.create(material);
+
+    const project = makeProject({}, new UniqueEntityID("projeto-1"));
+    inMemoryProjectRepository.create(project);
+    const project2 = makeProject({}, new UniqueEntityID("projeto-2"));
+    inMemoryProjectRepository.create(project2);
+
     const newMovimentation1 = makeMovimentation({
-      baseId: new UniqueEntityID("base-1"),
-      projectId: new UniqueEntityID("projeto-1"),
+      baseId: base.id,
+      materialId: material.id,
+      projectId: project.id,
+      storekeeperId: storekeeper.id,
     });
     const newMovimentation2 = makeMovimentation({
-      baseId: new UniqueEntityID("base-1"),
-      projectId: new UniqueEntityID("projeto-1"),
+      baseId: base.id,
+      materialId: material.id,
+      projectId: project.id,
+      storekeeperId: storekeeper.id,
     });
     const newMovimentation3 = makeMovimentation({
-      baseId: new UniqueEntityID("base-1"),
-      projectId: new UniqueEntityID("projeto-2"),
+      baseId: base.id,
+      materialId: material.id,
+      projectId: project2.id,
+      storekeeperId: storekeeper.id,
     });
 
     await inMemoryMovimentationRepository.create([
@@ -98,17 +206,44 @@ describe("Fetch Movimentations History", () => {
   });
 
   it("should be able to fetch movimentations history by material", async () => {
+    // entity creation for details
+    const contract = makeContract();
+    inMemoryContractRepository.create(contract);
+
+    const base = makeBase(
+      { contractId: contract.id },
+      new UniqueEntityID("base-1")
+    );
+    inMemoryBaseRepository.create(base);
+
+    const storekeeper = makeStorekeeper({ baseId: base.id });
+    inMemoryStorekeeperRepository.create(storekeeper);
+
+    const material = makeMaterial({}, new UniqueEntityID("material-1"));
+    inMemoryMaterialRepository.create(material);
+    const material2 = makeMaterial({}, new UniqueEntityID("material-2"));
+    inMemoryMaterialRepository.create(material2);
+
+    const project = makeProject();
+    inMemoryProjectRepository.create(project);
+
     const newMovimentation1 = makeMovimentation({
-      baseId: new UniqueEntityID("base-1"),
-      materialId: new UniqueEntityID("material-1"),
+      baseId: base.id,
+      materialId: material.id,
+      projectId: project.id,
+      storekeeperId: storekeeper.id,
     });
     const newMovimentation2 = makeMovimentation({
-      baseId: new UniqueEntityID("base-1"),
-      materialId: new UniqueEntityID("material-1"),
+      baseId: base.id,
+      materialId: material.id,
+      projectId: project.id,
+      storekeeperId: storekeeper.id,
     });
     const newMovimentation3 = makeMovimentation({
-      baseId: new UniqueEntityID("base-1"),
-      materialId: new UniqueEntityID("material-2"),
+      baseId: base.id,
+      materialId: material2.id,
+      projectId: project.id,
+      storekeeperId: storekeeper.id,
     });
 
     await inMemoryMovimentationRepository.create([
@@ -128,17 +263,47 @@ describe("Fetch Movimentations History", () => {
   });
 
   it("should be able to fetch movimentations history by storkeeper", async () => {
+    // entity creation for details
+    const contract = makeContract();
+    inMemoryContractRepository.create(contract);
+
+    const base = makeBase(
+      { contractId: contract.id },
+      new UniqueEntityID("base-1")
+    );
+    inMemoryBaseRepository.create(base);
+
+    const storekeeper = makeStorekeeper(
+      { baseId: base.id },
+      new UniqueEntityID("storekeeper-1")
+    );
+    inMemoryStorekeeperRepository.create(storekeeper);
+    const storekeeper2 = makeStorekeeper({ baseId: base.id });
+    inMemoryStorekeeperRepository.create(storekeeper2);
+
+    const material = makeMaterial();
+    inMemoryMaterialRepository.create(material);
+
+    const project = makeProject();
+    inMemoryProjectRepository.create(project);
+
     const newMovimentation1 = makeMovimentation({
-      baseId: new UniqueEntityID("base-1"),
-      storekeeperId: new UniqueEntityID("storekeeper-1"),
+      baseId: base.id,
+      materialId: material.id,
+      projectId: project.id,
+      storekeeperId: storekeeper.id,
     });
     const newMovimentation2 = makeMovimentation({
-      baseId: new UniqueEntityID("base-1"),
-      storekeeperId: new UniqueEntityID("storekeeper-1"),
+      baseId: base.id,
+      materialId: material.id,
+      projectId: project.id,
+      storekeeperId: storekeeper.id,
     });
     const newMovimentation3 = makeMovimentation({
-      baseId: new UniqueEntityID("base-1"),
-      storekeeperId: new UniqueEntityID("storekeeper-2"),
+      baseId: base.id,
+      materialId: material.id,
+      projectId: project.id,
+      storekeeperId: storekeeper2.id,
     });
 
     await inMemoryMovimentationRepository.create([
@@ -158,16 +323,45 @@ describe("Fetch Movimentations History", () => {
   });
 
   it("should be able to fetch movimentations history by a range of dates", async () => {
+    // entity creation for details
+    const contract = makeContract();
+    inMemoryContractRepository.create(contract);
+
+    const base = makeBase(
+      { contractId: contract.id },
+      new UniqueEntityID("base-1")
+    );
+    inMemoryBaseRepository.create(base);
+
+    const storekeeper = makeStorekeeper({ baseId: base.id });
+    inMemoryStorekeeperRepository.create(storekeeper);
+
+    const material = makeMaterial();
+    inMemoryMaterialRepository.create(material);
+
+    const project = makeProject();
+    inMemoryProjectRepository.create(project);
+
+
     const newMovimentation1 = makeMovimentation({
-      baseId: new UniqueEntityID("base-1"),
+      baseId: base.id,
+      materialId: material.id,
+      projectId: project.id,
+      storekeeperId: storekeeper.id,
       createdAt: new Date(2024, 5, 18),
     });
     const newMovimentation2 = makeMovimentation({
-      baseId: new UniqueEntityID("base-1"),
+      baseId: base.id,
+      materialId: material.id,
+      projectId: project.id,
+      storekeeperId: storekeeper.id,
       createdAt: new Date(2024, 5, 15),
     });
     const newMovimentation3 = makeMovimentation({
-      baseId: new UniqueEntityID("base-1"),
+      baseId: base.id,
+      materialId: material.id,
+      projectId: project.id,
+      storekeeperId: storekeeper.id,
       createdAt: new Date(2024, 5, 13),
     });
 

@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { Eihter, left, right } from "../../../../../core/either";
-import { Movimentation } from "../../../enterprise/entities/movimentation";
 import { MovimentationRepository } from "../../repositories/movimentation-repository";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
+import { MovimentationWithDetails } from "src/domain/material-movimentation/enterprise/entities/value-objects/movimentation-with-details";
 
 interface FetchMovimentationHistoryUseCaseRequest {
   page: number;
@@ -17,7 +17,7 @@ interface FetchMovimentationHistoryUseCaseRequest {
 type FetchMovimentationHistoryUseCaseResponse = Eihter<
   ResourceNotFoundError,
   {
-    movimentations: Movimentation[];
+    movimentations: MovimentationWithDetails[];
   }
 >;
 
@@ -34,17 +34,18 @@ export class FetchMovimentationHistoryUseCase {
     startDate,
     endDate,
   }: FetchMovimentationHistoryUseCaseRequest): Promise<FetchMovimentationHistoryUseCaseResponse> {
-    const movimentations = await this.movimentationRepository.findManyHistory(
-      {
-        page,
-      },
-      baseId,
-      storekeeperId,
-      projectId,
-      materialId,
-      startDate,
-      endDate
-    );
+    const movimentations =
+      await this.movimentationRepository.findManyHistoryWithDetails(
+        {
+          page,
+        },
+        baseId,
+        storekeeperId,
+        projectId,
+        materialId,
+        startDate,
+        endDate
+      );
 
     if (!movimentations.length) return left(new ResourceNotFoundError());
 
