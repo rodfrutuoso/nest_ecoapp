@@ -16,11 +16,6 @@ export interface MovimentationWithDetailsProps {
   base: Base;
 }
 
-export interface contractInBase {
-  id: UniqueEntityID;
-  contractName: string;
-}
-
 export class MovimentationWithDetails extends ValueObject<MovimentationWithDetailsProps> {
   get movimentationId() {
     return this.props.movimentationId;

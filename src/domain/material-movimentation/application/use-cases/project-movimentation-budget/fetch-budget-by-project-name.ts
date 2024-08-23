@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { Eihter, left, right } from "../../../../../core/either";
-import { Budget } from "../../../enterprise/entities/budget";
 import { BudgetRepository } from "../../repositories/budget-repository";
 import { ProjectRepository } from "../../repositories/project-repository";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
+import { BudgetWithDetails } from "src/domain/material-movimentation/enterprise/entities/value-objects/budget-with-details";
 
 interface FetchBudgetByProjectNameUseCaseRequest {
   project_number: string;
@@ -12,7 +12,7 @@ interface FetchBudgetByProjectNameUseCaseRequest {
 type FetchBudgetByProjectNameUseCaseResponse = Eihter<
   ResourceNotFoundError,
   {
-    budgets: Budget[];
+    budgets: BudgetWithDetails[];
   }
 >;
 
@@ -32,7 +32,7 @@ export class FetchBudgetByProjectNameUseCase {
 
     if (!project) return left(new ResourceNotFoundError());
 
-    const budgets = await this.budgetRepository.findByProject(
+    const budgets = await this.budgetRepository.findByProjectWithDetails(
       project.id.toString()
     );
 
