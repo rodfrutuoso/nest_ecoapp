@@ -35,6 +35,63 @@ export class InMemoryMovimentationRepository
     return movimentations;
   }
 
+  async findByProjectWithDetails(
+    projectid: string,
+    materialId?: string
+  ): Promise<MovimentationWithDetails[]> {
+    const movimentations = this.items
+      .filter(
+        (movimentation) => movimentation.projectId.toString() === projectid
+      )
+      .filter(
+        (movimentation) =>
+          !materialId || movimentation.materialId.toString() === materialId
+      )
+      .map((movimentation) => {
+        const storekeeper = this.storekeeperRepository.items.find(
+          (storekeeper) => storekeeper.id === movimentation.storekeeperId
+        );
+        if (!storekeeper) {
+          throw new Error(
+            `storekeeper ${movimentation.storekeeperId} does not exist.`
+          );
+        }
+        const project = this.projectRepository.items.find(
+          (project) => project.id === movimentation.projectId
+        );
+        if (!project) {
+          throw new Error(`project ${movimentation.projectId} does not exist.`);
+        }
+        const base = this.baseRepository.items.find(
+          (base) => base.id === movimentation.baseId
+        );
+        if (!base) {
+          throw new Error(`base ${movimentation.baseId} does not exist.`);
+        }
+        const material = this.materialRepository.items.find(
+          (material) => material.id === movimentation.materialId
+        );
+        if (!material) {
+          throw new Error(
+            `material ${movimentation.materialId} does not exist.`
+          );
+        }
+
+        return MovimentationWithDetails.create({
+          movimentationId: movimentation.id,
+          value: movimentation.value,
+          createdAt: movimentation.createdAt,
+          observation: movimentation.observation,
+          storekeeper,
+          material,
+          project,
+          base,
+        });
+      });
+
+    return movimentations;
+  }
+
   async findManyHistory(
     { page }: PaginationParams,
     baseId: string,

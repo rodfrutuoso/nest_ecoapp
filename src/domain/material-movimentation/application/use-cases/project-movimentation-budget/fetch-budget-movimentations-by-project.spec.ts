@@ -7,17 +7,52 @@ import { InMemoryBudgetRepository } from "../../../../../../test/repositories/in
 import { FetchBudgetMovimentationByProjectUseCase } from "./fetch-budget-movimentations-by-project";
 import { makeProject } from "../../../../../../test/factories/make-project";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
+import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
+import { InMemoryMaterialRepository } from "test/repositories/in-memory-material-repository";
+import { InMemoryStorekeeperRepository } from "test/repositories/in-memory-storekeeper-repository";
+import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
+import { InMemoryEstimatorRepository } from "test/repositories/in-memory-estimator-repository";
+import { makeContract } from "test/factories/make-contract";
+import { makeBase } from "test/factories/make-base";
+import { UniqueEntityID } from "src/core/entities/unique-entity-id";
+import { makeStorekeeper } from "test/factories/make-storekeeper";
+import { makeMaterial } from "test/factories/make-material";
+import { makeEstimator } from "test/factories/make-estimator";
 
 let inMemoryMovimentationRepository: InMemoryMovimentationRepository;
 let inMemoryProjectRepository: InMemoryProjectRepository;
 let inMemoryBudgetRepository: InMemoryBudgetRepository;
+let inMemoryBaseRepository: InMemoryBaseRepository;
+let inMemoryMaterialRepository: InMemoryMaterialRepository;
+let inMemoryStorekeeperRepository: InMemoryStorekeeperRepository;
+let inMemoryContractRepository: InMemoryContractRepository;
+let inMemoryEstimatorRepository: InMemoryEstimatorRepository;
 let sut: FetchBudgetMovimentationByProjectUseCase;
 
 describe("Fetch budgets and Movimentations by project", () => {
   beforeEach(() => {
-    inMemoryMovimentationRepository = new InMemoryMovimentationRepository();
+    inMemoryContractRepository = new InMemoryContractRepository();
+    inMemoryBaseRepository = new InMemoryBaseRepository(
+      inMemoryContractRepository
+    );
+    inMemoryMaterialRepository = new InMemoryMaterialRepository();
+    inMemoryStorekeeperRepository = new InMemoryStorekeeperRepository(
+      inMemoryBaseRepository
+    );
+    inMemoryEstimatorRepository = new InMemoryEstimatorRepository();
     inMemoryProjectRepository = new InMemoryProjectRepository();
-    inMemoryBudgetRepository = new InMemoryBudgetRepository();
+    inMemoryMovimentationRepository = new InMemoryMovimentationRepository(
+      inMemoryStorekeeperRepository,
+      inMemoryMaterialRepository,
+      inMemoryProjectRepository,
+      inMemoryBaseRepository
+    );
+    inMemoryBudgetRepository = new InMemoryBudgetRepository(
+      inMemoryEstimatorRepository,
+      inMemoryMaterialRepository,
+      inMemoryProjectRepository,
+      inMemoryContractRepository
+    );
     sut = new FetchBudgetMovimentationByProjectUseCase(
       inMemoryMovimentationRepository,
       inMemoryProjectRepository,
@@ -26,17 +61,46 @@ describe("Fetch budgets and Movimentations by project", () => {
   });
 
   it("should be able to fetch budgets and movimentations by project", async () => {
-    const newProject = makeProject({ project_number: "Obra-teste" });
+    // entity creation for details
+    const contract = makeContract();
+    inMemoryContractRepository.create(contract);
 
+    const base = makeBase({ contractId: contract.id });
+    inMemoryBaseRepository.create(base);
+
+    const storekeeper = makeStorekeeper({ baseId: base.id });
+    inMemoryStorekeeperRepository.create(storekeeper);
+
+    const estimator = makeEstimator({ contractId: contract.id });
+    inMemoryEstimatorRepository.create(estimator);
+
+    const material = makeMaterial();
+    inMemoryMaterialRepository.create(material);
+
+    const newProject = makeProject({ project_number: "Obra-teste" });
     await inMemoryProjectRepository.create(newProject);
+
+    const newProject2 = makeProject({ project_number: "Obra-teste2" });
+    await inMemoryProjectRepository.create(newProject2);
 
     const newMovimentation1 = makeMovimentation({
       projectId: newProject.id,
+      baseId: base.id,
+      materialId: material.id,
+      storekeeperId: storekeeper.id,
     });
     const newMovimentation2 = makeMovimentation({
       projectId: newProject.id,
+      baseId: base.id,
+      materialId: material.id,
+      storekeeperId: storekeeper.id,
     });
-    const newMovimentation3 = makeMovimentation({});
+    const newMovimentation3 = makeMovimentation({
+      projectId: newProject2.id,
+      baseId: base.id,
+      materialId: material.id,
+      storekeeperId: storekeeper.id,
+    });
 
     await inMemoryMovimentationRepository.create([
       newMovimentation1,
@@ -46,11 +110,22 @@ describe("Fetch budgets and Movimentations by project", () => {
 
     const newBudget1 = makeBudget({
       projectId: newProject.id,
+      contractId: contract.id,
+      materialId: material.id,
+      estimatorId: estimator.id,
     });
     const newBudget2 = makeBudget({
       projectId: newProject.id,
+      contractId: contract.id,
+      materialId: material.id,
+      estimatorId: estimator.id,
     });
-    const newBudget3 = makeBudget({});
+    const newBudget3 = makeBudget({
+      projectId: newProject2.id,
+      contractId: contract.id,
+      materialId: material.id,
+      estimatorId: estimator.id,
+    });
 
     await inMemoryBudgetRepository.create(newBudget1);
     await inMemoryBudgetRepository.create(newBudget2);
@@ -68,17 +143,44 @@ describe("Fetch budgets and Movimentations by project", () => {
   });
 
   it("should not be able to fetch budgets and movimentations if the project was not found", async () => {
-    const newProject = makeProject({ project_number: "Obra-teste" });
+    // entity creation for details
+    const contract = makeContract();
+    inMemoryContractRepository.create(contract);
 
+    const base = makeBase({ contractId: contract.id });
+    inMemoryBaseRepository.create(base);
+
+    const storekeeper = makeStorekeeper({ baseId: base.id });
+    inMemoryStorekeeperRepository.create(storekeeper);
+
+    const estimator = makeEstimator({ contractId: contract.id });
+    inMemoryEstimatorRepository.create(estimator);
+
+    const material = makeMaterial();
+    inMemoryMaterialRepository.create(material);
+
+    const newProject = makeProject({ project_number: "Obra-teste" });
     await inMemoryProjectRepository.create(newProject);
+
 
     const newMovimentation1 = makeMovimentation({
       projectId: newProject.id,
+      baseId: base.id,
+      materialId: material.id,
+      storekeeperId: storekeeper.id,
     });
     const newMovimentation2 = makeMovimentation({
       projectId: newProject.id,
+      baseId: base.id,
+      materialId: material.id,
+      storekeeperId: storekeeper.id,
     });
-    const newMovimentation3 = makeMovimentation({});
+    const newMovimentation3 = makeMovimentation({
+      projectId: newProject.id,
+      baseId: base.id,
+      materialId: material.id,
+      storekeeperId: storekeeper.id,
+    });
 
     await inMemoryMovimentationRepository.create([
       newMovimentation1,
@@ -88,11 +190,22 @@ describe("Fetch budgets and Movimentations by project", () => {
 
     const newBudget1 = makeBudget({
       projectId: newProject.id,
+      contractId: contract.id,
+      materialId: material.id,
+      estimatorId: estimator.id,
     });
     const newBudget2 = makeBudget({
       projectId: newProject.id,
+      contractId: contract.id,
+      materialId: material.id,
+      estimatorId: estimator.id,
     });
-    const newBudget3 = makeBudget({});
+    const newBudget3 = makeBudget({
+      projectId: newProject.id,
+      contractId: contract.id,
+      materialId: material.id,
+      estimatorId: estimator.id,
+    });
 
     await inMemoryBudgetRepository.create(newBudget1);
     await inMemoryBudgetRepository.create(newBudget2);

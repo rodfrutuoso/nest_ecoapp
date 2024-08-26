@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { Eihter, left, right } from "../../../../../core/either";
-import { Budget } from "../../../enterprise/entities/budget";
-import { Movimentation } from "../../../enterprise/entities/movimentation";
 import { BudgetRepository } from "../../repositories/budget-repository";
 import { MovimentationRepository } from "../../repositories/movimentation-repository";
 import { ProjectRepository } from "../../repositories/project-repository";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
+import { MovimentationWithDetails } from "src/domain/material-movimentation/enterprise/entities/value-objects/movimentation-with-details";
+import { BudgetWithDetails } from "src/domain/material-movimentation/enterprise/entities/value-objects/budget-with-details";
 
 interface FetchBudgetMovimentationByProjectUseCaseRequest {
   project_number: string;
@@ -14,8 +14,8 @@ interface FetchBudgetMovimentationByProjectUseCaseRequest {
 type FetchBudgetMovimentationByProjectUseCaseResponse = Eihter<
   ResourceNotFoundError,
   {
-    movimentations: Movimentation[];
-    budgets: Budget[];
+    movimentations: MovimentationWithDetails[];
+    budgets: BudgetWithDetails[];
   }
 >;
 
@@ -36,15 +36,14 @@ export class FetchBudgetMovimentationByProjectUseCase {
 
     if (!project) return left(new ResourceNotFoundError());
 
-    const movimentations = await this.movimentationRepository.findByProject(
+    const movimentations =
+      await this.movimentationRepository.findByProjectWithDetails(
+        project.id.toString()
+      );
+
+    const budgets = await this.budgetRepository.findByProjectWithDetails(
       project.id.toString()
     );
-
-    const budgets = await this.budgetRepository.findByProject(
-      project.id.toString()
-    );
-
-    // if (!movimentations.length) return left(new ResourceNotFoundError());
 
     return right({ movimentations, budgets });
   }
