@@ -58,9 +58,9 @@ describe("Fetch Materials (E2E)", () => {
     });
 
     const response = await request(app.getHttpServer())
-      .get("/materials")
+      .get(`/materials?contractId=${contractId}&type=concreto`)
       .set("Authorization", `Bearer ${accessToken}`)
-      .send({ contractId, type: "concreto" });
+      .send();
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({

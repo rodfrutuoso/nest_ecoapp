@@ -44,14 +44,12 @@ Authorization: Bearer {{authToken}}
 ###
 
 # @name fetch_materials
-GET {{baseURL}}/materials?page=1
+GET {{baseURL}}/materials
+?page=1
+&contractId=352275c2-c358-4367-8f97-b21de8a170da
+&type=FERRAGEM
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
-
-{
-    "type": "FERRAGEM",
-    "contractId": "352275c2-c358-4367-8f97-b21de8a170da"
-}
 
 ###
 

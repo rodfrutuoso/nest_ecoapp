@@ -4,30 +4,46 @@ import {
   NotFoundException,
   Query,
 } from "@nestjs/common";
-import { Body, Controller, HttpCode } from "@nestjs/common";
+import { Controller, HttpCode } from "@nestjs/common";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { FetchMaterialUseCase } from "src/domain/material-movimentation/application/use-cases/material/fetch-material";
 import { MaterialPresenter } from "../../../presenters/material-presenter";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
+import { ApiProperty } from "@nestjs/swagger";
 
-const fetchMaterialBodySchema = z.object({
+const fetchMaterialQuerySchema = z.object({
+  page: z
+    .string()
+    .optional()
+    .default("1")
+    .transform(Number)
+    .pipe(z.number().min(1)),
   type: z.string().optional(),
   contractId: z.string().uuid(),
 });
 
-type FetchMaterialBodySchema = z.infer<typeof fetchMaterialBodySchema>;
-
-const pageQueryParamSchema = z
-  .string()
-  .optional()
-  .default("1")
-  .transform(Number)
-  .pipe(z.number().min(1));
-
-const queryValidationPipe = new ZodValidationPipe(pageQueryParamSchema);
-
-type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>;
+class FetchMaterialQuerySchema {
+  @ApiProperty({
+    example: "1",
+    description: "Page number for pagination",
+    required: false,
+    default: 1,
+    minimum: 1,
+  })
+  page!: number;
+  @ApiProperty({
+    example: "user-id",
+    description: "user's id that made the movimentation",
+    required: false,
+  })
+  type!: string;
+  @ApiProperty({
+    example: "cotnract-id",
+    description: "cotnract's id of the material",
+  })
+  contractId!: string;
+}
 
 @Controller("/materials")
 export class FetchMaterialController {
@@ -36,11 +52,10 @@ export class FetchMaterialController {
   @Get()
   @HttpCode(200)
   async handle(
-    @Query("page", queryValidationPipe) page: PageQueryParamSchema,
-    @Body(new ZodValidationPipe(fetchMaterialBodySchema))
-    body: FetchMaterialBodySchema
+    @Query(new ZodValidationPipe(fetchMaterialQuerySchema))
+    query: FetchMaterialQuerySchema
   ) {
-    const { type, contractId } = body;
+    const { page, type, contractId } = query;
 
     const result = await this.fetchMaterialUseCase.execute({
       contractId,
