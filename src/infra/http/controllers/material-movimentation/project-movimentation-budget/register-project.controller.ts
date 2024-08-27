@@ -4,6 +4,7 @@ import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { RegisterProjectUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/register-project";
 import { ResourceAlreadyRegisteredError } from "src/domain/material-movimentation/application/use-cases/errors/resource-already-registered-error";
+import { ApiTags } from "@nestjs/swagger";
 
 const registerProjectBodySchema = z
   .object({
@@ -17,6 +18,7 @@ const registerProjectBodySchema = z
 
 type RegisterProjectBodySchema = z.infer<typeof registerProjectBodySchema>;
 
+@ApiTags("project")
 @Controller("/projects")
 export class RegisterProjectController {
   constructor(private registerProject: RegisterProjectUseCase) {}

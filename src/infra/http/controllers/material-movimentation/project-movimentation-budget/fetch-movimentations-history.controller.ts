@@ -11,7 +11,7 @@ import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { FetchMovimentationHistoryUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/fetch-movimentations-history";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { MovimentationWithDetailsPresenter } from "src/infra/http/presenters/movimentation-with-details-presenter";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiTags } from "@nestjs/swagger";
 
 const fetchMovimentationHistoryBodySchema = z.object({
   page: z.string()
@@ -67,6 +67,7 @@ class FetchMovimentationHistoryQueryDto {
   endDate!: Date;
 }
 
+@ApiTags("movimentation")
 @Controller("/movimentations/:baseId")
 export class FetchMovimentationHistoryController {
   constructor(

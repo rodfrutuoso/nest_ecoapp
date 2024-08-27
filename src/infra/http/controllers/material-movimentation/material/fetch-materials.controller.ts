@@ -10,7 +10,7 @@ import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { FetchMaterialUseCase } from "src/domain/material-movimentation/application/use-cases/material/fetch-material";
 import { MaterialPresenter } from "../../../presenters/material-presenter";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiTags } from "@nestjs/swagger";
 
 const fetchMaterialQuerySchema = z.object({
   page: z
@@ -45,6 +45,7 @@ class FetchMaterialQuerySchema {
   contractId!: string;
 }
 
+@ApiTags("material")
 @Controller("/materials")
 export class FetchMaterialController {
   constructor(private fetchMaterialUseCase: FetchMaterialUseCase) {}

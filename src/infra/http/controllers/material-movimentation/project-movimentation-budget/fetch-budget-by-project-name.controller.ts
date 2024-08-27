@@ -10,7 +10,7 @@ import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { FetchBudgetByProjectNameUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/fetch-budget-by-project-name";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { BudgetWithDetailsPresenter } from "src/infra/http/presenters/budget-with-details";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiTags } from "@nestjs/swagger";
 
 const fetchBudgetByProjectNameBodySchema = z
   .object({
@@ -26,6 +26,7 @@ class FetchBudgetByProjectNameQuerySchema {
   project_number!: string;
 }
 
+@ApiTags("budgets")
 @Controller("/budgets")
 export class FetchBudgetByProjectNameController {
   constructor(

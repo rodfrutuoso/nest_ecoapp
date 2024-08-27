@@ -8,6 +8,7 @@ import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { RegisterStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/register-storekeeper";
 import { ResourceAlreadyRegisteredError } from "src/domain/material-movimentation/application/use-cases/errors/resource-already-registered-error";
+import { ApiProperty, ApiTags } from "@nestjs/swagger";
 
 const createAccountBodySchema = z.object({
   name: z.string(),
@@ -16,11 +17,49 @@ const createAccountBodySchema = z.object({
   cpf: z.string().regex(/^\d{11,}$/, "O CPF precisa ter 11 dígitos"),
   type: z.string(),
   baseId: z.string().uuid(),
-  contractId: z.string().optional(),
+  contractId: z.string().uuid().optional(),
 });
 
-type CreateAccountBodySchema = z.infer<typeof createAccountBodySchema>;
+class CreateAccountBodySchema {
+  @ApiProperty({
+    example: "João da Silva",
+    description: "user's name",
+  })
+  name!: string;
+  @ApiProperty({
+    example: "joaosilva@ecoeletrica.com.br",
+    description: "user's email in Ecoelétrica's domain",
+  })
+  email!: string;
+  @ApiProperty({
+    example: "12345678912",
+    description: "user's CPF, just number with the zeros",
+  })
+  cpf!: string;
+  @ApiProperty({
+    example: "Administrator/Storkeeper/Estimator",
+    description: "establish the type of access of the user",
+  })
+  type!: string;
+  @ApiProperty({
+    example: "base-id",
+    description: "base's id that a storekeeper que interect. undefined if the user is not a storekeeper",
+  })
+  baseId!: string;
+  @ApiProperty({
+    example: "contract-id",
+    description: "contract's id that a estimator que interect. undefined if the user is not a estimator",
+    required: false,
+  })
+  contractId!: string;
+  @ApiProperty({
+    example: "password123",
+    description: "user's password",
+  })
+  password!: string;
+}
 
+@ApiTags("users")
 @Controller("/accounts")
 export class CreateAccountController {
   constructor(private registerStorekeeper: RegisterStorekeeperUseCase) {}

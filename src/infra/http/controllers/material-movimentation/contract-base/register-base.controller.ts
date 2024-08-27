@@ -4,6 +4,7 @@ import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { RegisterBaseUseCase } from "src/domain/material-movimentation/application/use-cases/contract-base/register-base";
 import { ResourceAlreadyRegisteredError } from "src/domain/material-movimentation/application/use-cases/errors/resource-already-registered-error";
+import { ApiProperty, ApiTags } from "@nestjs/swagger";
 
 const registerBaseBodySchema = z
   .object({
@@ -12,8 +13,20 @@ const registerBaseBodySchema = z
   })
   .required();
 
-type RegisterBaseBodySchema = z.infer<typeof registerBaseBodySchema>;
+class RegisterBaseBodySchema {
+  @ApiProperty({
+    example: "Itaberaba",
+    description: "Name of the base",
+  })
+  baseName!: string;
+  @ApiProperty({
+    example: "contract-id",
+    description: "contract's id of that base",
+  })
+  contractId!: string;
+}
 
+@ApiTags("base")
 @Controller("/bases")
 export class RegisterBaseController {
   constructor(private registerBase: RegisterBaseUseCase) {}

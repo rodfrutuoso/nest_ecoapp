@@ -11,15 +11,21 @@ import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { UnitizePhysicalDocumentUseCase } from "src/domain/material-movimentation/application/use-cases/physicalDocument/unitize-physical-document";
 import { NotAllowedError } from "src/domain/material-movimentation/application/use-cases/errors/not-allowed-error";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
+import { ApiProperty, ApiTags } from "@nestjs/swagger";
 
 const unitizePhysicalDocumentBodySchema = z.object({
   unitized: z.boolean(),
 });
 
-type UnitizePhysicalDocumentBodySchema = z.infer<
-  typeof unitizePhysicalDocumentBodySchema
->;
+class UnitizePhysicalDocumentBodySchema {
+  @ApiProperty({
+    example: true,
+    description: "edit if a project is unitized or not",
+  })
+  unitized!: boolean;
+}
 
+@ApiTags("physical document")
 @Controller("/physical-documents/:id")
 export class UnitizePhysicalDocumentController {
   constructor(

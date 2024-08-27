@@ -10,7 +10,7 @@ import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { FetchStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/fetch-storekeeper";
 import { UserWithBaseContractPresenter } from "src/infra/http/presenters/user-with-base-contract-presenter";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiTags } from "@nestjs/swagger";
 
 const fetchAccountsBodySchema = z.object({
   page: z
@@ -39,6 +39,7 @@ class FetchAccountsQueryDto {
   baseId!: string;
 }
 
+@ApiTags("users")
 @Controller("/accounts")
 export class FetchAccountsController {
   constructor(private FetchStorekeeper: FetchStorekeeperUseCase) {}

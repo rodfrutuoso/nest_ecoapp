@@ -10,6 +10,7 @@ import {
   import { FetchBaseUseCase } from "src/domain/material-movimentation/application/use-cases/contract-base/fetch-base";
   import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
   import { BasePresenter } from "src/infra/http/presenters/base-presenter";
+import { ApiTags } from "@nestjs/swagger";
   
   const pageQueryParamSchema = z
     .string()
@@ -22,6 +23,7 @@ import {
   
   type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>;
   
+  @ApiTags("base")
   @Controller("/bases")
   export class FetchBaseController {
     constructor(private fetchBaseUseCase: FetchBaseUseCase) {}

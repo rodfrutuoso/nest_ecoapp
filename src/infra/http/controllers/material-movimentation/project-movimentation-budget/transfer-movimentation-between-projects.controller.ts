@@ -6,6 +6,7 @@ import { CurrentUser } from "src/infra/auth/current-user.decorator";
 import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
 import { TransferMovimentationBetweenProjectsUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/transfer-movimentation-between-projects";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
+import { ApiBody, ApiProperty, ApiTags } from "@nestjs/swagger";
 
 const transferMovimentationBetweenProjectsBodySchema = z.array(
   z
@@ -20,10 +21,41 @@ const transferMovimentationBetweenProjectsBodySchema = z.array(
     .required()
 );
 
-type TransferMovimentationBetweenProjectsBodySchema = z.infer<
-  typeof transferMovimentationBetweenProjectsBodySchema
->;
+// for swagger
+class TransferMovimentationBetweenProjectsBodySchemaDto {
+  @ApiProperty({
+    example: "material-id",
+    description: "material's ID to be transfer",
+  })
+  materialId!: string;
+  @ApiProperty({
+    example: "project-out-id",
+    description: "project's ID that the material will be output from",
+  })
+  projectIdOut!: string;
+  @ApiProperty({
+    example: "project-in-id",
+    description: "project's ID that the material will go into",
+  })
+  projectIdIn!: string;
+  @ApiProperty({
+    example: "o material estava com a embalagem rasgada",
+    description: "observation of the transfer of that material",
+  })
+  observation!: string;
+  @ApiProperty({
+    example: "base-id",
+    description: "base's ID of the storekeeper",
+  })
+  baseId!: string;
+  @ApiProperty({
+    example: 3,
+    description: "value to be transfer",
+  })
+  value!: number;
+}
 
+@ApiTags("movimentation")
 @Controller("/transfer-movimentation")
 export class TransferMovimentationBetweenProjectsController {
   constructor(
@@ -32,12 +64,16 @@ export class TransferMovimentationBetweenProjectsController {
 
   @Post()
   @HttpCode(201)
+  @ApiBody({
+    type: TransferMovimentationBetweenProjectsBodySchemaDto,
+    isArray: true,
+  }) // for swagger
   async handle(
     @CurrentUser() user: UserPayload,
     @Body(new ZodValidationPipe(transferMovimentationBetweenProjectsBodySchema))
-    body: TransferMovimentationBetweenProjectsBodySchema
+    body: TransferMovimentationBetweenProjectsBodySchemaDto[]
   ) {
-    const transferMovimentationBetweenProjectsRequest: TransferMovimentationBetweenProjectsBodySchema =
+    const transferMovimentationBetweenProjectsRequest: TransferMovimentationBetweenProjectsBodySchemaDto[] =
       body;
 
     const result = await this.transferMovimentationBetweenProjects.execute(

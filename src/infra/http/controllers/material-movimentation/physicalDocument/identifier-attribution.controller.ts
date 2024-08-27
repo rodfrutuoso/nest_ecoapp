@@ -8,16 +8,27 @@ import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { IdentifierAttributionUseCase } from "src/domain/material-movimentation/application/use-cases/physicalDocument/identifier-attribution";
 import { ResourceAlreadyRegisteredError } from "src/domain/material-movimentation/application/use-cases/errors/resource-already-registered-error";
+import { ApiProperty, ApiTags } from "@nestjs/swagger";
 
 const identifierAttributionBodySchema = z.object({
   projectId: z.string().uuid(),
   identifier: z.number().min(1).max(1000),
 });
 
-type IdentifierAttributionBodySchema = z.infer<
-  typeof identifierAttributionBodySchema
->;
+class IdentifierAttributionBodySchema {
+  @ApiProperty({
+    example: "project-id",
+    description: "project's id of the physical document",
+  })
+  projectId!: string;
+  @ApiProperty({
+    example: 3,
+    description: "ID or identifier of the physical document",
+  })
+  identifier!: number;
+}
 
+@ApiTags("physical document")
 @Controller("/physical-documents")
 export class IdentifierAttributionController {
   constructor(private identifierAttribution: IdentifierAttributionUseCase) {}

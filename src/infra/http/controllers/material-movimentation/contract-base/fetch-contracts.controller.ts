@@ -11,6 +11,7 @@ import { FetchContractUseCase } from "src/domain/material-movimentation/applicat
 import { MaterialPresenter } from "../../../presenters/material-presenter";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { ContractPresenter } from "src/infra/http/presenters/contract-presenter";
+import { ApiTags } from "@nestjs/swagger";
 
 const pageQueryParamSchema = z
   .string()
@@ -23,6 +24,7 @@ const queryValidationPipe = new ZodValidationPipe(pageQueryParamSchema);
 
 type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>;
 
+@ApiTags("contract")
 @Controller("/contracts")
 export class FetchContractController {
   constructor(private fetchContractUseCase: FetchContractUseCase) {}

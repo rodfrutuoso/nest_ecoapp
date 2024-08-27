@@ -5,6 +5,7 @@ import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { CurrentUser } from "src/infra/auth/current-user.decorator";
 import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
 import { TransferMaterialUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/transfer-material";
+import { ApiBody, ApiProperty, ApiTags } from "@nestjs/swagger";
 
 const transferMaterialBodySchema = z.array(
   z
@@ -18,20 +19,51 @@ const transferMaterialBodySchema = z.array(
     .required()
 );
 
-type TransferMaterialBodySchema = z.infer<typeof transferMaterialBodySchema>;
+class TransferMaterialBodySchema {
+  @ApiProperty({
+    example: "material-id",
+    description: "material's ID to be movimentated",
+  })
+  materialId!: string;
+  @ApiProperty({
+    example: "project-id",
+    description: "project's ID that the material movimentated will be associate",
+  })
+  projectId!: string;
+  @ApiProperty({
+    example: "o material estava com a embalagem rasgada",
+    description: "observation of the transfer of that material",
+  })
+  observation!: string;
+  @ApiProperty({
+    example: "base-id",
+    description: "base's ID of the storekeeper",
+  })
+  baseId!: string;
+  @ApiProperty({
+    example: 3,
+    description: "value to be transfer",
+  })
+  value!: number;
+}
 
+@ApiTags("movimentation")
 @Controller("/movimentation")
 export class TransferMaterialController {
   constructor(private transferMaterial: TransferMaterialUseCase) {}
 
   @Post()
   @HttpCode(201)
+  @ApiBody({
+    type: TransferMaterialBodySchema,
+    isArray: true,
+  }) // for swagger
   async handle(
     @CurrentUser() user: UserPayload,
     @Body(new ZodValidationPipe(transferMaterialBodySchema))
-    body: TransferMaterialBodySchema
+    body: TransferMaterialBodySchema[]
   ) {
-    const transferMaterialRequest: TransferMaterialBodySchema = body;
+    const transferMaterialRequest: TransferMaterialBodySchema[] = body;
 
     const result = await this.transferMaterial.execute(
       transferMaterialRequest.map((item) => {

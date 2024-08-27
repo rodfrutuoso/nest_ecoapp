@@ -6,6 +6,7 @@ import { CurrentUser } from "src/infra/auth/current-user.decorator";
 import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
 import { CreateMaterialUseCase } from "src/domain/material-movimentation/application/use-cases/material/create-material";
 import { ResourceAlreadyRegisteredError } from "src/domain/material-movimentation/application/use-cases/errors/resource-already-registered-error";
+import { ApiProperty, ApiTags } from "@nestjs/swagger";
 
 const createMaterialBodySchema = z
   .object({
@@ -17,8 +18,35 @@ const createMaterialBodySchema = z
   })
   .required();
 
-type CreateMaterialBodySchema = z.infer<typeof createMaterialBodySchema>;
+class CreateMaterialBodySchema {
+  @ApiProperty({
+    example: 123456,
+    description: "material's code. Has to be number",
+  })
+  code!: number;
+  @ApiProperty({
+    example: "CABO 4CAA ALMU",
+    description: "material's description",
+  })
+  description!: string;
+  @ApiProperty({
+    example: "FERRAGEM",
+    description: "It's one of the following types: FERRAGEM/CONCRETO/EQUIPAMENTO",
+  })
+  type!: string;
+  @ApiProperty({
+    example: "CDA",
+    description: "The unit of the material. Could be M, CDA, UN, KG etc",
+  })
+  unit!: string;
+  @ApiProperty({
+    example: "contract-id",
+    description: "contract's id of the material",
+  })
+  contractId!: string;
+}
 
+@ApiTags("material")
 @Controller("/materials")
 export class CreateMaterialController {
   constructor(private createMaterial: CreateMaterialUseCase) {}

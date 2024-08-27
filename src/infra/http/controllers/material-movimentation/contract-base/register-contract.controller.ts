@@ -4,6 +4,7 @@ import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { RegisterContractUseCase } from "src/domain/material-movimentation/application/use-cases/contract-base/register-contract";
 import { ResourceAlreadyRegisteredError } from "src/domain/material-movimentation/application/use-cases/errors/resource-already-registered-error";
+import { ApiProperty, ApiTags } from "@nestjs/swagger";
 
 const registerContractBodySchema = z
   .object({
@@ -11,8 +12,15 @@ const registerContractBodySchema = z
   })
   .required();
 
-type RegisterContractBodySchema = z.infer<typeof registerContractBodySchema>;
+class RegisterContractBodySchema {
+  @ApiProperty({
+    example: "Centro-Oeste",
+    description: "Name of the contract",
+  })
+  contractName!: string;
+}
 
+@ApiTags("contract")
 @Controller("/contracts")
 export class RegisterContractController {
   constructor(private registerContract: RegisterContractUseCase) {}

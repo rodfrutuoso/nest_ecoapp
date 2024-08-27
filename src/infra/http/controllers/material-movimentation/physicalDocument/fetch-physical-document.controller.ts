@@ -10,7 +10,7 @@ import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { FetchPhysicalDocumentUseCase } from "src/domain/material-movimentation/application/use-cases/physicalDocument/fetch-physical-document";
 import { PhysicalDocumentWithProjectPresenter } from "src/infra/http/presenters/physical-document-with-project-presenter";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiTags } from "@nestjs/swagger";
 
 const fetchPhysicalDocumentsBodySchema = z.object({
   page: z
@@ -50,6 +50,7 @@ class FetchPhysicalDocumentsQuerySchema {
   identifier!: number;
 }
 
+@ApiTags("physical document")
 @Controller("/physical-documents")
 export class FetchPhysicalDocumentsController {
   constructor(private FetchPhysicalDocument: FetchPhysicalDocumentUseCase) {}

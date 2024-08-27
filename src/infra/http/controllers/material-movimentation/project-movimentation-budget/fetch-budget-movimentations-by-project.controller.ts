@@ -11,7 +11,7 @@ import { FetchBudgetMovimentationByProjectUseCase } from "src/domain/material-mo
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { MovimentationWithDetailsPresenter } from "src/infra/http/presenters/movimentation-with-details-presenter";
 import { BudgetWithDetailsPresenter } from "src/infra/http/presenters/budget-with-details";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiTags } from "@nestjs/swagger";
 
 const fetchBudgetMovimentationByProjectQuerySchema = z.object({
   project_number: z.string(),
@@ -25,6 +25,7 @@ class FetchBudgetMovimentationByProjectQueryDto {
   project_number!: string;
 }
 
+@ApiTags("movimentation")
 @Controller("/movimentations-budgets")
 export class FetchBudgetMovimentationByProjectController {
   constructor(

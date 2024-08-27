@@ -9,7 +9,9 @@ import { CurrentUser } from "src/infra/auth/current-user.decorator";
 import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
 import { DeleteStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/delete-storekeeper";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
+import { ApiTags } from "@nestjs/swagger";
 
+@ApiTags("users")
 @Controller("/accounts/:id")
 export class DeleteAccountController {
   constructor(private deleteStorekeeper: DeleteStorekeeperUseCase) {}
