@@ -1,10 +1,16 @@
-import { BadRequestException, Get, NotFoundException } from "@nestjs/common";
-import { Body, Controller, HttpCode } from "@nestjs/common";
+import {
+  BadRequestException,
+  Get,
+  NotFoundException,
+  Query,
+} from "@nestjs/common";
+import { Controller, HttpCode } from "@nestjs/common";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { FetchBudgetByProjectNameUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/fetch-budget-by-project-name";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { BudgetWithDetailsPresenter } from "src/infra/http/presenters/budget-with-details";
+import { ApiProperty } from "@nestjs/swagger";
 
 const fetchBudgetByProjectNameBodySchema = z
   .object({
@@ -12,9 +18,13 @@ const fetchBudgetByProjectNameBodySchema = z
   })
   .required();
 
-type FetchBudgetByProjectNameBodySchema = z.infer<
-  typeof fetchBudgetByProjectNameBodySchema
->;
+export class FetchBudgetByProjectNameQuerySchema {
+  @ApiProperty({
+    example: "B-1234567",
+    description: "project identification number",
+  })
+  project_number!: string;
+}
 
 @Controller("/budgets")
 export class FetchBudgetByProjectNameController {
@@ -25,10 +35,10 @@ export class FetchBudgetByProjectNameController {
   @Get()
   @HttpCode(200)
   async handle(
-    @Body(new ZodValidationPipe(fetchBudgetByProjectNameBodySchema))
-    body: FetchBudgetByProjectNameBodySchema
+    @Query(new ZodValidationPipe(fetchBudgetByProjectNameBodySchema))
+    query: FetchBudgetByProjectNameQuerySchema
   ) {
-    const { project_number } = body;
+    const { project_number } = query;
 
     const result = await this.fetchBudgetByProjectNameUseCase.execute({
       project_number,

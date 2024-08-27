@@ -9,7 +9,6 @@ import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { FetchStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/fetch-storekeeper";
-import { UserPresenter } from "src/infra/http/presenters/user-presentar";
 import { UserWithBaseContractPresenter } from "src/infra/http/presenters/user-with-base-contract-presenter";
 
 const fetchAccountsBodySchema = z.object({

@@ -248,7 +248,8 @@ Authorization: Bearer {{authToken}}
 ###
 
 # @name fetch_movimentations
-GET {{baseURL}}/movimentations/dbe82710-e5e8-449a-ba49-471b356f808d?materialId=7a7b5a91-e91a-4340-8a5f-5e1acdf502f8
+GET {{baseURL}}/movimentations/dbe82710-e5e8-449a-ba49-471b356f808d
+?materialId=7a7b5a91-e91a-4340-8a5f-5e1acdf502f8
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
@@ -256,7 +257,8 @@ Authorization: Bearer {{authToken}}
 ###
 
 # @name fetch_movimentations_budgets
-GET {{baseURL}}/movimentations/budgets/B-12345678
+GET {{baseURL}}/movimentations-budgets
+?project_number=B-12345678
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
@@ -265,9 +267,6 @@ Authorization: Bearer {{authToken}}
 
 # @name fetch_budgets
 GET {{baseURL}}/budgets
+?project_number=B-12345678
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
-
-{
-    "project_number": "B-12345678"
-}

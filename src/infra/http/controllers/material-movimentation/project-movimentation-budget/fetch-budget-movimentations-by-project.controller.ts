@@ -2,21 +2,20 @@ import {
   BadRequestException,
   Get,
   NotFoundException,
-  Param,
+  Query,
 } from "@nestjs/common";
 import { Controller, HttpCode } from "@nestjs/common";
 import { z } from "zod";
+import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { FetchBudgetMovimentationByProjectUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/fetch-budget-movimentations-by-project";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { MovimentationWithDetailsPresenter } from "src/infra/http/presenters/movimentation-with-details-presenter";
 import { BudgetWithDetailsPresenter } from "src/infra/http/presenters/budget-with-details";
 import { ApiProperty } from "@nestjs/swagger";
 
-const fetchBudgetMovimentationByProjectBodySchema = z
-  .object({
-    project_number: z.string(),
-  })
-  .required();
+const fetchBudgetMovimentationByProjectQuerySchema = z.object({
+  project_number: z.string(),
+});
 
 export class FetchBudgetMovimentationByProjectQueryDto {
   @ApiProperty({
@@ -26,7 +25,7 @@ export class FetchBudgetMovimentationByProjectQueryDto {
   project_number!: string;
 }
 
-@Controller("/movimentations/budgets/:project_number")
+@Controller("/movimentations-budgets")
 export class FetchBudgetMovimentationByProjectController {
   constructor(
     private fetchBudgetMovimentationByProjectUseCase: FetchBudgetMovimentationByProjectUseCase
@@ -34,7 +33,12 @@ export class FetchBudgetMovimentationByProjectController {
 
   @Get()
   @HttpCode(200)
-  async handle(@Param("project_number") project_number: string) {
+  async handle(
+    @Query(new ZodValidationPipe(fetchBudgetMovimentationByProjectQuerySchema))
+    query: FetchBudgetMovimentationByProjectQueryDto
+  ) {
+    const { project_number } = query;
+
     const result = await this.fetchBudgetMovimentationByProjectUseCase.execute({
       project_number,
     });
