@@ -48,9 +48,9 @@ describe("Fetch and Budget By Project Name (E2E)", () => {
     await budgetFactory.makeBqBudget({ projectId: project.id });
 
     const response = await request(app.getHttpServer())
-      .get("/budgets")
+      .get(`/budgets?project_number=${project.project_number}`)
       .set("Authorization", `Bearer ${accessToken}`)
-      .send({ project_number: "B-teste" });
+      .send();
 
     expect(response.statusCode).toBe(200);
     expect(response.body.budgets).toHaveLength(3);

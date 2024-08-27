@@ -84,13 +84,11 @@ Authorization: Bearer {{authToken}}
 ###
 
 # @name fetch_account
-GET {{baseURL}}/accounts?page=1
+GET {{baseURL}}/accounts
+?page=1
+&baseId=dbe82710-e5e8-449a-ba49-471b356f808d
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
-
-{
-    "baseId": "352275c2-c358-4367-8f97-b21de8a170da"
-}
 
 
 ###

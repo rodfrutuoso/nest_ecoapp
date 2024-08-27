@@ -7,6 +7,7 @@ import { JwtService } from "@nestjs/jwt";
 import { randomUUID } from "crypto";
 import { StorekeeperFactory } from "test/factories/make-storekeeper";
 import { DatabaseModule } from "src/infra/database/database.module";
+import { makeBase } from "test/factories/make-base";
 
 describe("Fetch Accounts (E2E)", () => {
   let app: INestApplication;
@@ -30,19 +31,27 @@ describe("Fetch Accounts (E2E)", () => {
   });
 
   test("[GET] /accounts", async () => {
+    const base = makeBase();
+
     const user = await storekeeperFactory.makeBqStorekeeper({
       name: "rodrigo",
+      baseId: base.id,
     });
-    await storekeeperFactory.makeBqStorekeeper({ name: "max" });
-    await storekeeperFactory.makeBqStorekeeper({ name: "rafael" });
+    await storekeeperFactory.makeBqStorekeeper({
+      name: "max",
+      baseId: base.id,
+    });
+    await storekeeperFactory.makeBqStorekeeper({
+      name: "rafael",
+      baseId: base.id,
+    });
 
     const accessToken = jwt.sign({ sub: user.id.toString() });
-    const contractId = randomUUID();
 
     const response = await request(app.getHttpServer())
-      .get("/accounts?page=1")
+      .get(`/accounts?baseId=${base.id}`)
       .set("Authorization", `Bearer ${accessToken}`)
-      .send({ contractId, type: "concreto" });
+      .send();
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({

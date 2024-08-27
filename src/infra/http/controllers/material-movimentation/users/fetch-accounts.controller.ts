@@ -10,23 +10,34 @@ import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { FetchStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/fetch-storekeeper";
 import { UserWithBaseContractPresenter } from "src/infra/http/presenters/user-with-base-contract-presenter";
+import { ApiProperty } from "@nestjs/swagger";
 
 const fetchAccountsBodySchema = z.object({
-  baseId: z.string().uuid().optional(),
-});
-
-type FetchAccountsBodySchema = z.infer<typeof fetchAccountsBodySchema>;
-
-const pageQueryParamSchema = z
+  page: z
   .string()
   .optional()
   .default("1")
   .transform(Number)
-  .pipe(z.number().min(1));
+  .pipe(z.number().min(1)),
+  baseId: z.string().uuid().optional(),
+});
 
-const queryValidationPipe = new ZodValidationPipe(pageQueryParamSchema);
-
-type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>;
+export class FetchAccountsQueryDto {
+  @ApiProperty({
+    example: "1",
+    description: "Page number for pagination",
+    required: false,
+    default: 1,
+    minimum: 1,
+  })
+  page!: number;
+  @ApiProperty({
+    example: "user-id",
+    description: "user's id",
+    required: false,
+  })
+  baseId!: string;
+}
 
 @Controller("/accounts")
 export class FetchAccountsController {
@@ -35,11 +46,10 @@ export class FetchAccountsController {
   @Get()
   @HttpCode(200)
   async handle(
-    @Query("page", queryValidationPipe) page: PageQueryParamSchema,
-    @Body(new ZodValidationPipe(fetchAccountsBodySchema))
-    body: FetchAccountsBodySchema
+    @Query(new ZodValidationPipe(fetchAccountsBodySchema))
+    query: FetchAccountsQueryDto
   ) {
-    const { baseId } = body;
+    const { page, baseId } = query;
 
     const result = await this.FetchStorekeeper.execute({
       page,
