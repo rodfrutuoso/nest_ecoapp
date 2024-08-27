@@ -64,9 +64,9 @@ describe("Fetch Movimentation and Budget By Project Name (E2E)", () => {
     await budgetFactory.makeBqBudget({ projectId: project.id });
 
     const response = await request(app.getHttpServer())
-      .get("/movimentations/budgets")
+      .get("/movimentations/budgets/B-teste")
       .set("Authorization", `Bearer ${accessToken}`)
-      .send({ project_number: "B-teste" });
+      .send();
 
     expect(response.statusCode).toBe(200);
     expect(response.body.movimentations).toHaveLength(2);
