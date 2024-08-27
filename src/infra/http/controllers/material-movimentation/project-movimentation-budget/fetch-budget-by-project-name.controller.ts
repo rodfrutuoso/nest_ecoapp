@@ -18,7 +18,7 @@ const fetchBudgetByProjectNameBodySchema = z
   })
   .required();
 
-export class FetchBudgetByProjectNameQuerySchema {
+class FetchBudgetByProjectNameQuerySchema {
   @ApiProperty({
     example: "B-1234567",
     description: "project identification number",

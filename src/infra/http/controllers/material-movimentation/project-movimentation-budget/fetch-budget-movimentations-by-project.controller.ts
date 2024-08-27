@@ -17,7 +17,7 @@ const fetchBudgetMovimentationByProjectQuerySchema = z.object({
   project_number: z.string(),
 });
 
-export class FetchBudgetMovimentationByProjectQueryDto {
+class FetchBudgetMovimentationByProjectQueryDto {
   @ApiProperty({
     example: "B-1234567",
     description: "project identification number",

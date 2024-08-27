@@ -26,7 +26,7 @@ const fetchMovimentationHistoryBodySchema = z.object({
   endDate: z.date().optional(),
 });
 
-export class FetchMovimentationHistoryQueryDto {
+class FetchMovimentationHistoryQueryDto {
   @ApiProperty({
     example: "1",
     description: "Page number for pagination",

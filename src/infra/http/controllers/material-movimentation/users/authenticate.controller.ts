@@ -18,7 +18,7 @@ const authenticateBodySchema = z
   })
   .required();
 
-export class AuthenticateBodyDto{
+class AuthenticateBodyDto{
   @ApiProperty({
     description: 'Email of the user',
     example: 'colaborador@ecoeletrica.com.br',

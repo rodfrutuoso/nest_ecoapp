@@ -41,9 +41,9 @@ describe("Fetch Physical Documents (E2E)", () => {
     const accessToken = jwt.sign({ sub: user.id.toString() });
 
     const response = await request(app.getHttpServer())
-      .get("/physical-documents?page=1")
+      .get("/physical-documents?identifier=2")
       .set("Authorization", `Bearer ${accessToken}`)
-      .send({ identifier: 2 });
+      .send();
 
     expect(response.statusCode).toBe(200);
     expect(response.body.physicalDocuments).toHaveLength(3);

@@ -22,7 +22,7 @@ const fetchAccountsBodySchema = z.object({
   baseId: z.string().uuid().optional(),
 });
 
-export class FetchAccountsQueryDto {
+class FetchAccountsQueryDto {
   @ApiProperty({
     example: "1",
     description: "Page number for pagination",
