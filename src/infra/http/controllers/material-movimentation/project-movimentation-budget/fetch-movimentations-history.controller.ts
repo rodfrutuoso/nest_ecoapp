@@ -2,17 +2,18 @@ import {
   BadRequestException,
   Get,
   NotFoundException,
+  Param,
   Query,
 } from "@nestjs/common";
-import { Body, Controller, HttpCode } from "@nestjs/common";
+import { Controller, HttpCode } from "@nestjs/common";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { FetchMovimentationHistoryUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/fetch-movimentations-history";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { MovimentationWithDetailsPresenter } from "src/infra/http/presenters/movimentation-with-details-presenter";
+import { ApiProperty } from "@nestjs/swagger";
 
 const fetchMovimentationHistoryBodySchema = z.object({
-  baseId: z.string(),
   userId: z.string().uuid().optional(),
   projectId: z.string().uuid().optional(),
   materialId: z.string().uuid().optional(),
@@ -20,9 +21,38 @@ const fetchMovimentationHistoryBodySchema = z.object({
   endDate: z.date().optional(),
 });
 
-type FetchMovimentationHistoryBodySchema = z.infer<
-  typeof fetchMovimentationHistoryBodySchema
->;
+export class FetchMovimentationHistoryQueryDto {
+  @ApiProperty({
+    example:"user-id",
+    description:"user's id that made the movimentation",
+    required: false
+  })
+  userId!: string;
+  @ApiProperty({
+    example:"project-id",
+    description:"project's id that was movimetated",
+    required: false
+  })
+  projectId!: string;
+  @ApiProperty({
+    example:"material-id",
+    description:"material's id that was movimetated",
+    required: false
+  })
+  materialId!: string;
+  @ApiProperty({
+    example:"2024-03-31",
+    description:"start date for search",
+    required: false
+  })
+  startDate!: Date;
+  @ApiProperty({
+    example:"2024-03-31",
+    description:"end date for search",
+    required: false
+  })
+  endDate!: Date;
+}
 
 const pageQueryParamSchema = z
   .string()
@@ -35,7 +65,7 @@ const queryValidationPipe = new ZodValidationPipe(pageQueryParamSchema);
 
 type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>;
 
-@Controller("/movimentations")
+@Controller("/movimentations/:baseId")
 export class FetchMovimentationHistoryController {
   constructor(
     private fetchMovimentationHistoryUseCase: FetchMovimentationHistoryUseCase
@@ -44,11 +74,12 @@ export class FetchMovimentationHistoryController {
   @Get()
   @HttpCode(200)
   async handle(
+    @Param("baseId") baseId: string,
     @Query("page", queryValidationPipe) page: PageQueryParamSchema,
-    @Body(new ZodValidationPipe(fetchMovimentationHistoryBodySchema))
-    body: FetchMovimentationHistoryBodySchema
+    @Query(new ZodValidationPipe(fetchMovimentationHistoryBodySchema))
+    query: FetchMovimentationHistoryQueryDto
   ) {
-    const { baseId, projectId, userId, endDate, materialId, startDate } = body;
+    const { projectId, userId, endDate, materialId, startDate } = query;
 
     const result = await this.fetchMovimentationHistoryUseCase.execute({
       page,

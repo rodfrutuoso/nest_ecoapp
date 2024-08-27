@@ -70,9 +70,9 @@ describe("Fetch Movimentation History (E2E)", () => {
     });
 
     const response = await request(app.getHttpServer())
-      .get("/movimentations")
+      .get(`/movimentations/${baseId}`)
       .set("Authorization", `Bearer ${accessToken}`)
-      .send({ baseId });
+      .send();
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({

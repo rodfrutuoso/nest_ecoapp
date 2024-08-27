@@ -248,13 +248,10 @@ Authorization: Bearer {{authToken}}
 ###
 
 # @name fetch_movimentations
-GET {{baseURL}}/movimentations?page=1
+GET {{baseURL}}/movimentations/dbe82710-e5e8-449a-ba49-471b356f808d?materialId=7a7b5a91-e91a-4340-8a5f-5e1acdf502f8
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
-{
-    "baseId": "dbe82710-e5e8-449a-ba49-471b356f808d"
-}
 
 ###
 
