@@ -12,3 +12,6 @@
 
 # Test 1 file
 - pnpm vitest run .\src\infra\http\controllers\get-account-by-id.controller.e2e-spec.ts --config ./vitest.config.e2e.ts 
+
+# Compodoc
+- npx @compodoc/compodoc -p tsconfig.json -s
