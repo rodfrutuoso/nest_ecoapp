@@ -16,7 +16,7 @@ export interface BqUserProps {
   contractId?: string | null;
 
   // relacionamentos
-  base?: BqBaseProps
+  base?: BqBaseProps;
 }
 
 @Injectable()
