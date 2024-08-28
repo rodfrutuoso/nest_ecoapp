@@ -3,6 +3,8 @@
 - Verify if DDD errors are comunicating to nest excepetion errors
 - budget fetch use cases needs contractId on search
 - transfer-material needs verification if parameters exists
+- ajust history movimentation fetch
+- ajust user fetch
 
 
 # Order

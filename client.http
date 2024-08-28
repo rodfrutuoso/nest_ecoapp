@@ -184,24 +184,24 @@ Authorization: Bearer {{authToken}}
 
 [
     {
-        "materialId": "88b6a558-046d-47bf-be45-11fccec6d328",
+        "materialId": "7a7b5a91-e91a-4340-8a5f-5e1acdf502f8",
         "projectId": "30d2f9c4-decc-418a-bc5d-0fb16db7af57",
         "observation": "nao sei das quantas",
-        "baseId": "88b6a558-046d-47bf-be45-11fccec6d328",
+        "baseId": "dbe82710-e5e8-449a-ba49-471b356f808d",
         "value": 5
     },
     {
-        "materialId": "88b6a558-046d-47bf-be45-11fccec6d328",
+        "materialId": "7a7b5a91-e91a-4340-8a5f-5e1acdf502f8",
         "projectId": "30d2f9c4-decc-418a-bc5d-0fb16db7af57",
         "observation": "nao sei das quantas",
-        "baseId": "88b6a558-046d-47bf-be45-11fccec6d328",
+        "baseId": "dbe82710-e5e8-449a-ba49-471b356f808d",
         "value": 2
     },
     {
-        "materialId": "88b6a558-046d-47bf-be45-11fccec6d328",
+        "materialId": "7a7b5a91-e91a-4340-8a5f-5e1acdf502f8",
         "projectId": "30d2f9c4-decc-418a-bc5d-0fb16db7af57",
         "observation": "nao sei das quantas",
-        "baseId": "88b6a558-046d-47bf-be45-11fccec6d328",
+        "baseId": "dbe82710-e5e8-449a-ba49-471b356f808d",
         "value": -1
     }
 ]

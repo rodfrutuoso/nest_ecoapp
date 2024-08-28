@@ -39,7 +39,13 @@ describe("Fetch Movimentations History", () => {
       inMemoryProjectRepository,
       inMemoryBaseRepository
     );
-    sut = new FetchMovimentationHistoryUseCase(inMemoryMovimentationRepository);
+    sut = new FetchMovimentationHistoryUseCase(
+      inMemoryMovimentationRepository,
+      inMemoryProjectRepository,
+      inMemoryStorekeeperRepository,
+      inMemoryMaterialRepository,
+      inMemoryBaseRepository
+    );
   });
 
   it("should be able to fetch movimentations history sorting by date", async () => {
@@ -148,7 +154,7 @@ describe("Fetch Movimentations History", () => {
     if (result.isRight()) expect(result.value.movimentations).toHaveLength(5);
   });
 
-  it("should be able to fetch movimentations history by project", async () => {
+  it("should be able to fetch movimentations history by project_number", async () => {
     // entity creation for details
     const contract = makeContract();
     inMemoryContractRepository.create(contract);
@@ -165,9 +171,9 @@ describe("Fetch Movimentations History", () => {
     const material = makeMaterial();
     inMemoryMaterialRepository.create(material);
 
-    const project = makeProject({}, new UniqueEntityID("projeto-1"));
+    const project = makeProject({ project_number: "projeto-1" });
     inMemoryProjectRepository.create(project);
-    const project2 = makeProject({}, new UniqueEntityID("projeto-2"));
+    const project2 = makeProject({ project_number: "projeto-2" });
     inMemoryProjectRepository.create(project2);
 
     const newMovimentation1 = makeMovimentation({
@@ -198,14 +204,14 @@ describe("Fetch Movimentations History", () => {
     const result = await sut.execute({
       page: 1,
       baseId: "base-1",
-      projectId: "projeto-1",
+      project_number: "projeto-1",
     });
 
     expect(result.isRight()).toBeTruthy();
     if (result.isRight()) expect(result.value.movimentations).toHaveLength(2);
   });
 
-  it("should be able to fetch movimentations history by material", async () => {
+  it("should be able to fetch movimentations history by material_code", async () => {
     // entity creation for details
     const contract = makeContract();
     inMemoryContractRepository.create(contract);
@@ -219,9 +225,9 @@ describe("Fetch Movimentations History", () => {
     const storekeeper = makeStorekeeper({ baseId: base.id });
     inMemoryStorekeeperRepository.create(storekeeper);
 
-    const material = makeMaterial({}, new UniqueEntityID("material-1"));
+    const material = makeMaterial({ code: 321564, contractId: contract.id });
     inMemoryMaterialRepository.create(material);
-    const material2 = makeMaterial({}, new UniqueEntityID("material-2"));
+    const material2 = makeMaterial({ code: 111111, contractId: contract.id });
     inMemoryMaterialRepository.create(material2);
 
     const project = makeProject();
@@ -255,14 +261,14 @@ describe("Fetch Movimentations History", () => {
     const result = await sut.execute({
       page: 1,
       baseId: "base-1",
-      materialId: "material-1",
+      material_code: 321564,
     });
 
     expect(result.isRight()).toBeTruthy();
     if (result.isRight()) expect(result.value.movimentations).toHaveLength(2);
   });
 
-  it("should be able to fetch movimentations history by storkeeper", async () => {
+  it("should be able to fetch movimentations history by storekeeper's email", async () => {
     // entity creation for details
     const contract = makeContract();
     inMemoryContractRepository.create(contract);
@@ -273,10 +279,10 @@ describe("Fetch Movimentations History", () => {
     );
     inMemoryBaseRepository.create(base);
 
-    const storekeeper = makeStorekeeper(
-      { baseId: base.id },
-      new UniqueEntityID("storekeeper-1")
-    );
+    const storekeeper = makeStorekeeper({
+      baseId: base.id,
+      email: "storekeeper@ecoeletrica.com.br",
+    });
     inMemoryStorekeeperRepository.create(storekeeper);
     const storekeeper2 = makeStorekeeper({ baseId: base.id });
     inMemoryStorekeeperRepository.create(storekeeper2);
@@ -315,7 +321,7 @@ describe("Fetch Movimentations History", () => {
     const result = await sut.execute({
       page: 1,
       baseId: "base-1",
-      storekeeperId: "storekeeper-1",
+      email: "storekeeper@ecoeletrica.com.br",
     });
 
     expect(result.isRight()).toBeTruthy();
@@ -341,7 +347,6 @@ describe("Fetch Movimentations History", () => {
 
     const project = makeProject();
     inMemoryProjectRepository.create(project);
-
 
     const newMovimentation1 = makeMovimentation({
       baseId: base.id,
