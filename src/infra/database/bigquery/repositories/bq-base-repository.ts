@@ -27,6 +27,16 @@ export class BqBaseRepository implements BaseRepository {
     return BqBaseMapper.toDomin(base);
   }
 
+  async findById(baseId: string): Promise<Base | null> {
+    const [base] = await this.bigquery.base.select({
+      where: { id: baseId },
+    });
+
+    if (!base) return null;
+
+    return BqBaseMapper.toDomin(base);
+  }
+
   async findMany({ page }: PaginationParams): Promise<Base[]> {
     const pageCount = 40;
 

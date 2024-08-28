@@ -4,7 +4,7 @@ import { Budget } from "src/domain/material-movimentation/enterprise/entities/bu
 import { BigQueryService } from "../bigquery.service";
 import { BqBudgetMapper } from "../mappers/bq-budget-mapper";
 import { BudgetWithDetails } from "src/domain/material-movimentation/enterprise/entities/value-objects/budget-with-details";
-import { BqBudgetWithDetailsMapper } from "../mappers/budget-with-details-mapper";
+import { BqBudgetWithDetailsMapper } from "../mappers/bq-budget-with-details-mapper";
 
 @Injectable()
 export class BqBudgetRepository implements BudgetRepository {

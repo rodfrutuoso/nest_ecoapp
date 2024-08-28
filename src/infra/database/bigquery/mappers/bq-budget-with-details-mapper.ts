@@ -5,7 +5,7 @@ import { Material } from "src/domain/material-movimentation/enterprise/entities/
 import { Project } from "src/domain/material-movimentation/enterprise/entities/project";
 import { Estimator } from "src/domain/material-movimentation/enterprise/entities/estimator";
 import { Contract } from "src/domain/material-movimentation/enterprise/entities/contract";
-
+ 
 export class BqBudgetWithDetailsMapper {
   static toDomin(raw: BqBudgetProps): BudgetWithDetails {
     return BudgetWithDetails.create({

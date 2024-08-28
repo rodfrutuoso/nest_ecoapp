@@ -14,16 +14,27 @@ import { MovimentationWithDetailsPresenter } from "src/infra/http/presenters/mov
 import { ApiProperty, ApiTags } from "@nestjs/swagger";
 
 const fetchMovimentationHistoryBodySchema = z.object({
-  page: z.string()
-  .optional()
-  .default("1")
-  .transform(Number)
-  .pipe(z.number().min(1)),
-  userId: z.string().uuid().optional(),
-  projectId: z.string().uuid().optional(),
-  materialId: z.string().uuid().optional(),
-  startDate: z.date().optional(),
-  endDate: z.date().optional(),
+  page: z
+    .string()
+    .optional()
+    .default("1")
+    .transform(Number)
+    .pipe(z.number().min(1)),
+  email: z.string().email().optional(),
+  project_number: z.string().optional(),
+  material_code: z
+    .string()
+    .optional()
+    .transform((value) => (value ? Number(value) : undefined))
+    .pipe(z.number().min(1).optional()),
+  startDate: z
+    .string()
+    .optional()
+    .transform((value) => (value ? new Date(value) : undefined)),
+  endDate: z
+    .string()
+    .optional()
+    .transform((value) => (value ? new Date(value) : undefined)),
 });
 
 class FetchMovimentationHistoryQueryDto {
@@ -36,23 +47,24 @@ class FetchMovimentationHistoryQueryDto {
   })
   page!: number;
   @ApiProperty({
-    example: "user-id",
-    description: "user's id that made the movimentation",
+    example: "storekeeper@ecoeletrica.com.br",
+    description: "user's email that made the movimentation",
     required: false,
   })
-  userId!: string;
+  email!: string;
   @ApiProperty({
-    example: "project-id",
-    description: "project's id that was movimetated",
+    example: "B-1234567",
+    description: "project's number that was movimetated",
     required: false,
   })
-  projectId!: string;
+  project_number!: string;
   @ApiProperty({
-    example: "material-id",
-    description: "material's id that was movimetated",
+    example: 123456,
+    description: "material's code that was movimetated",
     required: false,
+    minimum: 1,
   })
-  materialId!: string;
+  material_code!: number;
   @ApiProperty({
     example: "2024-03-31",
     description: "start date for search",
@@ -81,16 +93,27 @@ export class FetchMovimentationHistoryController {
     @Query(new ZodValidationPipe(fetchMovimentationHistoryBodySchema))
     query: FetchMovimentationHistoryQueryDto
   ) {
-    const { page, projectId, userId, endDate, materialId, startDate } = query;
+    const { page, project_number, email, endDate, material_code, startDate } =
+      query;
+
+    let endDateAjusted;
+
+    if (endDate) {
+      endDateAjusted = new Date(
+        endDate.getUTCFullYear(),
+        endDate.getUTCMonth(),
+        endDate.getUTCDate() + 1
+      );
+    }
 
     const result = await this.fetchMovimentationHistoryUseCase.execute({
       page,
       baseId,
-      storekeeperId: userId,
-      projectId,
-      materialId,
+      email,
+      project_number,
+      material_code,
       startDate,
-      endDate,
+      endDate: endDateAjusted,
     });
 
     if (result.isLeft()) {

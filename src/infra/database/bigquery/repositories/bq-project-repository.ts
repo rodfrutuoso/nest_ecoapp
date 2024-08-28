@@ -10,7 +10,7 @@ export class BqProjectRepository implements ProjectRepository {
 
   async findByProjectNumber(project_number: string): Promise<Project | null> {
     const [project] = await this.bigquery.project.select({
-      where: { project_number },
+      like: { project_number },
     });
 
     if (!project) return null;

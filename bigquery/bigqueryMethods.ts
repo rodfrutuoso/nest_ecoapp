@@ -106,12 +106,15 @@ export class BigQueryMethods<T extends Record<string, any>> {
     if (where) {
       const whereClause = Object.keys(where)
         .filter((key) => where[key] !== undefined)
-        .map(
-          (key) =>
-            `${String(key)} = ${
-              typeof where[key] === "string" ? `'${where[key]}'` : where[key]
-            }`
-        )
+        .map((key) => {
+          const value = where[key];
+          if (this.isDate(value)) {
+            return `${String(key)} = '${value.toISOString()}'`;
+          }
+          return `${String(key)} = ${
+            typeof value === "string" ? `'${value}'` : value
+          }`;
+        })
         .join(" AND ");
       if (whereClause) whereClauses.push(whereClause);
     }
@@ -119,14 +122,15 @@ export class BigQueryMethods<T extends Record<string, any>> {
     if (greaterOrEqualThan) {
       const greaterOrEqualThanClause = Object.keys(greaterOrEqualThan)
         .filter((key) => greaterOrEqualThan[key] !== undefined)
-        .map(
-          (key) =>
-            `${String(key)} >= ${
-              typeof greaterOrEqualThan[key] === "string"
-                ? `'${greaterOrEqualThan[key]}'`
-                : greaterOrEqualThan[key]
-            }`
-        )
+        .map((key) => {
+          const value = greaterOrEqualThan[key];
+          if (this.isDate(value)) {
+            return `${String(key)} >= '${value.toISOString()}'`;
+          }
+          return `${String(key)} >= ${
+            typeof value === "string" ? `'${value}'` : value
+          }`;
+        })
         .join(" AND ");
       if (greaterOrEqualThanClause) whereClauses.push(greaterOrEqualThanClause);
     }
@@ -134,14 +138,15 @@ export class BigQueryMethods<T extends Record<string, any>> {
     if (lessOrEqualThan) {
       const lessOrEqualThanClause = Object.keys(lessOrEqualThan)
         .filter((key) => lessOrEqualThan[key] !== undefined)
-        .map(
-          (key) =>
-            `${String(key)} <= ${
-              typeof lessOrEqualThan[key] === "string"
-                ? `'${lessOrEqualThan[key]}'`
-                : lessOrEqualThan[key]
-            }`
-        )
+        .map((key) => {
+          const value = lessOrEqualThan[key];
+          if (this.isDate(value)) {
+            return `${String(key)} <= '${value.toISOString()}'`;
+          }
+          return `${String(key)} <= ${
+            typeof value === "string" ? `'${value}'` : value
+          }`;
+        })
         .join(" AND ");
       if (lessOrEqualThanClause) whereClauses.push(lessOrEqualThanClause);
     }
@@ -235,8 +240,8 @@ export class BigQueryMethods<T extends Record<string, any>> {
     return this.runQuery(query);
   }
 
-  private async getTableSchema() {
-    const tableId = this.datasetId.split(".")[1];
+  private async getTableSchema(table?: string) {
+    const tableId = table || this.datasetId.split(".")[1];
     const [metadata] = await this.bigquery
       .dataset(this.datasetId.split(".")[0])
       .table(tableId)
@@ -289,6 +294,14 @@ export class BigQueryMethods<T extends Record<string, any>> {
         primaryRows
       );
 
+      const foreignSchema = await this.getTableSchema(
+        includeOptions.join.table
+      );
+      const convertedIncludedRows = this.convertRows(
+        includedRows,
+        foreignSchema
+      );
+
       const [primaryTable, primaryKey] = includeOptions.join.on
         .split("=")[0]
         .trim()
@@ -306,7 +319,7 @@ export class BigQueryMethods<T extends Record<string, any>> {
 
       if (includeOptions.relationType === "one-to-one") {
         primaryRows = primaryRows.map((row) => {
-          const includedRow = includedRows.find(
+          const includedRow = convertedIncludedRows.find(
             (includeRow) => includeRow[foreignKey] === row[primaryKey]
           );
           return {
@@ -317,7 +330,7 @@ export class BigQueryMethods<T extends Record<string, any>> {
       } else {
         primaryRows = primaryRows.map((row) => ({
           ...row,
-          [key]: includedRows.filter(
+          [key]: convertedIncludedRows.filter(
             (includeRow) => includeRow[foreignKey] === row[primaryKey]
           ),
         }));
@@ -353,5 +366,9 @@ export class BigQueryMethods<T extends Record<string, any>> {
 
     const rows = await this.runQuery(query);
     return rows;
+  }
+
+  private isDate(value: unknown): value is Date {
+    return value instanceof Date;
   }
 }
