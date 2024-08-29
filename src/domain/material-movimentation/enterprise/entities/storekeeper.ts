@@ -57,6 +57,10 @@ export class Storekeeper extends Entity<StorekeeperProps> {
     this.props.password = password;
   }
 
+  set name(name: string) {
+    this.props.name = name;
+  }
+
   static create(
     props: Optional<StorekeeperProps, "status">,
     id?: UniqueEntityID

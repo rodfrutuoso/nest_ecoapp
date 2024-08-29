@@ -1,10 +1,7 @@
-import { ApiProperty } from "@nestjs/swagger";
 import { UniqueEntityID } from "./unique-entity-id";
 
 export class Entity<Props> {
-  @ApiProperty()
   private _id: UniqueEntityID;
-  @ApiProperty()
   protected props: Props;
 
   get id() {

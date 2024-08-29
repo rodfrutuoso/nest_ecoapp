@@ -8,7 +8,7 @@ Authorization: Bearer {{authToken}}
 
 {
     "name": "Max",
-    "email": "max@ecoeletrica.com.br",
+    "email": "max2@ecoeletrica.com.br",
     "password": "123456",
     "cpf":"12345678912",
     "type": "Administrator",

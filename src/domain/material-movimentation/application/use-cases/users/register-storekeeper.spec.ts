@@ -1,30 +1,47 @@
-import { beforeEach, describe, expect, it, test } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { RegisterStorekeeperUseCase } from "./register-storekeeper";
-import { InMemoryStorekeeperRepository } from "../../../../../../test/repositories/in-memory-storekeeper-repository";
+import { InMemoryStorekeeperRepository } from "test/repositories/in-memory-storekeeper-repository";
 import { ResourceAlreadyRegisteredError } from "../errors/resource-already-registered-error";
 import { FakeHasher } from "test/cryptography/fake-hasher";
+import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
+import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
+import { makeBase } from "test/factories/make-base";
+import { makeStorekeeper } from "test/factories/make-storekeeper";
+import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 
 let inMemoryStorekeeperRepository: InMemoryStorekeeperRepository;
+let inMemoryContractRepository: InMemoryContractRepository;
+let inMemoryBaseRepository: InMemoryBaseRepository;
 let fakeHasher: FakeHasher;
 let sut: RegisterStorekeeperUseCase;
 
 describe("Create storekeeper", () => {
   beforeEach(() => {
-    inMemoryStorekeeperRepository = new InMemoryStorekeeperRepository();
+    inMemoryContractRepository = new InMemoryContractRepository();
+    inMemoryBaseRepository = new InMemoryBaseRepository(
+      inMemoryContractRepository
+    );
+    inMemoryStorekeeperRepository = new InMemoryStorekeeperRepository(
+      inMemoryBaseRepository
+    );
     fakeHasher = new FakeHasher();
     sut = new RegisterStorekeeperUseCase(
       inMemoryStorekeeperRepository,
-      fakeHasher
+      fakeHasher,
+      inMemoryBaseRepository
     );
   });
 
   it("Sould be able to register a storekeeper", async () => {
+    const base = makeBase();
+    await inMemoryBaseRepository.create(base);
+
     const result = await sut.execute({
       name: "Rodrigo",
       email: "rodrigo@ecoeletrica.com.br",
       cpf: "12345678901",
       type: "administrador",
-      baseId: "base-1",
+      baseId: base.id.toString(),
       password: "123456",
     });
 
@@ -39,15 +56,29 @@ describe("Create storekeeper", () => {
   });
 
   it("Sould not be able to register a storekeeper if email is already registered", async () => {
-    await sut.execute({
+    const base = makeBase();
+    await inMemoryBaseRepository.create(base);
+
+    const storekeeper = makeStorekeeper({
+      email: "rodrigo@ecoeletrica.com.br",
+      baseId: base.id,
+    });
+    await inMemoryStorekeeperRepository.create(storekeeper);
+
+    const result = await sut.execute({
       name: "Rodrigo",
       email: "rodrigo@ecoeletrica.com.br",
       cpf: "12345678901",
       type: "administrador",
-      baseId: "base-1",
+      baseId: base.id.toString(),
       password: "123456",
     });
 
+    expect(result.isLeft()).toBeTruthy();
+    expect(result.value).toBeInstanceOf(ResourceAlreadyRegisteredError);
+  });
+
+  it("Sould not be able to register a storekeeper baseId does not exist", async () => {
     const result = await sut.execute({
       name: "Rodrigo",
       email: "rodrigo@ecoeletrica.com.br",
@@ -58,6 +89,6 @@ describe("Create storekeeper", () => {
     });
 
     expect(result.isLeft()).toBeTruthy();
-    expect(result.value).toBeInstanceOf(ResourceAlreadyRegisteredError);
+    expect(result.value).toBeInstanceOf(ResourceNotFoundError);
   });
 });

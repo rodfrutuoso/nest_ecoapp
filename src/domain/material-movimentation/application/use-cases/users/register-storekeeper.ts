@@ -5,6 +5,8 @@ import { Storekeeper } from "../../../enterprise/entities/storekeeper";
 import { HashGenerator } from "../../cryptography/hash-generator";
 import { StorekeeperRepository } from "../../repositories/storekeeper-repository";
 import { ResourceAlreadyRegisteredError } from "../errors/resource-already-registered-error";
+import { BaseRepository } from "../../repositories/base-repository";
+import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 
 interface RegisterStorekeeperUseCaseRequest {
   name: string;
@@ -16,7 +18,7 @@ interface RegisterStorekeeperUseCaseRequest {
 }
 
 type RegisterStorekeeperResponse = Eihter<
-  ResourceAlreadyRegisteredError,
+  ResourceAlreadyRegisteredError | ResourceNotFoundError,
   {
     storekeeper: Storekeeper;
   }
@@ -26,7 +28,8 @@ type RegisterStorekeeperResponse = Eihter<
 export class RegisterStorekeeperUseCase {
   constructor(
     private storekeeperRepository: StorekeeperRepository,
-    private hashGenerator: HashGenerator
+    private hashGenerator: HashGenerator,
+    private baseRepository: BaseRepository
   ) {}
 
   async execute({
@@ -37,6 +40,9 @@ export class RegisterStorekeeperUseCase {
     baseId,
     password,
   }: RegisterStorekeeperUseCaseRequest): Promise<RegisterStorekeeperResponse> {
+    const base = await this.baseRepository.findById(baseId)
+    if (!base) return left(new ResourceNotFoundError("baseId não encontrado"));
+
     const storekeeperSearch = await this.storekeeperRepository.findByEmail(
       email
     );

@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  NotFoundException,
   UsePipes,
 } from "@nestjs/common";
 import { Body, Controller, HttpCode, Post } from "@nestjs/common";
@@ -9,6 +10,7 @@ import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { RegisterStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/register-storekeeper";
 import { ResourceAlreadyRegisteredError } from "src/domain/material-movimentation/application/use-cases/errors/resource-already-registered-error";
 import { ApiProperty, ApiTags } from "@nestjs/swagger";
+import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 
 const createAccountBodySchema = z.object({
   name: z.string(),
@@ -43,12 +45,14 @@ class CreateAccountBodySchema {
   type!: string;
   @ApiProperty({
     example: "base-id",
-    description: "base's id that a storekeeper que interect. undefined if the user is not a storekeeper",
+    description:
+      "base's id that a storekeeper que interect. undefined if the user is not a storekeeper",
   })
   baseId!: string;
   @ApiProperty({
     example: "contract-id",
-    description: "contract's id that a estimator que interect. undefined if the user is not a estimator",
+    description:
+      "contract's id that a estimator que interect. undefined if the user is not a estimator",
     required: false,
   })
   contractId!: string;
@@ -85,6 +89,8 @@ export class CreateAccountController {
       switch (error.constructor) {
         case ResourceAlreadyRegisteredError:
           throw new ConflictException(error.message);
+        case ResourceNotFoundError:
+          throw new NotFoundException(error.message);
         default:
           throw new BadRequestException();
       }
