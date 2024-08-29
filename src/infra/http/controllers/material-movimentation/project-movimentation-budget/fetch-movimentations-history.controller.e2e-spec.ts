@@ -10,6 +10,9 @@ import { MovimentationFactory } from "test/factories/make-movimentation";
 import { UniqueEntityID } from "src/core/entities/unique-entity-id";
 import { DatabaseModule } from "src/infra/database/database.module";
 import { MaterialFactory } from "test/factories/make-material";
+import { ContractFactory } from "test/factories/make-contract";
+import { ProjectFactory } from "test/factories/make-project";
+import { BaseFactory } from "test/factories/make-base";
 
 describe("Fetch Movimentation History (E2E)", () => {
   let app: INestApplication;
@@ -18,11 +21,21 @@ describe("Fetch Movimentation History (E2E)", () => {
   let storekeeperFactory: StorekeeperFactory;
   let movimentationFactory: MovimentationFactory;
   let materialFactory: MaterialFactory;
+  let contractFactory: ContractFactory;
+  let projectFactory: ProjectFactory;
+  let baseFactory: BaseFactory;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StorekeeperFactory, MovimentationFactory, MaterialFactory],
+      providers: [
+        StorekeeperFactory,
+        MovimentationFactory,
+        MaterialFactory,
+        ContractFactory,
+        BaseFactory,
+        ProjectFactory,
+      ],
     }).compile();
 
     app = moduleRef.createNestApplication();
@@ -32,6 +45,9 @@ describe("Fetch Movimentation History (E2E)", () => {
     storekeeperFactory = moduleRef.get(StorekeeperFactory);
     movimentationFactory = moduleRef.get(MovimentationFactory);
     materialFactory = moduleRef.get(MaterialFactory);
+    contractFactory = moduleRef.get(ContractFactory);
+    projectFactory = moduleRef.get(ProjectFactory);
+    baseFactory = moduleRef.get(BaseFactory);
 
     await app.init();
   });
@@ -40,37 +56,46 @@ describe("Fetch Movimentation History (E2E)", () => {
     const user = await storekeeperFactory.makeBqStorekeeper({});
 
     const accessToken = jwt.sign({ sub: user.id.toString() });
-    const baseId = randomUUID();
+    const contract = await contractFactory.makeBqContract();
+    const base = await baseFactory.makeBqBase({ contractId: contract.id });
+    const project = await projectFactory.makeBqProject({ baseId: base.id });
+
     const material1 = await materialFactory.makeBqMaterial(
-      {},
+      { contractId: contract.id },
       new UniqueEntityID("material1")
     );
     const material2 = await materialFactory.makeBqMaterial(
-      {},
+      { contractId: contract.id },
       new UniqueEntityID("material2")
     );
     const material3 = await materialFactory.makeBqMaterial(
-      {},
+      { contractId: contract.id },
       new UniqueEntityID("material3")
     );
 
     await movimentationFactory.makeBqMovimentation({
       materialId: material1.id,
-      baseId: new UniqueEntityID(baseId),
+      baseId: base.id,
+      projectId: project.id,
+      storekeeperId: user.id,
     });
 
     await movimentationFactory.makeBqMovimentation({
       materialId: material2.id,
-      baseId: new UniqueEntityID(baseId),
+      baseId: base.id,
+      projectId: project.id,
+      storekeeperId: user.id,
     });
 
     await movimentationFactory.makeBqMovimentation({
       materialId: material3.id,
-      baseId: new UniqueEntityID(baseId),
+      baseId: base.id,
+      projectId: project.id,
+      storekeeperId: user.id,
     });
 
     const response = await request(app.getHttpServer())
-      .get(`/movimentations/${baseId}`)
+      .get(`/movimentations/${base.id.toString()}`)
       .set("Authorization", `Bearer ${accessToken}`)
       .send();
 

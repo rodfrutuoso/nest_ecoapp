@@ -14,6 +14,7 @@ export class BqContractRepository implements ContractRepository {
 
     await this.bigquery.contract.create([data]);
   }
+
   async findByContractName(contractName: string): Promise<Contract | null> {
     const [contract] = await this.bigquery.contract.select({
       where: { contractName },
@@ -23,6 +24,17 @@ export class BqContractRepository implements ContractRepository {
 
     return BqContractMapper.toDomin(contract);
   }
+
+  async findById(contractId: string): Promise<Contract | null> {
+    const [contract] = await this.bigquery.contract.select({
+      where: { id: contractId },
+    });
+
+    if (!contract) return null;
+
+    return BqContractMapper.toDomin(contract);
+  }
+
   async findMany({ page }: PaginationParams): Promise<Contract[]> {
     const pageCount = 40;
 

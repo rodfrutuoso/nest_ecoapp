@@ -4,7 +4,7 @@ import {
   NotFoundException,
   Query,
 } from "@nestjs/common";
-import { Body, Controller, HttpCode } from "@nestjs/common";
+import { Controller, HttpCode } from "@nestjs/common";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
@@ -14,11 +14,11 @@ import { ApiProperty, ApiTags } from "@nestjs/swagger";
 
 const fetchAccountsBodySchema = z.object({
   page: z
-  .string()
-  .optional()
-  .default("1")
-  .transform(Number)
-  .pipe(z.number().min(1)),
+    .string()
+    .optional()
+    .default("1")
+    .transform(Number)
+    .pipe(z.number().min(1)),
   baseId: z.string().uuid().optional(),
   name: z.string().optional(),
 });
@@ -62,7 +62,7 @@ export class FetchAccountsController {
     const result = await this.FetchStorekeeper.execute({
       page,
       baseId,
-      name
+      name,
     });
 
     if (result.isLeft()) {

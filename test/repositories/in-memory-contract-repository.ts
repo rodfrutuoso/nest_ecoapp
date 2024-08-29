@@ -15,13 +15,21 @@ export class InMemoryContractRepository implements ContractRepository {
     return contract;
   }
 
+  async findById(contractId: string): Promise<Contract | null> {
+    const contract = this.items.find(
+      (item) => item.id.toString() === contractId
+    );
+
+    if (!contract) return null;
+
+    return contract;
+  }
+
   async create(contract: Contract) {
     this.items.push(contract);
   }
 
-  async findMany(
-    { page }: PaginationParams,
-  ): Promise<Contract[]> {
+  async findMany({ page }: PaginationParams): Promise<Contract[]> {
     const contracts = this.items
       .sort((a, b) => a.contractName.localeCompare(b.contractName))
       .slice((page - 1) * 40, page * 40);

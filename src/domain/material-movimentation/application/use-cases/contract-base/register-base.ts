@@ -4,6 +4,8 @@ import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
 import { Base } from "../../../enterprise/entities/base";
 import { BaseRepository } from "../../repositories/base-repository";
 import { ResourceAlreadyRegisteredError } from "../errors/resource-already-registered-error";
+import { ContractRepository } from "../../repositories/contract-repository";
+import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 
 interface RegisterBaseUseCaseRequest {
   baseName: string;
@@ -11,7 +13,7 @@ interface RegisterBaseUseCaseRequest {
 }
 
 type RegisterBaseResponse = Eihter<
-  ResourceAlreadyRegisteredError,
+  ResourceAlreadyRegisteredError | ResourceNotFoundError,
   {
     base: Base;
   }
@@ -19,12 +21,19 @@ type RegisterBaseResponse = Eihter<
 
 @Injectable()
 export class RegisterBaseUseCase {
-  constructor(private baseRepository: BaseRepository) {}
+  constructor(
+    private baseRepository: BaseRepository,
+    private contractRepository: ContractRepository
+  ) {}
 
   async execute({
     baseName,
     contractId,
   }: RegisterBaseUseCaseRequest): Promise<RegisterBaseResponse> {
+    const contract = await this.contractRepository.findById(contractId);
+    if (!contract)
+      return left(new ResourceNotFoundError("contractId não encontrado"));
+
     const baseSearch = await this.baseRepository.findByBaseName(baseName);
 
     if (baseSearch) return left(new ResourceAlreadyRegisteredError());

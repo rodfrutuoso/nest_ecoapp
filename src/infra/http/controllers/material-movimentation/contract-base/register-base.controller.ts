@@ -1,10 +1,15 @@
-import { BadRequestException, ConflictException } from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  NotFoundException,
+} from "@nestjs/common";
 import { Body, Controller, HttpCode, Post } from "@nestjs/common";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { RegisterBaseUseCase } from "src/domain/material-movimentation/application/use-cases/contract-base/register-base";
 import { ResourceAlreadyRegisteredError } from "src/domain/material-movimentation/application/use-cases/errors/resource-already-registered-error";
 import { ApiProperty, ApiTags } from "@nestjs/swagger";
+import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 
 const registerBaseBodySchema = z
   .object({
@@ -41,7 +46,7 @@ export class RegisterBaseController {
 
     const result = await this.registerBase.execute({
       baseName,
-      contractId
+      contractId,
     });
 
     if (result.isLeft()) {
@@ -50,6 +55,8 @@ export class RegisterBaseController {
       switch (error.constructor) {
         case ResourceAlreadyRegisteredError:
           throw new ConflictException(error.message);
+        case ResourceNotFoundError:
+          throw new NotFoundException(error.message);
         default:
           throw new BadRequestException();
       }
