@@ -153,6 +153,7 @@ export class BigQueryMethods<T extends Record<string, any>> {
 
     if (like) {
       const likeClause = Object.keys(like)
+        .filter((key) => like[key] !== undefined)
         .map(
           (key) =>
             `${String(key)} LIKE ${
@@ -160,7 +161,7 @@ export class BigQueryMethods<T extends Record<string, any>> {
             }`
         )
         .join(" AND ");
-      whereClauses.push(likeClause);
+      if (likeClause) whereClauses.push(likeClause);
     }
 
     const whereClause =

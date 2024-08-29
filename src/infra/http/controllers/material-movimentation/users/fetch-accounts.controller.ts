@@ -20,6 +20,7 @@ const fetchAccountsBodySchema = z.object({
   .transform(Number)
   .pipe(z.number().min(1)),
   baseId: z.string().uuid().optional(),
+  name: z.string().optional(),
 });
 
 class FetchAccountsQueryDto {
@@ -37,6 +38,12 @@ class FetchAccountsQueryDto {
     required: false,
   })
   baseId!: string;
+  @ApiProperty({
+    example: "João da Silva",
+    description: "name, or part of it, of the searched user",
+    required: false,
+  })
+  name!: string;
 }
 
 @ApiTags("users")
@@ -50,11 +57,12 @@ export class FetchAccountsController {
     @Query(new ZodValidationPipe(fetchAccountsBodySchema))
     query: FetchAccountsQueryDto
   ) {
-    const { page, baseId } = query;
+    const { page, baseId, name } = query;
 
     const result = await this.FetchStorekeeper.execute({
       page,
       baseId,
+      name
     });
 
     if (result.isLeft()) {

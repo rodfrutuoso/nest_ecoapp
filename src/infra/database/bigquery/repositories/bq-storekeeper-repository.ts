@@ -72,12 +72,14 @@ export class BqStorekeeperRepository implements StorekeeperRepository {
 
   async findManyWithBase(
     { page }: PaginationParams,
-    baseId?: string
+    baseId?: string,
+    name?: string
   ): Promise<StorekeeperWithBase[]> {
     const pageCount = 40;
 
     const storekeepers = await this.bigquery.user.select({
       where: { baseId },
+      like: { name },
       limit: pageCount,
       offset: pageCount * (page - 1),
       orderBy: { column: "cpf", direction: "ASC" },
@@ -89,11 +91,13 @@ export class BqStorekeeperRepository implements StorekeeperRepository {
       },
     });
 
-    const storekeepersDomain = storekeepers.map(BqUserWithBaseContractMapper.toDomin);
+    const storekeepersDomain = storekeepers.map(
+      BqUserWithBaseContractMapper.toDomin
+    );
     const result = storekeepersDomain.filter(
       (storekeeper) => storekeeper instanceof StorekeeperWithBase
     );
 
-    return result
+    return result;
   }
 }
