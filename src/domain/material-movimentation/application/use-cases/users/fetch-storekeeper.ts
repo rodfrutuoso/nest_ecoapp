@@ -7,6 +7,7 @@ import { StorekeeperWithBase } from "src/domain/material-movimentation/enterpris
 interface FetchStorekeeperUseCaseRequest {
   page: number;
   baseId?: string;
+  name?: string;
 }
 
 type FetchStorekeeperUseCaseResponse = Eihter<
@@ -23,12 +24,14 @@ export class FetchStorekeeperUseCase {
   async execute({
     page,
     baseId,
+    name,
   }: FetchStorekeeperUseCaseRequest): Promise<FetchStorekeeperUseCaseResponse> {
     const storekeepers = await this.storekeeperRepository.findManyWithBase(
       {
         page,
       },
-      baseId
+      baseId,
+      name
     );
 
     if (!storekeepers.length) return left(new ResourceNotFoundError());

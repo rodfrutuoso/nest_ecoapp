@@ -61,12 +61,14 @@ export class InMemoryStorekeeperRepository implements StorekeeperRepository {
 
   async findManyWithBase(
     { page }: PaginationParams,
-    baseId?: string
+    baseId?: string,
+    name?: string
   ): Promise<StorekeeperWithBase[]> {
     const storekeepers = this.items
       .filter(
         (storekeeper) => !baseId || storekeeper.baseId.toString() === baseId
       )
+      .filter((storekeeper) => !name || storekeeper.name.includes(name))
       .sort((a, b) => a.name.localeCompare(b.name))
       .slice((page - 1) * 40, page * 40)
       .map((storekeeper) => {

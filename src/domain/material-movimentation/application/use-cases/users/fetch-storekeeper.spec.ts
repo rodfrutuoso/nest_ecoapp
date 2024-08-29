@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { FetchStorekeeperUseCase } from "./fetch-storekeeper";
 import { InMemoryStorekeeperRepository } from "../../../../../../test/repositories/in-memory-storekeeper-repository";
 import { makeStorekeeper } from "../../../../../../test/factories/make-storekeeper";
-import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
 import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
 import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
 import { makeContract } from "test/factories/make-contract";
@@ -25,7 +24,7 @@ describe("Fetch Storekeepers History", () => {
     sut = new FetchStorekeeperUseCase(inMemoryStorekeeperRepository);
   });
 
-  it("should be able to fetch physical documents history sorting by name", async () => {
+  it("should be able to fetch storekeeper sorting by name", async () => {
     const contract = makeContract({ contractName: "Centro-Oeste" });
     inMemoryContractRepository.create(contract);
 
@@ -121,5 +120,46 @@ describe("Fetch Storekeepers History", () => {
 
     expect(result.isRight()).toBeTruthy();
     if (result.isRight()) expect(result.value.storekeepers).toHaveLength(2);
+  });
+
+  it("should be able to fetch storekeeper by name", async () => {
+    const contract = makeContract({ contractName: "Centro-Oeste" });
+    inMemoryContractRepository.create(contract);
+
+    const base = makeBase({ baseName: "Itaberaba" });
+    inMemoryBaseRepository.create(base);
+
+    const newStorekeeper1 = makeStorekeeper({
+      name: "Bruno Carlos",
+      baseId: base.id,
+    });
+    const newStorekeeper2 = makeStorekeeper({
+      name: "Bruno José",
+      baseId: base.id,
+    });
+    const newStorekeeper3 = makeStorekeeper({
+      name: "Carlos",
+      baseId: base.id,
+    });
+
+    await inMemoryStorekeeperRepository.create(newStorekeeper1);
+    await inMemoryStorekeeperRepository.create(newStorekeeper2);
+    await inMemoryStorekeeperRepository.create(newStorekeeper3);
+
+    const result = await sut.execute({
+      page: 1,
+      name: "Bruno",
+    });
+
+    expect(result.isRight()).toBeTruthy();
+    if (result.isRight())
+      expect(result.value.storekeepers).toEqual([
+        expect.objectContaining({
+          props: expect.objectContaining({ name: "Bruno Carlos" }),
+        }),
+        expect.objectContaining({
+          props: expect.objectContaining({ name: "Bruno José" }),
+        }),
+      ]);
   });
 });

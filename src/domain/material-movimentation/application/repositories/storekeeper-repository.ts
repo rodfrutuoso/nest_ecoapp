@@ -14,6 +14,7 @@ export abstract class StorekeeperRepository {
   ): Promise<Storekeeper[]>;
   abstract findManyWithBase(
     params: PaginationParams,
-    baseId?: string
+    baseId?: string,
+    name?: string
   ): Promise<StorekeeperWithBase[]>;
 }
