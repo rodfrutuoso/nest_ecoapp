@@ -4,6 +4,14 @@ import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
 import { Movimentation } from "../../../enterprise/entities/movimentation";
 import { MovimentationRepository } from "../../repositories/movimentation-repository";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
+import { StorekeeperRepository } from "../../repositories/storekeeper-repository";
+import { MaterialRepository } from "../../repositories/material-repository";
+import { ProjectRepository } from "../../repositories/project-repository";
+import { BaseRepository } from "../../repositories/base-repository";
+import { Storekeeper } from "src/domain/material-movimentation/enterprise/entities/storekeeper";
+import { Material } from "src/domain/material-movimentation/enterprise/entities/material";
+import { Project } from "src/domain/material-movimentation/enterprise/entities/project";
+import { Base } from "src/domain/material-movimentation/enterprise/entities/base";
 
 interface TransferMovimentationBetweenProjectsUseCaseRequest {
   storekeeperId: string;
@@ -23,28 +31,100 @@ type TransferMovimentationBetweenProjectsResponse = Eihter<
   }
 >;
 
+interface createMovimentationArraysResponse {
+  concatMovimentations: Movimentation[];
+  movimentationIn: Movimentation[];
+  movimentationOut: Movimentation[];
+}
+
 @Injectable()
 export class TransferMovimentationBetweenProjectsUseCase {
-  constructor(private movimentationRepository: MovimentationRepository) {}
+  constructor(
+    private movimentationRepository: MovimentationRepository,
+    private storekeeperRepository: StorekeeperRepository,
+    private materialRepository: MaterialRepository,
+    private projectRepository: ProjectRepository,
+    private baseRepository: BaseRepository
+  ) {}
 
   async execute(
-    transferMovimentationBetweenProjectsUseCaseRequest: TransferMovimentationBetweenProjectsUseCaseRequest[]
+    transferMovimentationUseCaseRequest: TransferMovimentationBetweenProjectsUseCaseRequest[]
   ): Promise<TransferMovimentationBetweenProjectsResponse> {
-    let movimentationIn: Movimentation[] = [];
-    let movimentationOut: Movimentation[] = [];
+    if (
+      !(await this.verifyIfIdsExist(
+        transferMovimentationUseCaseRequest,
+        "storekeeperId"
+      ))
+    )
+      return left(
+        new ResourceNotFoundError(
+          "pelo menos um dos storekeeperIds não encontrado"
+        )
+      );
+
+    if (
+      !(await this.verifyIfIdsExist(
+        transferMovimentationUseCaseRequest,
+        "materialId"
+      ))
+    )
+      return left(
+        new ResourceNotFoundError(
+          "pelo menos um dos materialIds não encontrado"
+        )
+      );
+
+    if (
+      !(await this.verifyIfIdsExist(
+        transferMovimentationUseCaseRequest,
+        "projectIdIn"
+      ))
+    )
+      return left(
+        new ResourceNotFoundError("pelo menos um dos projectIds não encontrado")
+      );
+
+    if (
+      !(await this.verifyIfIdsExist(
+        transferMovimentationUseCaseRequest,
+        "baseId"
+      ))
+    )
+      return left(
+        new ResourceNotFoundError("pelo menos um dos baseIds não encontrado")
+      );
+
+    if (await this.verifyQtdToTransfer(transferMovimentationUseCaseRequest))
+      return left(
+        new ResourceNotFoundError(
+          "Há items cuja quantidade movimentada é inferior à quantidade transferida"
+        )
+      );
+
+    const { concatMovimentations, movimentationIn, movimentationOut } =
+      this.createMovimentationArrays(transferMovimentationUseCaseRequest);
+
+    await this.movimentationRepository.create(concatMovimentations);
+
+    return right({ movimentationIn, movimentationOut });
+  }
+
+  private async verifyQtdToTransfer(
+    transferMovimentationUseCaseRequest: TransferMovimentationBetweenProjectsUseCaseRequest[]
+  ): Promise<boolean> {
     let movimentationVerificationOut: Movimentation[] = [];
     let countErrors = 0;
 
     //create array with unique values os projectsId
     const projectsId = [
       ...new Set(
-        transferMovimentationBetweenProjectsUseCaseRequest.map(
+        transferMovimentationUseCaseRequest.map(
           (transfer) => transfer.projectIdOut
         )
       ),
     ];
 
-    // searh all movimentation of the informed projects and insert on movimentationRepository
+    // searhc all movimentation of the informed projects and insert on movimentationRepository
     for (const project of projectsId) {
       const movimentationProject =
         await this.movimentationRepository.findByProject(project);
@@ -53,7 +133,7 @@ export class TransferMovimentationBetweenProjectsUseCase {
     }
 
     // verify if in any case of transference there're enough materials in the origin project
-    transferMovimentationBetweenProjectsUseCaseRequest.forEach((request) => {
+    transferMovimentationUseCaseRequest.forEach((request) => {
       const valueSumRepository = movimentationVerificationOut
         .filter(
           (movRepo) =>
@@ -62,13 +142,20 @@ export class TransferMovimentationBetweenProjectsUseCase {
         )
         .reduce((a, b) => a + b.value, 0);
 
+      // counter of cases that there're enough materials in the origin project
       if (valueSumRepository < request.value) countErrors += 1;
     });
 
-    // counter of cases that there're enough materials in the origin project
-    if (countErrors > 0) return left(new ResourceNotFoundError());
+    return countErrors > 0 ? true : false;
+  }
 
-    transferMovimentationBetweenProjectsUseCaseRequest.map(async (transfer) => {
+  private createMovimentationArrays(
+    transferMovimentationUseCaseRequest: TransferMovimentationBetweenProjectsUseCaseRequest[]
+  ): createMovimentationArraysResponse {
+    let movimentationIn: Movimentation[] = [];
+    let movimentationOut: Movimentation[] = [];
+
+    transferMovimentationUseCaseRequest.map(async (transfer) => {
       movimentationOut.push(
         Movimentation.create({
           projectId: new UniqueEntityID(transfer.projectIdOut),
@@ -94,8 +181,57 @@ export class TransferMovimentationBetweenProjectsUseCase {
 
     const concatMovimentations = movimentationOut.concat(movimentationIn);
 
-    await this.movimentationRepository.create(concatMovimentations);
+    return { concatMovimentations, movimentationIn, movimentationOut };
+  }
 
-    return right({ movimentationIn, movimentationOut });
+  private async verifyIfIdsExist(
+    transferMovimentationUseCaseRequest: TransferMovimentationBetweenProjectsUseCaseRequest[],
+    key: keyof TransferMovimentationBetweenProjectsUseCaseRequest
+  ): Promise<boolean> {
+    let uniqueValuesArray = this.uniqueValues(
+      transferMovimentationUseCaseRequest,
+      key
+    );
+
+    if (key === "projectIdIn") {
+      uniqueValuesArray = uniqueValuesArray.concat(
+        this.uniqueValues(transferMovimentationUseCaseRequest, "projectIdOut")
+      );
+    }
+
+    let result: Storekeeper[] | Material[] | Project[] | Base[] = [];
+
+    switch (key) {
+      case "storekeeperId":
+        result = await this.storekeeperRepository.findByIds(uniqueValuesArray);
+        break;
+      case "materialId":
+        result = await this.materialRepository.findByIds(uniqueValuesArray);
+        break;
+      case "projectIdIn":
+        result = await this.projectRepository.findByIds(uniqueValuesArray);
+        break;
+      case "baseId":
+        result = await this.baseRepository.findByIds(uniqueValuesArray);
+        break;
+      default:
+        result = [];
+        break;
+    }
+
+    return uniqueValuesArray.length === result.length ? true : false;
+  }
+
+  private uniqueValues(
+    transferMovimentationUseCaseRequest: TransferMovimentationBetweenProjectsUseCaseRequest[],
+    key: keyof TransferMovimentationBetweenProjectsUseCaseRequest
+  ): string[] {
+    return [
+      ...new Set(
+        transferMovimentationUseCaseRequest.map((movimentation) =>
+          String(movimentation[key])
+        )
+      ),
+    ];
   }
 }
