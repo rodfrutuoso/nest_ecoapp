@@ -1,4 +1,8 @@
-import { BadRequestException, ConflictException } from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  NotFoundException,
+} from "@nestjs/common";
 import { Body, Controller, HttpCode, Post } from "@nestjs/common";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
@@ -7,6 +11,7 @@ import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
 import { CreateMaterialUseCase } from "src/domain/material-movimentation/application/use-cases/material/create-material";
 import { ResourceAlreadyRegisteredError } from "src/domain/material-movimentation/application/use-cases/errors/resource-already-registered-error";
 import { ApiProperty, ApiTags } from "@nestjs/swagger";
+import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 
 const createMaterialBodySchema = z
   .object({
@@ -31,7 +36,8 @@ class CreateMaterialBodySchema {
   description!: string;
   @ApiProperty({
     example: "FERRAGEM",
-    description: "It's one of the following types: FERRAGEM/CONCRETO/EQUIPAMENTO",
+    description:
+      "It's one of the following types: FERRAGEM/CONCRETO/EQUIPAMENTO",
   })
   type!: string;
   @ApiProperty({
@@ -74,6 +80,8 @@ export class CreateMaterialController {
       switch (error.constructor) {
         case ResourceAlreadyRegisteredError:
           throw new ConflictException(error.message);
+        case ResourceNotFoundError:
+          throw new NotFoundException(error.message);
         default:
           throw new BadRequestException();
       }

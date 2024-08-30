@@ -4,6 +4,8 @@ import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
 import { Material } from "../../../enterprise/entities/material";
 import { MaterialRepository } from "../../repositories/material-repository";
 import { ResourceAlreadyRegisteredError } from "../errors/resource-already-registered-error";
+import { ContractRepository } from "../../repositories/contract-repository";
+import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 
 interface CreateMaterialUseCaseRequest {
   code: number;
@@ -14,7 +16,7 @@ interface CreateMaterialUseCaseRequest {
 }
 
 type CreateMaterialResponse = Eihter<
-  ResourceAlreadyRegisteredError,
+  ResourceAlreadyRegisteredError | ResourceNotFoundError,
   {
     material: Material;
   }
@@ -22,7 +24,10 @@ type CreateMaterialResponse = Eihter<
 
 @Injectable()
 export class CreateMaterialUseCase {
-  constructor(private materialRepository: MaterialRepository) {}
+  constructor(
+    private materialRepository: MaterialRepository,
+    private contractRepository: ContractRepository
+  ) {}
 
   async execute({
     code,
@@ -31,6 +36,10 @@ export class CreateMaterialUseCase {
     type,
     contractId,
   }: CreateMaterialUseCaseRequest): Promise<CreateMaterialResponse> {
+    const base = await this.contractRepository.findById(contractId);
+    if (!base)
+      return left(new ResourceNotFoundError("contractId não encontrado"));
+
     const materialSearch = await this.materialRepository.findByCode(
       code,
       contractId

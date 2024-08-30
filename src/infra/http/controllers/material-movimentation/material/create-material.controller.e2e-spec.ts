@@ -7,17 +7,19 @@ import { JwtService } from "@nestjs/jwt";
 import { randomUUID } from "crypto";
 import { StorekeeperFactory } from "test/factories/make-storekeeper";
 import { DatabaseModule } from "src/infra/database/database.module";
+import { ContractFactory } from "test/factories/make-contract";
 
 describe("Create Material (E2E)", () => {
   let app: INestApplication;
   let bigquery: BigQueryService;
   let jwt: JwtService;
   let storekeeperFactory: StorekeeperFactory;
+  let contractFactory: ContractFactory;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StorekeeperFactory],
+      providers: [StorekeeperFactory, ContractFactory],
     }).compile();
 
     app = moduleRef.createNestApplication();
@@ -25,12 +27,15 @@ describe("Create Material (E2E)", () => {
     bigquery = moduleRef.get(BigQueryService);
     jwt = moduleRef.get(JwtService);
     storekeeperFactory = moduleRef.get(StorekeeperFactory);
+    contractFactory = moduleRef.get(ContractFactory);
 
     await app.init();
   });
 
   test("[POST] /materials", async () => {
     const user = await storekeeperFactory.makeBqStorekeeper({});
+
+    const contract = await contractFactory.makeBqContract({});
 
     const accessToken = jwt.sign({ sub: user.id.toString() });
 
@@ -42,7 +47,7 @@ describe("Create Material (E2E)", () => {
         description: "material de teste",
         type: "concreto",
         unit: "CDA",
-        contractId: randomUUID(),
+        contractId: contract.id.toString(),
       });
 
     const [MaterialDataBase] = await bigquery.material.select({
