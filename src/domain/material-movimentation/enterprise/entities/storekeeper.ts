@@ -68,7 +68,7 @@ export class Storekeeper extends Entity<StorekeeperProps> {
     const storekeeper = new Storekeeper(
       {
         ...props,
-        status: props.status ?? "active",
+        status: props.status ?? "ativo",
       },
       id
     );

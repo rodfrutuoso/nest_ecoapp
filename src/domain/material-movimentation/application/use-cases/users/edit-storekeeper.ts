@@ -5,6 +5,7 @@ import { StorekeeperRepository } from "../../repositories/storekeeper-repository
 import { NotAllowedError } from "../errors/not-allowed-error";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 import { HashGenerator } from "../../cryptography/hash-generator";
+import { BaseRepository } from "../../repositories/base-repository";
 
 interface EditStorekeeperUseCaseRequest {
   storekeeperId: string;
@@ -24,7 +25,8 @@ type EditStorekeeperResponse = Eihter<
 export class EditStorekeeperUseCase {
   constructor(
     private storekeeperRepository: StorekeeperRepository,
-    private hashGenerator: HashGenerator
+    private hashGenerator: HashGenerator,
+    private baseRepository: BaseRepository
   ) {}
 
   async execute({
@@ -37,7 +39,8 @@ export class EditStorekeeperUseCase {
   }: EditStorekeeperUseCaseRequest): Promise<EditStorekeeperResponse> {
     const author = await this.storekeeperRepository.findById(authorId);
 
-    if (!author) return left(new ResourceNotFoundError());
+    if (!author)
+      return left(new ResourceNotFoundError("authorId não encontrado"));
 
     if (author.type != "Administrator") return left(new NotAllowedError());
 
@@ -45,7 +48,16 @@ export class EditStorekeeperUseCase {
       storekeeperId
     );
 
-    if (!storekeeper) return left(new ResourceNotFoundError());
+    if (!storekeeper)
+      return left(
+        new ResourceNotFoundError("id do usuário editado não encontrado")
+      );
+
+    if (baseId) {
+      const base = await this.baseRepository.findById(baseId);
+      if (!base)
+        return left(new ResourceNotFoundError("baseId não encontrado"));
+    }
 
     storekeeper.type = type ?? storekeeper.type;
     storekeeper.baseId =

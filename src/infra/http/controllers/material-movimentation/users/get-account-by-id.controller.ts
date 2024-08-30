@@ -10,7 +10,7 @@ import { ResourceNotFoundError } from "src/domain/material-movimentation/applica
 import { UserPresenter } from "../../../presenters/user-presentar";
 import { ApiTags } from "@nestjs/swagger";
 
-@ApiTags("users")
+@ApiTags("user")
 @Controller("/accounts/:id")
 export class GetStorekeeperByidController {
   constructor(private getStorekeeperByidUseCase: GetStorekeeperByIdUseCase) {}

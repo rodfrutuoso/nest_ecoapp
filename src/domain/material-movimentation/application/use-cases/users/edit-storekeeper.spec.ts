@@ -4,19 +4,37 @@ import { InMemoryStorekeeperRepository } from "../../../../../../test/repositori
 import { makeStorekeeper } from "../../../../../../test/factories/make-storekeeper";
 import { UniqueEntityID } from "src/core/entities/unique-entity-id";
 import { FakeHasher } from "test/cryptography/fake-hasher";
+import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
+import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
+import { makeBase } from "test/factories/make-base";
 
+let inMemoryContractRepository: InMemoryContractRepository;
+let inMemoryBaseRepository: InMemoryBaseRepository;
 let inMemoryStorekeeperRepository: InMemoryStorekeeperRepository;
 let sut: EditStorekeeperUseCase;
 let fakeHasher: FakeHasher;
 
 describe("Edit Storekeeper", () => {
   beforeEach(() => {
-    inMemoryStorekeeperRepository = new InMemoryStorekeeperRepository();
+    inMemoryContractRepository = new InMemoryContractRepository();
+    inMemoryBaseRepository = new InMemoryBaseRepository(
+      inMemoryContractRepository
+    );
+    inMemoryStorekeeperRepository = new InMemoryStorekeeperRepository(
+      inMemoryBaseRepository
+    );
     fakeHasher = new FakeHasher();
-    sut = new EditStorekeeperUseCase(inMemoryStorekeeperRepository, fakeHasher);
+    sut = new EditStorekeeperUseCase(
+      inMemoryStorekeeperRepository,
+      fakeHasher,
+      inMemoryBaseRepository
+    );
   });
 
   it("sould be able to edit a storekeeper", async () => {
+    const base = makeBase({}, new UniqueEntityID("Vitória da Conquista"));
+    await inMemoryBaseRepository.create(base);
+
     const storekeeper = makeStorekeeper();
     const author = makeStorekeeper({ type: "Administrator" });
 
@@ -44,6 +62,9 @@ describe("Edit Storekeeper", () => {
   });
 
   it("sould not be able to edit a storekeeper if the author is not 'Administrador'", async () => {
+    const base = makeBase({}, new UniqueEntityID("Vitória da Conquista"));
+    await inMemoryBaseRepository.create(base);
+
     const storekeeper = makeStorekeeper();
     const author = makeStorekeeper({ type: "Almoxarife" });
 

@@ -56,7 +56,7 @@ class EditAccountBodySchema {
   password!: string;
 }
 
-@ApiTags("users")
+@ApiTags("user")
 @Controller("/accounts/:id")
 export class EditAccountController {
   constructor(private editStorekeeper: EditStorekeeperUseCase) {}

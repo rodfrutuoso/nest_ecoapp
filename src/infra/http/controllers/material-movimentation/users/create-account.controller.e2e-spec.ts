@@ -6,7 +6,6 @@ import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { JwtService } from "@nestjs/jwt";
 import { StorekeeperFactory } from "test/factories/make-storekeeper";
 import { DatabaseModule } from "src/infra/database/database.module";
-import { randomUUID } from "crypto";
 import { BaseFactory } from "test/factories/make-base";
 
 describe("Create account (E2E)", () => {

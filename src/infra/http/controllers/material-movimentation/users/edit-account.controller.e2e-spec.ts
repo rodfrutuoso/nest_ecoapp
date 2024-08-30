@@ -6,18 +6,19 @@ import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { JwtService } from "@nestjs/jwt";
 import { StorekeeperFactory } from "test/factories/make-storekeeper";
 import { DatabaseModule } from "src/infra/database/database.module";
-import { randomUUID } from "crypto";
+import { BaseFactory } from "test/factories/make-base";
 
 describe("Edit account (E2E)", () => {
   let app: INestApplication;
   let bigquery: BigQueryService;
   let jwt: JwtService;
   let storekeeperFactory: StorekeeperFactory;
+  let baseFactory: BaseFactory;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StorekeeperFactory],
+      providers: [StorekeeperFactory, BaseFactory],
     }).compile();
 
     app = moduleRef.createNestApplication();
@@ -25,6 +26,7 @@ describe("Edit account (E2E)", () => {
     bigquery = moduleRef.get(BigQueryService);
     jwt = moduleRef.get(JwtService);
     storekeeperFactory = moduleRef.get(StorekeeperFactory);
+    baseFactory = moduleRef.get(BaseFactory);
 
     await app.init();
   });
@@ -35,7 +37,7 @@ describe("Edit account (E2E)", () => {
     });
 
     const accessToken = jwt.sign({ sub: user.id.toString() });
-    const baseId = randomUUID();
+    const base = await baseFactory.makeBqBase();
 
     const response = await request(app.getHttpServer())
       .put(`/accounts/${user.id.toString()}`)
@@ -43,7 +45,7 @@ describe("Edit account (E2E)", () => {
       .send({
         password: "123456",
         type: "Administrator",
-        baseId,
+        baseId: base.id.toString(),
       });
 
     const [userDataBase] = await bigquery.user.select({
@@ -51,6 +53,6 @@ describe("Edit account (E2E)", () => {
     });
 
     expect(response.statusCode).toBe(204);
-    expect(userDataBase.baseId).toEqual(baseId);
+    expect(userDataBase.baseId).toEqual(base.id.toString());
   });
 });

@@ -11,7 +11,7 @@ import { DeleteStorekeeperUseCase } from "src/domain/material-movimentation/appl
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { ApiTags } from "@nestjs/swagger";
 
-@ApiTags("users")
+@ApiTags("user")
 @Controller("/accounts/:id")
 export class DeleteAccountController {
   constructor(private deleteStorekeeper: DeleteStorekeeperUseCase) {}

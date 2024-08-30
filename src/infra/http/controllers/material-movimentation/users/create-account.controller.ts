@@ -63,7 +63,7 @@ class CreateAccountBodySchema {
   password!: string;
 }
 
-@ApiTags("users")
+@ApiTags("user")
 @Controller("/accounts")
 export class CreateAccountController {
   constructor(private registerStorekeeper: RegisterStorekeeperUseCase) {}

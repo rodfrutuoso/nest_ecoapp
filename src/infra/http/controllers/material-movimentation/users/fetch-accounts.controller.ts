@@ -46,7 +46,7 @@ class FetchAccountsQueryDto {
   name!: string;
 }
 
-@ApiTags("users")
+@ApiTags("user")
 @Controller("/accounts")
 export class FetchAccountsController {
   constructor(private FetchStorekeeper: FetchStorekeeperUseCase) {}
