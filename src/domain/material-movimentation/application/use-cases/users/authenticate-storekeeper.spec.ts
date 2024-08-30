@@ -5,7 +5,11 @@ import { FakeEncrypter } from "test/cryptography/fake-encrypter";
 import { AuthenticateStorekeeperUseCase } from "./authenticate-storekeeper";
 import { makeStorekeeper } from "test/factories/make-storekeeper";
 import { WrogCredentialsError } from "../errors/wrong-credentials";
+import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
+import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
 
+let inMemoryContractRepository: InMemoryContractRepository;
+let inMemoryBaseRepository: InMemoryBaseRepository;
 let inMemoryStorekeeperRepository: InMemoryStorekeeperRepository;
 let fakeHasher: FakeHasher;
 let fakeEncrypter: FakeEncrypter;
@@ -13,7 +17,13 @@ let sut: AuthenticateStorekeeperUseCase;
 
 describe("authenticate storekeeper", () => {
   beforeEach(() => {
-    inMemoryStorekeeperRepository = new InMemoryStorekeeperRepository();
+    inMemoryContractRepository = new InMemoryContractRepository();
+    inMemoryBaseRepository = new InMemoryBaseRepository(
+      inMemoryContractRepository
+    );
+    inMemoryStorekeeperRepository = new InMemoryStorekeeperRepository(
+      inMemoryBaseRepository
+    );
     fakeHasher = new FakeHasher();
     fakeEncrypter = new FakeEncrypter();
     sut = new AuthenticateStorekeeperUseCase(

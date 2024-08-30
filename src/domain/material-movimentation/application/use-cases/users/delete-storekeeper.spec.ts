@@ -3,13 +3,23 @@ import { DeleteStorekeeperUseCase } from "./delete-storekeeper";
 import { InMemoryStorekeeperRepository } from "../../../../../../test/repositories/in-memory-storekeeper-repository";
 import { makeStorekeeper } from "../../../../../../test/factories/make-storekeeper";
 import { NotAllowedError } from "../errors/not-allowed-error";
+import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
+import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
 
+let inMemoryContractRepository: InMemoryContractRepository;
+let inMemoryBaseRepository: InMemoryBaseRepository;
 let inMemoryStorekeeperRepository: InMemoryStorekeeperRepository;
 let sut: DeleteStorekeeperUseCase;
 
 describe("Delete Storekeeper", () => {
   beforeEach(() => {
-    inMemoryStorekeeperRepository = new InMemoryStorekeeperRepository();
+    inMemoryContractRepository = new InMemoryContractRepository();
+    inMemoryBaseRepository = new InMemoryBaseRepository(
+      inMemoryContractRepository
+    );
+    inMemoryStorekeeperRepository = new InMemoryStorekeeperRepository(
+      inMemoryBaseRepository
+    );
     sut = new DeleteStorekeeperUseCase(inMemoryStorekeeperRepository);
   });
 
