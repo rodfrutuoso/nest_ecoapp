@@ -35,7 +35,8 @@ export class FetchPhysicalDocumentUseCase {
         projectId
       );
 
-    if (!physicaldocuments.length) return left(new ResourceNotFoundError());
+    if (!physicaldocuments.length)
+      return left(new ResourceNotFoundError("Pesquisa sem resultados"));
 
     return right({ physicaldocuments });
   }

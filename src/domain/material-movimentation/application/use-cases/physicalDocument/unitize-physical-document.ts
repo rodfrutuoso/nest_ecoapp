@@ -22,7 +22,7 @@ export class UnitizePhysicalDocumentUseCase {
       physicaldDocumentid
     );
 
-    if (!physicalDocument) return left(new ResourceNotFoundError());
+    if (!physicalDocument) return left(new ResourceNotFoundError("ID não econtrado"));
 
     physicalDocument.unitized = unitized;
 

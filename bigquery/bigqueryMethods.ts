@@ -9,6 +9,7 @@ export interface UpdateProps<T> {
 
 export interface SelectOptions<T> {
   where?: Partial<T>;
+  whereIn?: { [K in keyof T]?: any[] };
   greaterOrEqualThan?: Partial<T>;
   lessOrEqualThan?: Partial<T>;
   columns?: (keyof T)[];
@@ -86,6 +87,7 @@ export class BigQueryMethods<T extends Record<string, any>> {
   async select(options: SelectOptions<T> = {}): Promise<T[]> {
     const {
       where,
+      whereIn,
       greaterOrEqualThan,
       lessOrEqualThan,
       columns,
@@ -117,6 +119,21 @@ export class BigQueryMethods<T extends Record<string, any>> {
         })
         .join(" AND ");
       if (whereClause) whereClauses.push(whereClause);
+    }
+
+    if (whereIn) {
+      const whereInClauses = Object.keys(whereIn)
+        .filter((key) => whereIn[key] && whereIn[key].length > 0)
+        .map((key) => {
+          const values = whereIn[key]!
+            .map((value) =>
+              typeof value === "string" ? `'${value}'` : value
+            )
+            .join(", ");
+          return `${String(key)} IN (${values})`;
+        })
+        .join(" AND ");
+      if (whereInClauses) whereClauses.push(whereInClauses);
     }
 
     if (greaterOrEqualThan) {

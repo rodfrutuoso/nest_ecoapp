@@ -15,6 +15,14 @@ export class InMemoryMaterialRepository implements MaterialRepository {
     return material;
   }
 
+  async findByIds(ids: string[]): Promise<Material[]> {
+    const material = this.items.filter((item) =>
+      ids.includes(item.id.toString())
+    );
+
+    return material;
+  }
+
   async create(material: Material) {
     this.items.push(material);
   }

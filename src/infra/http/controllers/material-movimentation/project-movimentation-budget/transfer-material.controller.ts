@@ -1,4 +1,4 @@
-import { BadRequestException } from "@nestjs/common";
+import { BadRequestException, ConflictException } from "@nestjs/common";
 import { Body, Controller, HttpCode, Post } from "@nestjs/common";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
@@ -6,6 +6,7 @@ import { CurrentUser } from "src/infra/auth/current-user.decorator";
 import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
 import { TransferMaterialUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/transfer-material";
 import { ApiBody, ApiProperty, ApiTags } from "@nestjs/swagger";
+import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 
 const transferMaterialBodySchema = z.array(
   z
@@ -27,7 +28,8 @@ class TransferMaterialBodySchema {
   materialId!: string;
   @ApiProperty({
     example: "project-id",
-    description: "project's ID that the material movimentated will be associate",
+    description:
+      "project's ID that the material movimentated will be associate",
   })
   projectId!: string;
   @ApiProperty({
@@ -79,7 +81,14 @@ export class TransferMaterialController {
     );
 
     if (result.isLeft()) {
-      throw new BadRequestException();
+      const error = result.value;
+
+      switch (error.constructor) {
+        case ResourceNotFoundError:
+          throw new ConflictException(error.message);
+        default:
+          throw new BadRequestException();
+      }
     }
   }
 }

@@ -7,17 +7,28 @@ import { JwtService } from "@nestjs/jwt";
 import { StorekeeperFactory } from "test/factories/make-storekeeper";
 import { DatabaseModule } from "src/infra/database/database.module";
 import { randomUUID } from "crypto";
+import { ProjectFactory } from "test/factories/make-project";
+import { BaseFactory } from "test/factories/make-base";
+import { MaterialFactory } from "test/factories/make-material";
 
 describe("Transfer Material (E2E)", () => {
   let app: INestApplication;
   let bigquery: BigQueryService;
   let jwt: JwtService;
   let storekeeperFactory: StorekeeperFactory;
+  let projectFactory: ProjectFactory;
+  let baseFactory: BaseFactory;
+  let materialFactory: MaterialFactory;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StorekeeperFactory],
+      providers: [
+        StorekeeperFactory,
+        MaterialFactory,
+        BaseFactory,
+        ProjectFactory,
+      ],
     }).compile();
 
     app = moduleRef.createNestApplication();
@@ -25,6 +36,9 @@ describe("Transfer Material (E2E)", () => {
     bigquery = moduleRef.get(BigQueryService);
     jwt = moduleRef.get(JwtService);
     storekeeperFactory = moduleRef.get(StorekeeperFactory);
+    materialFactory = moduleRef.get(MaterialFactory);
+    baseFactory = moduleRef.get(BaseFactory);
+    projectFactory = moduleRef.get(ProjectFactory);
 
     await app.init();
   });
@@ -34,39 +48,39 @@ describe("Transfer Material (E2E)", () => {
 
     const accessToken = jwt.sign({ sub: user.id.toString() });
 
-    const projectId = randomUUID();
-    const baseId = randomUUID();
-    const materialId = randomUUID();
+    const project = await projectFactory.makeBqProject();
+    const base = await baseFactory.makeBqBase();
+    const material = await materialFactory.makeBqMaterial();
 
     const response = await request(app.getHttpServer())
       .post("/movimentation")
       .set("Authorization", `Bearer ${accessToken}`)
       .send([
         {
-          materialId,
-          projectId,
+          materialId: material.id.toString(),
+          projectId: project.id.toString(),
           observation: "observação 1",
-          baseId,
+          baseId: base.id.toString(),
           value: 5,
         },
         {
-          materialId,
-          projectId,
+          materialId: material.id.toString(),
+          projectId: project.id.toString(),
           observation: "observação 2",
-          baseId,
+          baseId: base.id.toString(),
           value: 2,
         },
         {
-          materialId,
-          projectId,
+          materialId: material.id.toString(),
+          projectId: project.id.toString(),
           observation: "observação 3",
-          baseId,
+          baseId: base.id.toString(),
           value: -1,
         },
       ]);
 
     const movimentationDataBase = await bigquery.movimentation.select({
-      where: { projectId },
+      where: { projectId: project.id.toString() },
     });
 
     expect(response.statusCode).toBe(201);

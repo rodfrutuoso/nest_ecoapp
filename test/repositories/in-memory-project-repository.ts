@@ -1,4 +1,3 @@
-import { UniqueEntityID } from "../../src/core/entities/unique-entity-id";
 import { ProjectRepository } from "../../src/domain/material-movimentation/application/repositories/project-repository";
 import { Project } from "../../src/domain/material-movimentation/enterprise/entities/project";
 
@@ -19,6 +18,14 @@ export class InMemoryProjectRepository implements ProjectRepository {
     const project = this.items.find((item) => item.id.toString() === id);
 
     if (!project) return null;
+
+    return project;
+  }
+
+  async findByIds(ids: string[]): Promise<Project[]> {
+    const project = this.items.filter((item) =>
+      ids.includes(item.id.toString())
+    );
 
     return project;
   }

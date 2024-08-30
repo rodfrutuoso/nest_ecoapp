@@ -25,6 +25,14 @@ export class BqMaterialRepository implements MaterialRepository {
     return BqMaterialMapper.toDomin(material);
   }
 
+  async findByIds(ids: string[]): Promise<Material[]> {
+    const materials = await this.bigquery.material.select({
+      whereIn: { id: ids },
+    });
+
+    return materials.map(BqMaterialMapper.toDomin);
+  }
+
   async findMany(
     { page }: PaginationParams,
     contractId: string,
@@ -32,7 +40,8 @@ export class BqMaterialRepository implements MaterialRepository {
   ): Promise<Material[]> {
     const pageCount = 40;
 
-    const objectSearch = type === undefined ? {contractId} : {contractId, type}
+    const objectSearch =
+      type === undefined ? { contractId } : { contractId, type };
 
     const materials = await this.bigquery.material.select({
       where: objectSearch,

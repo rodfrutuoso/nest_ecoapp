@@ -37,6 +37,16 @@ export class BqStorekeeperRepository implements StorekeeperRepository {
     return result instanceof Storekeeper ? result : null;
   }
 
+  async findByIds(storekeeperIds: string[]): Promise<Storekeeper[]> {
+    const storekeepers = await this.bigquery.user.select({
+      whereIn: { id: storekeeperIds },
+    });
+
+    return storekeepers
+      .map(BqUserMapper.toDomin)
+      .filter((storekeeper) => storekeeper instanceof Storekeeper);
+  }
+
   async findByEmail(email: string): Promise<Storekeeper | null> {
     const [storekeeper] = await this.bigquery.user.select({
       where: { email },

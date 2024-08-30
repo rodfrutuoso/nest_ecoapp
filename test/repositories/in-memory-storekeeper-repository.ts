@@ -35,6 +35,14 @@ export class InMemoryStorekeeperRepository implements StorekeeperRepository {
     return storekeeper;
   }
 
+  async findByIds(ids: string[]): Promise<Storekeeper[]> {
+    const storekeeper = this.items.filter((item) =>
+      ids.includes(item.id.toString())
+    );
+
+    return storekeeper;
+  }
+
   async findByEmail(email: string): Promise<Storekeeper | null> {
     const storekeeper = this.items.find(
       (item) => item.email.toString() === email

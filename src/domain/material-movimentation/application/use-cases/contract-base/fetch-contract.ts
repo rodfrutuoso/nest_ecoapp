@@ -26,7 +26,7 @@ export class FetchContractUseCase {
       page,
     });
 
-    if (!contracts.length) return left(new ResourceNotFoundError());
+    if (!contracts.length) return left(new ResourceNotFoundError("Pesquisa sem resultados"));
 
     return right({ contracts });
   }

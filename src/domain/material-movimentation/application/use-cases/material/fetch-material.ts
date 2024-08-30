@@ -34,7 +34,8 @@ export class FetchMaterialUseCase {
       type
     );
 
-    if (!materials.length) return left(new ResourceNotFoundError());
+    if (!materials.length)
+      return left(new ResourceNotFoundError("Pesquisa sem resultados"));
 
     return right({ materials });
   }

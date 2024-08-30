@@ -28,6 +28,14 @@ export class BqProjectRepository implements ProjectRepository {
     return BqProjectMapper.toDomin(project);
   }
 
+  async findByIds(ids: string[]): Promise<Project[]> {
+    const projects = await this.bigquery.project.select({
+      whereIn: { id: ids },
+    });
+
+    return projects.map(BqProjectMapper.toDomin);
+  }
+
   async create(project: Project): Promise<void> {
     const data = BqProjectMapper.toBigquery(project);
 

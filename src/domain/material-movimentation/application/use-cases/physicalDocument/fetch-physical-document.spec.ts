@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { FetchPhysicalDocumentUseCase } from "./fetch-physical-document";
 import { InMemoryPhysicalDocumentRepository } from "../../../../../../test/repositories/in-memory-physical-document-repository";
 import { makePhysicalDocument } from "../../../../../../test/factories/make-physical-document";
-import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
 import { InMemoryProjectRepository } from "test/repositories/in-memory-project-repository";
 import { makeProject } from "test/factories/make-project";
 

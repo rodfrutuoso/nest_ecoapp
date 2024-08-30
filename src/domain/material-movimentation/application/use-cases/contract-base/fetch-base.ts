@@ -26,7 +26,8 @@ export class FetchBaseUseCase {
       page,
     });
 
-    if (!bases.length) return left(new ResourceNotFoundError());
+    if (!bases.length)
+      return left(new ResourceNotFoundError("Pesquisa sem resultados"));
 
     return right({ bases });
   }

@@ -25,6 +25,14 @@ export class InMemoryBaseRepository implements BaseRepository {
     return base;
   }
 
+  async findByIds(baseIds: string[]): Promise<Base[]> {
+    const base = this.items.filter((item) =>
+      baseIds.includes(item.id.toString())
+    );
+
+    return base;
+  }
+
   async create(base: Base) {
     this.items.push(base);
   }
