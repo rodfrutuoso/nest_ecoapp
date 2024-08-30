@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  NotFoundException,
   UsePipes,
 } from "@nestjs/common";
 import { Body, Controller, HttpCode, Post } from "@nestjs/common";
@@ -9,6 +10,7 @@ import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { IdentifierAttributionUseCase } from "src/domain/material-movimentation/application/use-cases/physicalDocument/identifier-attribution";
 import { ResourceAlreadyRegisteredError } from "src/domain/material-movimentation/application/use-cases/errors/resource-already-registered-error";
 import { ApiProperty, ApiTags } from "@nestjs/swagger";
+import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 
 const identifierAttributionBodySchema = z.object({
   projectId: z.string().uuid(),
@@ -50,6 +52,8 @@ export class IdentifierAttributionController {
       switch (error.constructor) {
         case ResourceAlreadyRegisteredError:
           throw new ConflictException(error.message);
+        case ResourceNotFoundError:
+          throw new NotFoundException(error.message);
         default:
           throw new BadRequestException();
       }

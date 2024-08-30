@@ -6,18 +6,19 @@ import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { JwtService } from "@nestjs/jwt";
 import { StorekeeperFactory } from "test/factories/make-storekeeper";
 import { DatabaseModule } from "src/infra/database/database.module";
-import { randomUUID } from "crypto";
+import { ProjectFactory } from "test/factories/make-project";
 
 describe("Identifier Attribution (E2E)", () => {
   let app: INestApplication;
   let bigquery: BigQueryService;
   let jwt: JwtService;
   let storekeeperFactory: StorekeeperFactory;
+  let projectFactory: ProjectFactory;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StorekeeperFactory],
+      providers: [StorekeeperFactory, ProjectFactory],
     }).compile();
 
     app = moduleRef.createNestApplication();
@@ -25,6 +26,7 @@ describe("Identifier Attribution (E2E)", () => {
     bigquery = moduleRef.get(BigQueryService);
     jwt = moduleRef.get(JwtService);
     storekeeperFactory = moduleRef.get(StorekeeperFactory);
+    projectFactory = moduleRef.get(ProjectFactory);
 
     await app.init();
   });
@@ -33,13 +35,13 @@ describe("Identifier Attribution (E2E)", () => {
     const user = await storekeeperFactory.makeBqStorekeeper({});
 
     const accessToken = jwt.sign({ sub: user.id.toString() });
-    const projectId = randomUUID();
+    const project = await projectFactory.makeBqProject();
 
     const response = await request(app.getHttpServer())
       .post("/physical-documents")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({
-        projectId,
+        projectId: project.id.toString(),
         identifier: 2,
       });
 

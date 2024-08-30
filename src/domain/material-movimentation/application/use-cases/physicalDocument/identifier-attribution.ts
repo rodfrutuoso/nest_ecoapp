@@ -4,6 +4,8 @@ import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
 import { PhysicalDocument } from "../../../enterprise/entities/physical-document";
 import { PhysicalDocumentRepository } from "../../repositories/physical-document-repository";
 import { ResourceAlreadyRegisteredError } from "../errors/resource-already-registered-error";
+import { ProjectRepository } from "../../repositories/project-repository";
+import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 
 interface IdentifierAttributionUseCaseRequest {
   projectId: string;
@@ -11,7 +13,7 @@ interface IdentifierAttributionUseCaseRequest {
 }
 
 type IdentifierAttributionResponse = Eihter<
-  ResourceAlreadyRegisteredError,
+  ResourceAlreadyRegisteredError | ResourceNotFoundError,
   {
     physicalDocument: PhysicalDocument;
   }
@@ -19,16 +21,23 @@ type IdentifierAttributionResponse = Eihter<
 
 @Injectable()
 export class IdentifierAttributionUseCase {
-  constructor(private physicaldocumentRepository: PhysicalDocumentRepository) {}
+  constructor(
+    private physicaldocumentRepository: PhysicalDocumentRepository,
+    private projectRepository: ProjectRepository
+  ) {}
 
   async execute({
     projectId,
     identifier,
   }: IdentifierAttributionUseCaseRequest): Promise<IdentifierAttributionResponse> {
+    const project = await this.projectRepository.findByID(projectId);
+    if (!project)
+      return left(new ResourceNotFoundError("projectId não encontrado"));
+
     const physicaldocumentSearch =
       await this.physicaldocumentRepository.findByIdentifier(identifier);
 
-    if (physicaldocumentSearch)
+    if (physicaldocumentSearch && physicaldocumentSearch.unitized === false)
       return left(new ResourceAlreadyRegisteredError());
 
     const physicalDocument = PhysicalDocument.create({
