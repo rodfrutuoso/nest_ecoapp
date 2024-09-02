@@ -144,4 +144,31 @@ describe("Transfer Material between projects", () => {
     expect(result.isLeft()).toBeTruthy();
     expect(result.value).toBeInstanceOf(ResourceNotFoundError);
   });
+
+  it("should not be able to transfer a material between projects if the iformed ids was not found", async () => {
+    const movimentation = makeMovimentation({
+      projectId: new UniqueEntityID("Projeto-origem"),
+      materialId: new UniqueEntityID("Material-teste"),
+      baseId: new UniqueEntityID("ID-BASE-VCA"),
+      storekeeperId: new UniqueEntityID("5"),
+      value: 3,
+    });
+
+    await inMemoryMovimentationRepository.create([movimentation]);
+
+    const result = await sut.execute([
+      {
+        projectIdOut: "Projeto-origem",
+        projectIdIn: "Projeto-destino",
+        materialId: "Material-teste",
+        storekeeperId: "5",
+        observation: "transferencia para terminar obra prioritária",
+        baseId: "ID-BASE-VCA",
+        value: 4,
+      },
+    ]);
+
+    expect(result.isLeft()).toBeTruthy();
+    expect(result.value).toBeInstanceOf(ResourceNotFoundError);
+  });
 });

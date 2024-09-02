@@ -50,54 +50,18 @@ export class TransferMovimentationBetweenProjectsUseCase {
   async execute(
     transferMovimentationUseCaseRequest: TransferMovimentationBetweenProjectsUseCaseRequest[]
   ): Promise<TransferMovimentationBetweenProjectsResponse> {
-    if (
-      !(await this.verifyIfIdsExist(
-        transferMovimentationUseCaseRequest,
-        "storekeeperId"
-      ))
-    )
+    const { containsIdError, message } = await this.verifyResourcesId(
+      transferMovimentationUseCaseRequest
+    );
+
+    if (containsIdError) return left(new ResourceNotFoundError(message));
+
+    const containsQtdError = await this.verifyQtdToTransfer(transferMovimentationUseCaseRequest) 
+
+    if (containsQtdError)
       return left(
         new ResourceNotFoundError(
-          "pelo menos um dos storekeeperIds não encontrado"
-        )
-      );
-
-    if (
-      !(await this.verifyIfIdsExist(
-        transferMovimentationUseCaseRequest,
-        "materialId"
-      ))
-    )
-      return left(
-        new ResourceNotFoundError(
-          "pelo menos um dos materialIds não encontrado"
-        )
-      );
-
-    if (
-      !(await this.verifyIfIdsExist(
-        transferMovimentationUseCaseRequest,
-        "projectIdIn"
-      ))
-    )
-      return left(
-        new ResourceNotFoundError("pelo menos um dos projectIds não encontrado")
-      );
-
-    if (
-      !(await this.verifyIfIdsExist(
-        transferMovimentationUseCaseRequest,
-        "baseId"
-      ))
-    )
-      return left(
-        new ResourceNotFoundError("pelo menos um dos baseIds não encontrado")
-      );
-
-    if (await this.verifyQtdToTransfer(transferMovimentationUseCaseRequest))
-      return left(
-        new ResourceNotFoundError(
-          "Há items cuja quantidade movimentada é inferior à quantidade transferida"
+          "Há items cuja quantidade movimentada é inferior à quantidade já transferida"
         )
       );
 
@@ -182,6 +146,55 @@ export class TransferMovimentationBetweenProjectsUseCase {
     const concatMovimentations = movimentationOut.concat(movimentationIn);
 
     return { concatMovimentations, movimentationIn, movimentationOut };
+  }
+
+  private async verifyResourcesId(
+    transferMovimentationUseCaseRequest: TransferMovimentationBetweenProjectsUseCaseRequest[]
+  ) {
+    let containsIdError = false;
+    let message;
+
+    if (
+      !(await this.verifyIfIdsExist(
+        transferMovimentationUseCaseRequest,
+        "storekeeperId"
+      ))
+    ) {
+      containsIdError = true;
+      message = "pelo menos um dos storekeeperIds não encontrado";
+    }
+
+    if (
+      !(await this.verifyIfIdsExist(
+        transferMovimentationUseCaseRequest,
+        "materialId"
+      ))
+    ) {
+      containsIdError = true;
+      message = "pelo menos um dos materialIds não encontrado";
+    }
+
+    if (
+      !(await this.verifyIfIdsExist(
+        transferMovimentationUseCaseRequest,
+        "projectIdIn"
+      ))
+    ) {
+      containsIdError = true;
+      message = "pelo menos um dos projectIds não encontrado";
+    }
+
+    if (
+      !(await this.verifyIfIdsExist(
+        transferMovimentationUseCaseRequest,
+        "baseId"
+      ))
+    ) {
+      containsIdError = true;
+      message = "pelo menos um dos baseIds não encontrado";
+    }
+
+    return { containsIdError, message };
   }
 
   private async verifyIfIdsExist(

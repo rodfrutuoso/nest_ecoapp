@@ -23,7 +23,7 @@ interface TransferMaterialUseCaseRequest {
 }
 
 type TransferMaterialResponse = Eihter<
-ResourceNotFoundError,
+  ResourceNotFoundError,
   {
     movimentations: Movimentation[];
   }
@@ -42,17 +42,11 @@ export class TransferMaterialUseCase {
   async execute(
     transferMaterialUseCaseRequest: TransferMaterialUseCaseRequest[]
   ): Promise<TransferMaterialResponse> {
-    if (!await this.verifyIfIdsExist(transferMaterialUseCaseRequest, "storekeeperId"))
-      return left(new ResourceNotFoundError("pelo menos um dos storekeeperIds não encontrado"));
+    const { containsIdError, message } = await this.verifyResourcesId(
+      transferMaterialUseCaseRequest
+    );
 
-    if (!await this.verifyIfIdsExist(transferMaterialUseCaseRequest, "materialId"))
-      return left(new ResourceNotFoundError("pelo menos um dos materialIds não encontrado"));
-
-    if (!await this.verifyIfIdsExist(transferMaterialUseCaseRequest, "projectId"))
-      return left(new ResourceNotFoundError("pelo menos um dos projectIds não encontrado"));
-
-    if (!await this.verifyIfIdsExist(transferMaterialUseCaseRequest, "baseId"))
-      return left(new ResourceNotFoundError("pelo menos um dos baseIds não encontrado"));
+    if (containsIdError) return left(new ResourceNotFoundError(message));
 
     const movimentations = transferMaterialUseCaseRequest.map(
       (movimentation) => {
@@ -70,6 +64,52 @@ export class TransferMaterialUseCase {
     await this.movimentationRepository.create(movimentations);
 
     return right({ movimentations });
+  }
+
+  private async verifyResourcesId(
+    transferMaterialUseCaseRequest: TransferMaterialUseCaseRequest[]
+  ) {
+    let containsIdError = false;
+    let message;
+
+    if (
+      !(await this.verifyIfIdsExist(
+        transferMaterialUseCaseRequest,
+        "storekeeperId"
+      ))
+    ) {
+      containsIdError = true;
+      message = "pelo menos um dos storekeeperIds não encontrado";
+    }
+
+    if (
+      !(await this.verifyIfIdsExist(
+        transferMaterialUseCaseRequest,
+        "materialId"
+      ))
+    ) {
+      containsIdError = true;
+      message = "pelo menos um dos materialIds não encontrado";
+    }
+
+    if (
+      !(await this.verifyIfIdsExist(
+        transferMaterialUseCaseRequest,
+        "projectId"
+      ))
+    ) {
+      containsIdError = true;
+      message = "pelo menos um dos projectIds não encontrado";
+    }
+
+    if (
+      !(await this.verifyIfIdsExist(transferMaterialUseCaseRequest, "baseId"))
+    ) {
+      containsIdError = true;
+      message = "pelo menos um dos baseIds não encontrado";
+    }
+
+    return { containsIdError, message };
   }
 
   private async verifyIfIdsExist(
