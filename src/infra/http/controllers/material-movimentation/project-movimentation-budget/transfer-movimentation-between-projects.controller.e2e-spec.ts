@@ -10,6 +10,9 @@ import { randomUUID } from "crypto";
 import { MovimentationFactory } from "test/factories/make-movimentation";
 import { UniqueEntityID } from "src/core/entities/unique-entity-id";
 import { BqMovimentationProps } from "src/infra/database/bigquery/schemas/movimentation";
+import { ProjectFactory } from "test/factories/make-project";
+import { BaseFactory } from "test/factories/make-base";
+import { MaterialFactory } from "test/factories/make-material";
 
 describe("Transfer Movimentation Between Projects (E2E)", () => {
   let app: INestApplication;
@@ -17,11 +20,20 @@ describe("Transfer Movimentation Between Projects (E2E)", () => {
   let jwt: JwtService;
   let storekeeperFactory: StorekeeperFactory;
   let movimentationFactory: MovimentationFactory;
+  let projectFactory: ProjectFactory;
+  let baseFactory: BaseFactory;
+  let materialFactory: MaterialFactory;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StorekeeperFactory, MovimentationFactory],
+      providers: [
+        StorekeeperFactory,
+        MovimentationFactory,
+        MaterialFactory,
+        BaseFactory,
+        ProjectFactory,
+      ],
     }).compile();
 
     app = moduleRef.createNestApplication();
@@ -30,78 +42,80 @@ describe("Transfer Movimentation Between Projects (E2E)", () => {
     jwt = moduleRef.get(JwtService);
     storekeeperFactory = moduleRef.get(StorekeeperFactory);
     movimentationFactory = moduleRef.get(MovimentationFactory);
+    materialFactory = moduleRef.get(MaterialFactory);
+    baseFactory = moduleRef.get(BaseFactory);
+    projectFactory = moduleRef.get(ProjectFactory);
 
     await app.init();
   });
 
   test("[POST] /transfer-movimentation", async () => {
     const user = await storekeeperFactory.makeBqStorekeeper({});
+    const accessToken = jwt.sign({ sub: user.id.toString(), type: "Administrador" });
 
-    const projectIdOut = randomUUID();
-    const projectIdIn = randomUUID();
-    const baseId = randomUUID();
-    const materialId1 = randomUUID();
-    const materialId2 = randomUUID();
-    const materialId3 = randomUUID();
+    const projectOut = await projectFactory.makeBqProject();
+    const projectIn = await projectFactory.makeBqProject();
+    const base = await baseFactory.makeBqBase();
+    const material1 = await materialFactory.makeBqMaterial();
+    const material2 = await materialFactory.makeBqMaterial();
+    const material3 = await materialFactory.makeBqMaterial();
 
     await movimentationFactory.makeBqMovimentation({
-      projectId: new UniqueEntityID(projectIdOut),
-      materialId: new UniqueEntityID(materialId1),
-      baseId: new UniqueEntityID(baseId),
+      projectId: projectOut.id,
+      materialId: material1.id,
+      baseId: base.id,
       value: 5,
     });
 
     await movimentationFactory.makeBqMovimentation({
-      projectId: new UniqueEntityID(projectIdOut),
-      materialId: new UniqueEntityID(materialId2),
-      baseId: new UniqueEntityID(baseId),
+      projectId: projectOut.id,
+      materialId: material2.id,
+      baseId: base.id,
       value: 6,
     });
 
     await movimentationFactory.makeBqMovimentation({
-      projectId: new UniqueEntityID(projectIdOut),
-      materialId: new UniqueEntityID(materialId3),
-      baseId: new UniqueEntityID(baseId),
+      projectId: projectOut.id,
+      materialId: material3.id,
+      baseId: base.id,
       value: 10,
     });
-
-    const accessToken = jwt.sign({ sub: user.id.toString() });
 
     const response = await request(app.getHttpServer())
       .post("/transfer-movimentation")
       .set("Authorization", `Bearer ${accessToken}`)
       .send([
         {
-          materialId: materialId1,
-          projectIdOut,
-          projectIdIn,
+          materialId: material1.id.toString(),
+          projectIdOut: projectOut.id.toString(),
+          projectIdIn: projectIn.id.toString(),
           observation: "observação 1",
-          baseId,
+          baseId: base.id.toString(),
           value: 4,
         },
         {
-          materialId: materialId2,
-          projectIdOut,
-          projectIdIn,
+          materialId: material2.id.toString(),
+          projectIdOut: projectOut.id.toString(),
+          projectIdIn: projectIn.id.toString(),
           observation: "observação 2",
-          baseId,
+          baseId: base.id.toString(),
           value: 6,
         },
         {
-          materialId: materialId3,
-          projectIdOut,
-          projectIdIn,
+          materialId: material3.id.toString(),
+          projectIdOut: projectOut.id.toString(),
+          projectIdIn: projectIn.id.toString(),
           observation: "observação 3",
-          baseId,
+          baseId: base.id.toString(),
           value: 8,
         },
       ]);
 
     let movimentationDataBaseOut = await bigquery.movimentation.select({
-      where: { projectId: projectIdOut },
+      where: { projectId: projectOut.id.toString() },
     });
     const movimentationDataBaseIn = await bigquery.movimentation.select({
-      where: { projectId: projectIdIn },
+      where: { projectId: projectIn.id.toString() },
     });
 
     movimentationDataBaseOut = movimentationDataBaseOut.reduce((a, b) => {
@@ -121,16 +135,34 @@ describe("Transfer Movimentation Between Projects (E2E)", () => {
     expect(response.statusCode).toBe(201);
     expect(movimentationDataBaseOut).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ materialId: materialId1, value: 1 }),
-        expect.objectContaining({ materialId: materialId2, value: 0 }),
-        expect.objectContaining({ materialId: materialId3, value: 2 }),
+        expect.objectContaining({
+          materialId: material1.id.toString(),
+          value: 1,
+        }),
+        expect.objectContaining({
+          materialId: material2.id.toString(),
+          value: 0,
+        }),
+        expect.objectContaining({
+          materialId: material3.id.toString(),
+          value: 2,
+        }),
       ])
     );
     expect(movimentationDataBaseIn).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ materialId: materialId1, value: 4 }),
-        expect.objectContaining({ materialId: materialId2, value: 6 }),
-        expect.objectContaining({ materialId: materialId3, value: 8 }),
+        expect.objectContaining({
+          materialId: material1.id.toString(),
+          value: 4,
+        }),
+        expect.objectContaining({
+          materialId: material2.id.toString(),
+          value: 6,
+        }),
+        expect.objectContaining({
+          materialId: material3.id.toString(),
+          value: 8,
+        }),
       ])
     );
   });
