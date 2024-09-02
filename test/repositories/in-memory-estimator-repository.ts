@@ -7,4 +7,12 @@ export class InMemoryEstimatorRepository implements EstimatorRepository {
   async create(estimator: Estimator) {
     this.items.push(estimator);
   }
+
+  async findById(id: string): Promise<Estimator | null> {
+    const estimator = this.items.find((item) => item.id.toString() === id);
+
+    if (!estimator) return null;
+
+    return estimator;
+  }
 }

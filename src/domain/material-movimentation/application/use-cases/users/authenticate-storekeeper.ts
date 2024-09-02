@@ -41,6 +41,7 @@ export class AuthenticateStorekeeperUseCase {
     const accessToken = await this.encrypter.encrypter({
       sub: storekeeper.id.toString(),
       type: storekeeper.type,
+      baseId: storekeeper.baseId,
     });
 
     if (!isPasswordValid) return left(new WrogCredentialsError());
