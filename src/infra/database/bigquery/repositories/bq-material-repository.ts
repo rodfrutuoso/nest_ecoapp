@@ -25,6 +25,16 @@ export class BqMaterialRepository implements MaterialRepository {
     return BqMaterialMapper.toDomin(material);
   }
 
+  async findByCodeWithoutContract(code: number): Promise<Material | null> {
+    const [material] = await this.bigquery.material.select({
+      where: { code },
+    });
+
+    if (!material) return null;
+
+    return BqMaterialMapper.toDomin(material);
+  }
+
   async findByIds(ids: string[]): Promise<Material[]> {
     const materials = await this.bigquery.material.select({
       whereIn: { id: ids },

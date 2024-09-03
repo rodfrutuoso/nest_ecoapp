@@ -15,6 +15,14 @@ export class InMemoryMaterialRepository implements MaterialRepository {
     return material;
   }
 
+  async findByCodeWithoutContract(code: number): Promise<Material | null> {
+    const material = this.items.find((item) => item.code === code);
+
+    if (!material) return null;
+
+    return material;
+  }
+
   async findByIds(ids: string[]): Promise<Material[]> {
     const material = this.items.filter((item) =>
       ids.includes(item.id.toString())

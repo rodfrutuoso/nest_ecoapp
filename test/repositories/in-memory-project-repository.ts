@@ -19,6 +19,18 @@ export class InMemoryProjectRepository implements ProjectRepository {
     return project;
   }
 
+  async findByProjectNumberWithoutBase(
+    project_number: string
+  ): Promise<Project | null> {
+    const project = this.items.find((item) =>
+      item.project_number.includes(project_number)
+    );
+
+    if (!project) return null;
+
+    return project;
+  }
+
   async findByID(id: string): Promise<Project | null> {
     const project = this.items.find((item) => item.id.toString() === id);
 

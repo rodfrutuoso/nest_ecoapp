@@ -22,6 +22,7 @@ const fetchMovimentationHistoryBodySchema = z.object({
     .default("1")
     .transform(Number)
     .pipe(z.number().min(1)),
+  baseId: z.string().uuid().optional(),
   email: z.string().email().optional(),
   project_number: z.string().optional(),
   material_code: z
@@ -55,6 +56,12 @@ class FetchMovimentationHistoryQueryDto {
   })
   email!: string;
   @ApiProperty({
+    example: "id-da-base-para-pesquisar",
+    description: "base's id that the movimentation was made",
+    required: false,
+  })
+  baseId!: string;
+  @ApiProperty({
     example: "B-1234567",
     description: "project's number that was movimetated",
     required: false,
@@ -82,7 +89,7 @@ class FetchMovimentationHistoryQueryDto {
 }
 
 @ApiTags("movimentation")
-@Controller("/movimentations/:baseId")
+@Controller("/movimentations")
 export class FetchMovimentationHistoryController {
   constructor(
     private fetchMovimentationHistoryUseCase: FetchMovimentationHistoryUseCase
@@ -91,12 +98,18 @@ export class FetchMovimentationHistoryController {
   @Get()
   @HttpCode(200)
   async handle(
-    @CurrentUser() user: UserPayload,
     @Query(new ZodValidationPipe(fetchMovimentationHistoryBodySchema))
     query: FetchMovimentationHistoryQueryDto
   ) {
-    const { page, project_number, email, endDate, material_code, startDate } =
-      query;
+    const {
+      baseId,
+      page,
+      project_number,
+      email,
+      endDate,
+      material_code,
+      startDate,
+    } = query;
 
     let endDateAjusted;
 
@@ -110,7 +123,7 @@ export class FetchMovimentationHistoryController {
 
     const result = await this.fetchMovimentationHistoryUseCase.execute({
       page,
-      baseId: user.baseId ?? "",
+      baseId,
       email,
       project_number,
       material_code,

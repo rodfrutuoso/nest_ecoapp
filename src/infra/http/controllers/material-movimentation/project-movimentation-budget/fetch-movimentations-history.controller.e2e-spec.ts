@@ -98,7 +98,7 @@ describe("Fetch Movimentation History (E2E)", () => {
     });
 
     const response = await request(app.getHttpServer())
-      .get(`/movimentations/${base.id.toString()}`)
+      .get(`/movimentations`)
       .set("Authorization", `Bearer ${accessToken}`)
       .send();
 

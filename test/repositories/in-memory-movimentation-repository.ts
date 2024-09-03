@@ -131,7 +131,7 @@ export class InMemoryMovimentationRepository
 
   async findManyHistoryWithDetails(
     { page }: PaginationParams,
-    baseId: string,
+    baseId?: string,
     storekeeperId?: string,
     projectId?: string,
     materialId?: string,
@@ -139,7 +139,9 @@ export class InMemoryMovimentationRepository
     endDate?: Date
   ): Promise<MovimentationWithDetails[]> {
     const movimentations = this.items
-      .filter((movimentation) => movimentation.baseId.toString() === baseId)
+      .filter(
+        (movimentation) => !baseId || movimentation.baseId.toString() === baseId
+      )
       .filter(
         (movimentation) =>
           !materialId || movimentation.materialId.toString() === materialId

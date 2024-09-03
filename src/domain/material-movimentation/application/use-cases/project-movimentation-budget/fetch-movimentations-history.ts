@@ -10,7 +10,7 @@ import { BaseRepository } from "../../repositories/base-repository";
 
 interface FetchMovimentationHistoryUseCaseRequest {
   page: number;
-  baseId: string;
+  baseId?: string;
   email?: string;
   project_number?: string;
   material_code?: number;
@@ -47,31 +47,37 @@ export class FetchMovimentationHistoryUseCase {
     let storekeeperId;
     let projectId;
     let materialId;
+    let base;
 
-    const base = await this.baseRepository.findById(baseId);
-    if (!base) return left(new ResourceNotFoundError());
+    if (baseId) {
+      base = await this.baseRepository.findById(baseId);
+      if (!base)
+        return left(new ResourceNotFoundError("baseId não encontrado"));
+    }
 
     if (email) {
       const storekeeper = await this.storekeeperRepository.findByEmail(email);
-      if (!storekeeper) return left(new ResourceNotFoundError());
+      if (!storekeeper)
+        return left(new ResourceNotFoundError("email  não encontrado"));
       storekeeperId = storekeeper.id.toString();
     }
 
     if (project_number) {
-      const project = await this.projectRepository.findByProjectNumber(
-        project_number,
-        baseId
-      );
-      if (!project) return left(new ResourceNotFoundError());
+      const project =
+        await this.projectRepository.findByProjectNumberWithoutBase(
+          project_number
+        );
+      if (!project)
+        return left(new ResourceNotFoundError("project_number não encontrado"));
       projectId = project.id.toString();
     }
 
     if (material_code) {
-      const material = await this.materialRepository.findByCode(
-        material_code,
-        base.contractId.toString()
+      const material = await this.materialRepository.findByCodeWithoutContract(
+        material_code
       );
-      if (!material) return left(new ResourceNotFoundError());
+      if (!material)
+        return left(new ResourceNotFoundError("material_code não encontrado"));
       materialId = material.id.toString();
     }
 

@@ -7,6 +7,9 @@ export abstract class MaterialRepository {
     code: number,
     contractId: string
   ): Promise<Material | null>;
+  abstract findByCodeWithoutContract(
+    code: number,
+  ): Promise<Material | null>;
   abstract findByIds(materialIds: string[]): Promise<Material[]>;
   abstract findMany(
     params: PaginationParams,
