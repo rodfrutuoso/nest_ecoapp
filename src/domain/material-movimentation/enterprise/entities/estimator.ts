@@ -1,63 +1,31 @@
-import { Entity } from "../../../../core/entities/entity";
+import { Optional } from "src/core/types/optional";
 import { UniqueEntityID } from "../../../../core/entities/unique-entity-id";
+import { User, UserProps } from "./user";
 
-export interface EstimatorProps {
-  name: string;
-  email: string;
-  cpf: string;
-  status: string;
-  type: string;
+export interface EstimatorProps extends UserProps {
   contractId: UniqueEntityID;
-  password: string;
 }
 
-export class Estimator extends Entity<EstimatorProps> {
-  get name() {
-    return this.props.name;
-  }
-
-  get password() {
-    return this.props.password;
-  }
-
-  get email() {
-    return this.props.email;
-  }
-
-  get cpf() {
-    return this.props.cpf;
-  }
-
-  get status() {
-    return this.props.status;
-  }
-
-  get type() {
-    return this.props.type;
-  }
-
+export class Estimator extends User<EstimatorProps> {
   get contractId() {
     return this.props.contractId;
-  }
-
-  set type(type: string) {
-    this.props.type = type;
-  }
-
-  set status(status: string) {
-    this.props.status = status;
-  }
-
-  set password(password: string) {
-    this.props.password = password;
   }
 
   set contractId(contractId: UniqueEntityID) {
     this.props.contractId = contractId;
   }
 
-  static create(props: EstimatorProps, id?: UniqueEntityID) {
-    const estimator = new Estimator(props, id);
+  static create(
+    props: Optional<EstimatorProps, "status">,
+    id?: UniqueEntityID
+  ) {
+    const estimator = new Estimator(
+      {
+        ...props,
+        status: props.status ?? "ativo",
+      },
+      id
+    );
 
     return estimator;
   }

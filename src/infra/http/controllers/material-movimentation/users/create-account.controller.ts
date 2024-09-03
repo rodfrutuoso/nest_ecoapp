@@ -15,7 +15,7 @@ import { ResourceNotFoundError } from "src/domain/material-movimentation/applica
 const createAccountBodySchema = z.object({
   name: z.string(),
   email: z.string().email(),
-  password: z.string(),
+  password: z.string().min(6),
   cpf: z.string().regex(/^\d{11,}$/, "O CPF precisa ter 11 dígitos"),
   type: z.string(),
   baseId: z.string().uuid(),
