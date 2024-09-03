@@ -14,7 +14,6 @@ import { InMemoryContractRepository } from "test/repositories/in-memory-contract
 import { InMemoryEstimatorRepository } from "test/repositories/in-memory-estimator-repository";
 import { makeContract } from "test/factories/make-contract";
 import { makeBase } from "test/factories/make-base";
-import { UniqueEntityID } from "src/core/entities/unique-entity-id";
 import { makeStorekeeper } from "test/factories/make-storekeeper";
 import { makeMaterial } from "test/factories/make-material";
 import { makeEstimator } from "test/factories/make-estimator";
@@ -51,7 +50,8 @@ describe("Fetch budgets and Movimentations by project", () => {
       inMemoryEstimatorRepository,
       inMemoryMaterialRepository,
       inMemoryProjectRepository,
-      inMemoryContractRepository
+      inMemoryContractRepository,
+      inMemoryBaseRepository
     );
     sut = new FetchBudgetMovimentationByProjectUseCase(
       inMemoryMovimentationRepository,
@@ -77,10 +77,16 @@ describe("Fetch budgets and Movimentations by project", () => {
     const material = makeMaterial();
     inMemoryMaterialRepository.create(material);
 
-    const newProject = makeProject({ project_number: "Obra-teste" });
+    const newProject = makeProject({
+      project_number: "Obra-teste",
+      baseId: base.id,
+    });
     await inMemoryProjectRepository.create(newProject);
 
-    const newProject2 = makeProject({ project_number: "Obra-teste2" });
+    const newProject2 = makeProject({
+      project_number: "Obra-teste2",
+      baseId: base.id,
+    });
     await inMemoryProjectRepository.create(newProject2);
 
     const newMovimentation1 = makeMovimentation({
@@ -133,6 +139,7 @@ describe("Fetch budgets and Movimentations by project", () => {
 
     const result = await sut.execute({
       project_number: "Obra-teste",
+      baseId: base.id.toString(),
     });
 
     expect(result.isRight()).toBeTruthy();
@@ -159,9 +166,11 @@ describe("Fetch budgets and Movimentations by project", () => {
     const material = makeMaterial();
     inMemoryMaterialRepository.create(material);
 
-    const newProject = makeProject({ project_number: "Obra-teste" });
+    const newProject = makeProject({
+      project_number: "Obra-teste",
+      baseId: base.id,
+    });
     await inMemoryProjectRepository.create(newProject);
-
 
     const newMovimentation1 = makeMovimentation({
       projectId: newProject.id,
@@ -213,6 +222,7 @@ describe("Fetch budgets and Movimentations by project", () => {
 
     const result = await sut.execute({
       project_number: "Obra-teste2",
+      baseId: base.id.toString(),
     });
 
     expect(result.isLeft()).toBeTruthy();

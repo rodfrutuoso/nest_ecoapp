@@ -21,10 +21,13 @@ export class BqBudgetRepository implements BudgetRepository {
   }
 
   async findByProjectWithDetails(
-    projectId: string
+    projectId: string,
+    baseId: string
   ): Promise<BudgetWithDetails[]> {
+    const [base] = await this.bigquery.base.select({ where: { id: baseId } });
+
     const budgets = await this.bigquery.budget.select({
-      where: { projectId },
+      where: { projectId, contractId: base.contractId },
       include: {
         project: {
           join: {
@@ -55,7 +58,7 @@ export class BqBudgetRepository implements BudgetRepository {
           relationType: "one-to-one",
         },
       },
-    })
+    });
 
     const budgetsMapped = budgets.map(BqBudgetWithDetailsMapper.toDomin);
 

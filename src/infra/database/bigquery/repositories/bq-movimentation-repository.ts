@@ -28,10 +28,11 @@ export class BqMovimentationRepository implements MovimentationRepository {
 
   async findByProjectWithDetails(
     projectId: string,
+    baseId: string,
     materialId?: string
   ): Promise<MovimentationWithDetails[]> {
     const movimentations = await this.bigquery.movimentation.select({
-      where: { projectId, materialId },
+      where: { projectId, baseId, materialId },
       include: {
         project: {
           join: {

@@ -171,9 +171,15 @@ describe("Fetch Movimentations History", () => {
     const material = makeMaterial();
     inMemoryMaterialRepository.create(material);
 
-    const project = makeProject({ project_number: "projeto-1" });
+    const project = makeProject({
+      project_number: "projeto-1",
+      baseId: base.id,
+    });
     inMemoryProjectRepository.create(project);
-    const project2 = makeProject({ project_number: "projeto-2" });
+    const project2 = makeProject({
+      project_number: "projeto-2",
+      baseId: base.id,
+    });
     inMemoryProjectRepository.create(project2);
 
     const newMovimentation1 = makeMovimentation({

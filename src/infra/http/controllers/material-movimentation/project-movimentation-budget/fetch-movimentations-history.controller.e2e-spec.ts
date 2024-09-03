@@ -4,7 +4,6 @@ import { Test } from "@nestjs/testing";
 import request from "supertest";
 import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { JwtService } from "@nestjs/jwt";
-import { randomUUID } from "crypto";
 import { StorekeeperFactory } from "test/factories/make-storekeeper";
 import { MovimentationFactory } from "test/factories/make-movimentation";
 import { UniqueEntityID } from "src/core/entities/unique-entity-id";
@@ -54,13 +53,14 @@ describe("Fetch Movimentation History (E2E)", () => {
 
   test("[GET] /movimentations", async () => {
     const user = await storekeeperFactory.makeBqStorekeeper({});
+    const contract = await contractFactory.makeBqContract();
+    const base = await baseFactory.makeBqBase({ contractId: contract.id });
 
     const accessToken = jwt.sign({
       sub: user.id.toString(),
       type: "Administrador",
+      baseId: base.id.toString(),
     });
-    const contract = await contractFactory.makeBqContract();
-    const base = await baseFactory.makeBqBase({ contractId: contract.id });
     const project = await projectFactory.makeBqProject({ baseId: base.id });
 
     const material1 = await materialFactory.makeBqMaterial(

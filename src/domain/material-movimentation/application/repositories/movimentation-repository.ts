@@ -9,6 +9,7 @@ export abstract class MovimentationRepository {
   ): Promise<Movimentation[]>;
   abstract findByProjectWithDetails(
     projectid: string,
+    baseid: string,
     materialId?: string
   ): Promise<MovimentationWithDetails[]>;
   abstract findManyHistory(

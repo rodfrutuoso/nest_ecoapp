@@ -9,6 +9,7 @@ import { BudgetWithDetails } from "src/domain/material-movimentation/enterprise/
 
 interface FetchBudgetMovimentationByProjectUseCaseRequest {
   project_number: string;
+  baseId: string;
 }
 
 type FetchBudgetMovimentationByProjectUseCaseResponse = Eihter<
@@ -29,20 +30,24 @@ export class FetchBudgetMovimentationByProjectUseCase {
 
   async execute({
     project_number,
+    baseId,
   }: FetchBudgetMovimentationByProjectUseCaseRequest): Promise<FetchBudgetMovimentationByProjectUseCaseResponse> {
     const project = await this.projectRepository.findByProjectNumber(
-      project_number
+      project_number,
+      baseId
     );
 
     if (!project) return left(new ResourceNotFoundError());
 
     const movimentations =
       await this.movimentationRepository.findByProjectWithDetails(
-        project.id.toString()
+        project.id.toString(),
+        baseId
       );
 
     const budgets = await this.budgetRepository.findByProjectWithDetails(
-      project.id.toString()
+      project.id.toString(),
+      baseId
     );
 
     return right({ movimentations, budgets });

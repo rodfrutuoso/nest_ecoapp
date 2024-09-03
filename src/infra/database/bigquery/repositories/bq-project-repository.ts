@@ -8,9 +8,13 @@ import { BqProjectMapper } from "../mappers/bq-project-mapper";
 export class BqProjectRepository implements ProjectRepository {
   constructor(private bigquery: BigQueryService) {}
 
-  async findByProjectNumber(project_number: string): Promise<Project | null> {
+  async findByProjectNumber(
+    project_number: string,
+    baseId: string
+  ): Promise<Project | null> {
     const [project] = await this.bigquery.project.select({
       like: { project_number },
+      where: { baseId },
     });
 
     if (!project) return null;

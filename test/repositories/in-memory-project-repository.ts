@@ -4,9 +4,14 @@ import { Project } from "../../src/domain/material-movimentation/enterprise/enti
 export class InMemoryProjectRepository implements ProjectRepository {
   public items: Project[] = [];
 
-  async findByProjectNumber(project_number: string): Promise<Project | null> {
-    const project = this.items.find((item) =>
-      item.project_number.includes(project_number)
+  async findByProjectNumber(
+    project_number: string,
+    baseId: string
+  ): Promise<Project | null> {
+    const project = this.items.find(
+      (item) =>
+        item.project_number.includes(project_number) &&
+        item.baseId.toString() === baseId
     );
 
     if (!project) return null;

@@ -10,10 +10,14 @@ import { InMemoryContractRepository } from "test/repositories/in-memory-contract
 import { makeContract } from "test/factories/make-contract";
 import { makeEstimator } from "test/factories/make-estimator";
 import { makeMaterial } from "test/factories/make-material";
+import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
+import { makeBase } from "test/factories/make-base";
+import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 
 let inMemoryMaterialRepository: InMemoryMaterialRepository;
 let inMemoryProjectRepository: InMemoryProjectRepository;
 let inMemoryEstimatorRepository: InMemoryEstimatorRepository;
+let inMemoryBaseRepository: InMemoryBaseRepository;
 let inMemoryContractRepository: InMemoryContractRepository;
 let inMemoryBudgetRepository: InMemoryBudgetRepository;
 let sut: FetchBudgetByProjectNameUseCase;
@@ -23,12 +27,16 @@ describe("Get Budget by project", () => {
     inMemoryMaterialRepository = new InMemoryMaterialRepository();
     inMemoryEstimatorRepository = new InMemoryEstimatorRepository();
     inMemoryContractRepository = new InMemoryContractRepository();
+    inMemoryBaseRepository = new InMemoryBaseRepository(
+      inMemoryContractRepository
+    );
     inMemoryProjectRepository = new InMemoryProjectRepository();
     inMemoryBudgetRepository = new InMemoryBudgetRepository(
       inMemoryEstimatorRepository,
       inMemoryMaterialRepository,
       inMemoryProjectRepository,
-      inMemoryContractRepository
+      inMemoryContractRepository,
+      inMemoryBaseRepository
     );
     sut = new FetchBudgetByProjectNameUseCase(
       inMemoryBudgetRepository,
@@ -39,16 +47,22 @@ describe("Get Budget by project", () => {
   it("should be able to get an array of budgets by project", async () => {
     // entity creation for details
     const contract = makeContract();
-    inMemoryContractRepository.create(contract);
+    await inMemoryContractRepository.create(contract);
+
+    const base = makeBase({ contractId: contract.id });
+    await inMemoryBaseRepository.create(base);
 
     const estimator = makeEstimator({ contractId: contract.id });
-    inMemoryEstimatorRepository.create(estimator);
+    await inMemoryEstimatorRepository.create(estimator);
 
     const material = makeMaterial();
-    inMemoryMaterialRepository.create(material);
+    await inMemoryMaterialRepository.create(material);
 
-    const project = makeProject({ project_number: "B-10101010" });
-    inMemoryProjectRepository.create(project);
+    const project = makeProject({
+      project_number: "B-10101010",
+      baseId: base.id,
+    });
+    await inMemoryProjectRepository.create(project);
 
     const newBudget1 = makeBudget({
       projectId: project.id,
@@ -76,11 +90,124 @@ describe("Get Budget by project", () => {
 
     const result = await sut.execute({
       project_number: "B-10101010",
+      baseId: base.id.toString(),
     });
 
     expect(result.isRight()).toBeTruthy();
     if (result.isRight()) expect(result.value.budgets[0].value).toEqual(5);
     expect(inMemoryProjectRepository.items[0].id).toBeTruthy();
     expect(inMemoryBudgetRepository.items[2].id).toBeTruthy();
+  });
+
+  it("should not be able to get an array of budgets if project is not found", async () => {
+    // entity creation for details
+    const contract = makeContract();
+    await inMemoryContractRepository.create(contract);
+
+    const base = makeBase({ contractId: contract.id });
+    await inMemoryBaseRepository.create(base);
+
+    const estimator = makeEstimator({ contractId: contract.id });
+    await inMemoryEstimatorRepository.create(estimator);
+
+    const material = makeMaterial();
+    await inMemoryMaterialRepository.create(material);
+
+    const project = makeProject({
+      project_number: "B-10101010",
+      baseId: base.id,
+    });
+    await inMemoryProjectRepository.create(project);
+
+    const newBudget1 = makeBudget({
+      projectId: project.id,
+      value: 5,
+      contractId: contract.id,
+      materialId: material.id,
+      estimatorId: estimator.id,
+    });
+    const newBudget2 = makeBudget({
+      projectId: project.id,
+      contractId: contract.id,
+      materialId: material.id,
+      estimatorId: estimator.id,
+    });
+    const newBudget3 = makeBudget({
+      projectId: project.id,
+      contractId: contract.id,
+      materialId: material.id,
+      estimatorId: estimator.id,
+    });
+
+    await inMemoryBudgetRepository.create(newBudget1);
+    await inMemoryBudgetRepository.create(newBudget2);
+    await inMemoryBudgetRepository.create(newBudget3);
+
+    const result = await sut.execute({
+      project_number: "B-dntExists",
+      baseId: base.id.toString(),
+    });
+
+    expect(result.isLeft()).toBeTruthy();
+    expect(result.value).toBeInstanceOf(ResourceNotFoundError);
+  });
+
+  it("should not be able to get an array of budgets if project has not a budget list", async () => {
+    // entity creation for details
+    const contract = makeContract();
+    await inMemoryContractRepository.create(contract);
+
+    const base = makeBase({ contractId: contract.id });
+    await inMemoryBaseRepository.create(base);
+
+    const estimator = makeEstimator({ contractId: contract.id });
+    await inMemoryEstimatorRepository.create(estimator);
+
+    const material = makeMaterial();
+    await inMemoryMaterialRepository.create(material);
+
+    const project = makeProject({
+      project_number: "B-10101010",
+      baseId: base.id,
+    });
+    await inMemoryProjectRepository.create(project);
+
+    const projectTest = makeProject({
+      project_number: "B-to-be-search",
+      baseId: base.id,
+    });
+    await inMemoryProjectRepository.create(projectTest);
+
+    const newBudget1 = makeBudget({
+      projectId: project.id,
+      value: 5,
+      contractId: contract.id,
+      materialId: material.id,
+      estimatorId: estimator.id,
+    });
+    const newBudget2 = makeBudget({
+      projectId: project.id,
+      contractId: contract.id,
+      materialId: material.id,
+      estimatorId: estimator.id,
+    });
+    const newBudget3 = makeBudget({
+      projectId: project.id,
+      contractId: contract.id,
+      materialId: material.id,
+      estimatorId: estimator.id,
+    });
+
+    await inMemoryBudgetRepository.create(newBudget1);
+    await inMemoryBudgetRepository.create(newBudget2);
+    await inMemoryBudgetRepository.create(newBudget3);
+
+    const result = await sut.execute({
+      project_number: "B-to-be-search",
+      baseId: base.id.toString(),
+    });
+
+    expect(result.isLeft()).toBeTruthy();
+    expect(result.value).toBeInstanceOf(ResourceNotFoundError);
   });
 });

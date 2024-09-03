@@ -5,6 +5,7 @@ import { InMemoryContractRepository } from "./in-memory-contract-repository";
 import { InMemoryMaterialRepository } from "./in-memory-material-repository";
 import { InMemoryProjectRepository } from "./in-memory-project-repository";
 import { InMemoryEstimatorRepository } from "./in-memory-estimator-repository";
+import { InMemoryBaseRepository } from "./in-memory-base-repository";
 
 export class InMemoryBudgetRepository implements BudgetRepository {
   public items: Budget[] = [];
@@ -13,7 +14,8 @@ export class InMemoryBudgetRepository implements BudgetRepository {
     private estimatorRepository: InMemoryEstimatorRepository,
     private materialRepository: InMemoryMaterialRepository,
     private projectRepository: InMemoryProjectRepository,
-    private contractRepository: InMemoryContractRepository
+    private contractRepository: InMemoryContractRepository,
+    private baseRepository: InMemoryBaseRepository
   ) {}
 
   async findByProject(projectid: string): Promise<Budget[]> {
@@ -25,10 +27,19 @@ export class InMemoryBudgetRepository implements BudgetRepository {
   }
 
   async findByProjectWithDetails(
-    projectid: string
+    projectid: string,
+    baseId: string
   ): Promise<BudgetWithDetails[]> {
+    const baseForContract = this.baseRepository.items.find(
+      (base) => base.id.toString() === baseId
+    );
+
     const budgets = this.items
-      .filter((budget) => budget.projectId.toString() === projectid)
+      .filter(
+        (budget) =>
+          budget.projectId.toString() === projectid &&
+          budget.contractId === baseForContract!.contractId
+      )
       .map((budget) => {
         const estimator = this.estimatorRepository.items.find(
           (estimator) => estimator.id === budget.estimatorId

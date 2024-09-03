@@ -59,7 +59,8 @@ export class FetchMovimentationHistoryUseCase {
 
     if (project_number) {
       const project = await this.projectRepository.findByProjectNumber(
-        project_number
+        project_number,
+        baseId
       );
       if (!project) return left(new ResourceNotFoundError());
       projectId = project.id.toString();
@@ -73,7 +74,7 @@ export class FetchMovimentationHistoryUseCase {
       if (!material) return left(new ResourceNotFoundError());
       materialId = material.id.toString();
     }
-    
+
     const movimentations =
       await this.movimentationRepository.findManyHistoryWithDetails(
         {

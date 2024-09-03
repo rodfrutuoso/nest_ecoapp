@@ -37,11 +37,14 @@ export class InMemoryMovimentationRepository
 
   async findByProjectWithDetails(
     projectid: string,
+    baseId: string,
     materialId?: string
   ): Promise<MovimentationWithDetails[]> {
     const movimentations = this.items
       .filter(
-        (movimentation) => movimentation.projectId.toString() === projectid
+        (movimentation) =>
+          movimentation.projectId.toString() === projectid &&
+          movimentation.baseId.toString() === baseId
       )
       .filter(
         (movimentation) =>

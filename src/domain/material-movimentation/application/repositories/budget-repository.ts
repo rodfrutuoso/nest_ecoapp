@@ -4,7 +4,8 @@ import { BudgetWithDetails } from "../../enterprise/entities/value-objects/budge
 export abstract class BudgetRepository {
   abstract findByProject(projectid: string): Promise<Budget[]>;
   abstract findByProjectWithDetails(
-    projectid: string
+    projectid: string,
+    baseId: string
   ): Promise<BudgetWithDetails[]>;
   abstract create(budget: Budget): Promise<void>;
 }

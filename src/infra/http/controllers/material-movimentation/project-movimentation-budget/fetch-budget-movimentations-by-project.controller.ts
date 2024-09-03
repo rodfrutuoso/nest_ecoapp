@@ -12,6 +12,8 @@ import { ResourceNotFoundError } from "src/domain/material-movimentation/applica
 import { MovimentationWithDetailsPresenter } from "src/infra/http/presenters/movimentation-with-details-presenter";
 import { BudgetWithDetailsPresenter } from "src/infra/http/presenters/budget-with-details";
 import { ApiProperty, ApiTags } from "@nestjs/swagger";
+import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
+import { CurrentUser } from "src/infra/auth/current-user.decorator";
 
 const fetchBudgetMovimentationByProjectQuerySchema = z.object({
   project_number: z.string(),
@@ -35,13 +37,14 @@ export class FetchBudgetMovimentationByProjectController {
   @Get()
   @HttpCode(200)
   async handle(
+    @CurrentUser() user: UserPayload,
     @Query(new ZodValidationPipe(fetchBudgetMovimentationByProjectQuerySchema))
     query: FetchBudgetMovimentationByProjectQueryDto
   ) {
     const { project_number } = query;
 
     const result = await this.fetchBudgetMovimentationByProjectUseCase.execute({
-      project_number,
+      project_number, baseId: user.baseId ?? ""
     });
 
     if (result.isLeft()) {

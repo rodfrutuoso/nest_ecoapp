@@ -12,6 +12,8 @@ import { FetchMovimentationHistoryUseCase } from "src/domain/material-movimentat
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { MovimentationWithDetailsPresenter } from "src/infra/http/presenters/movimentation-with-details-presenter";
 import { ApiProperty, ApiTags } from "@nestjs/swagger";
+import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
+import { CurrentUser } from "src/infra/auth/current-user.decorator";
 
 const fetchMovimentationHistoryBodySchema = z.object({
   page: z
@@ -89,7 +91,7 @@ export class FetchMovimentationHistoryController {
   @Get()
   @HttpCode(200)
   async handle(
-    @Param("baseId") baseId: string,
+    @CurrentUser() user: UserPayload,
     @Query(new ZodValidationPipe(fetchMovimentationHistoryBodySchema))
     query: FetchMovimentationHistoryQueryDto
   ) {
@@ -108,7 +110,7 @@ export class FetchMovimentationHistoryController {
 
     const result = await this.fetchMovimentationHistoryUseCase.execute({
       page,
-      baseId,
+      baseId: user.baseId ?? "",
       email,
       project_number,
       material_code,

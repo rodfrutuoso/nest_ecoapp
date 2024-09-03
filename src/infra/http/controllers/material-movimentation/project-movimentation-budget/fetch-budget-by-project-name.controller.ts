@@ -11,6 +11,8 @@ import { FetchBudgetByProjectNameUseCase } from "src/domain/material-movimentati
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { BudgetWithDetailsPresenter } from "src/infra/http/presenters/budget-with-details";
 import { ApiProperty, ApiTags } from "@nestjs/swagger";
+import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
+import { CurrentUser } from "src/infra/auth/current-user.decorator";
 
 const fetchBudgetByProjectNameBodySchema = z
   .object({
@@ -36,6 +38,7 @@ export class FetchBudgetByProjectNameController {
   @Get()
   @HttpCode(200)
   async handle(
+    @CurrentUser() user: UserPayload,
     @Query(new ZodValidationPipe(fetchBudgetByProjectNameBodySchema))
     query: FetchBudgetByProjectNameQuerySchema
   ) {
@@ -43,6 +46,7 @@ export class FetchBudgetByProjectNameController {
 
     const result = await this.fetchBudgetByProjectNameUseCase.execute({
       project_number,
+      baseId: user.baseId ?? "",
     });
 
     if (result.isLeft()) {
