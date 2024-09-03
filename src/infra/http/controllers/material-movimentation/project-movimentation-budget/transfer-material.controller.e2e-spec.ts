@@ -6,7 +6,6 @@ import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { JwtService } from "@nestjs/jwt";
 import { StorekeeperFactory } from "test/factories/make-storekeeper";
 import { DatabaseModule } from "src/infra/database/database.module";
-import { randomUUID } from "crypto";
 import { ProjectFactory } from "test/factories/make-project";
 import { BaseFactory } from "test/factories/make-base";
 import { MaterialFactory } from "test/factories/make-material";
@@ -46,7 +45,10 @@ describe("Transfer Material (E2E)", () => {
   test("[POST] /movimentation", async () => {
     const user = await storekeeperFactory.makeBqStorekeeper({});
 
-    const accessToken = jwt.sign({ sub: user.id.toString() });
+    const accessToken = jwt.sign({
+      sub: user.id.toString(),
+      type: "Administrador",
+    });
 
     const project = await projectFactory.makeBqProject();
     const base = await baseFactory.makeBqBase();

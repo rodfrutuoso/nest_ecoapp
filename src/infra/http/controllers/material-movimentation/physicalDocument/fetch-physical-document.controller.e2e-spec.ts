@@ -38,7 +38,10 @@ describe("Fetch Physical Documents (E2E)", () => {
     await physicalDocumentFactory.makeBqPhysicalDocument({ identifier: 2 });
     await physicalDocumentFactory.makeBqPhysicalDocument({ identifier: 2 });
 
-    const accessToken = jwt.sign({ sub: user.id.toString() });
+    const accessToken = jwt.sign({
+      sub: user.id.toString(),
+      type: "Administrador",
+    });
 
     const response = await request(app.getHttpServer())
       .get("/physical-documents?identifier=2")

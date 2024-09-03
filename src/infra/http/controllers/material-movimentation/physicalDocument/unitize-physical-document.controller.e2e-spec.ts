@@ -37,7 +37,10 @@ describe("Unitize Physical Document (E2E)", () => {
     const physicalDocument =
       await physicalDocumentFactory.makeBqPhysicalDocument({ identifier: 1 });
 
-    const accessToken = jwt.sign({ sub: user.id.toString() });
+    const accessToken = jwt.sign({
+      sub: user.id.toString(),
+      type: "Administrador",
+    });
 
     const response = await request(app.getHttpServer())
       .put(`/physical-documents/${physicalDocument.id.toString()}`)

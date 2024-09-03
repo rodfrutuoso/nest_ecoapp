@@ -45,7 +45,10 @@ describe("Fetch Movimentation and Budget By Project Name (E2E)", () => {
   test("[GET] /movimentations/budgets", async () => {
     const user = await storekeeperFactory.makeBqStorekeeper({});
 
-    const accessToken = jwt.sign({ sub: user.id.toString() });
+    const accessToken = jwt.sign({
+      sub: user.id.toString(),
+      type: "Administrador",
+    });
 
     const project = await projectFactory.makeBqProject({
       project_number: "B-teste",

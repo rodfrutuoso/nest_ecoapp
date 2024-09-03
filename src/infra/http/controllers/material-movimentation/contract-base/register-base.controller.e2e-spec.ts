@@ -35,7 +35,10 @@ describe("Register Base (E2E)", () => {
     const user = await storekeeperFactory.makeBqStorekeeper({});
     const contract = await contractFactory.makeBqContract({});
 
-    const accessToken = jwt.sign({ sub: user.id.toString() });
+    const accessToken = jwt.sign({
+      sub: user.id.toString(),
+      type: "Administrador",
+    });
 
     const response = await request(app.getHttpServer())
       .post("/bases")

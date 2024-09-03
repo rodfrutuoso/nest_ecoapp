@@ -36,7 +36,10 @@ describe("Edit account (E2E)", () => {
       type: "Administrator",
     });
 
-    const accessToken = jwt.sign({ sub: user.id.toString() });
+    const accessToken = jwt.sign({
+      sub: user.id.toString(),
+      type: "Administrador",
+    });
     const base = await baseFactory.makeBqBase();
 
     const response = await request(app.getHttpServer())

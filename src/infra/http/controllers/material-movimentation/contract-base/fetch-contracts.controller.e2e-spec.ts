@@ -36,7 +36,10 @@ describe("Fetch Contracts (E2E)", () => {
   test("[GET] /contracts", async () => {
     const user = await storekeeperFactory.makeBqStorekeeper({});
 
-    const accessToken = jwt.sign({ sub: user.id.toString() });
+    const accessToken = jwt.sign({
+      sub: user.id.toString(),
+      type: "Administrador",
+    });
     const contractId = randomUUID();
 
     await contractFactory.makeBqContract({});
@@ -49,6 +52,6 @@ describe("Fetch Contracts (E2E)", () => {
       .send({ contractId, type: "concreto" });
 
     expect(response.statusCode).toBe(200);
-    expect(response.body.contracts).toHaveLength(3)
+    expect(response.body.contracts).toHaveLength(3);
   });
 });

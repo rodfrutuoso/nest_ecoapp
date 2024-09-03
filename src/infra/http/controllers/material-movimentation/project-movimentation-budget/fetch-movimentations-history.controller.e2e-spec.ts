@@ -55,7 +55,10 @@ describe("Fetch Movimentation History (E2E)", () => {
   test("[GET] /movimentations", async () => {
     const user = await storekeeperFactory.makeBqStorekeeper({});
 
-    const accessToken = jwt.sign({ sub: user.id.toString() });
+    const accessToken = jwt.sign({
+      sub: user.id.toString(),
+      type: "Administrador",
+    });
     const contract = await contractFactory.makeBqContract();
     const base = await baseFactory.makeBqBase({ contractId: contract.id });
     const project = await projectFactory.makeBqProject({ baseId: base.id });

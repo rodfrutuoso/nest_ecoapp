@@ -14,7 +14,7 @@ export function makeStorekeeper(
 ) {
   const storekeeper = Storekeeper.create(
     {
-      name: faker.person.fullName(),
+      name: faker.person.firstName(),
       cpf: faker.number.int({ min: 100000000, max: 10000000000 }).toString(),
       baseId: new UniqueEntityID(),
       email: faker.internet.email({ provider: "ecoeletrica.com.br" }),

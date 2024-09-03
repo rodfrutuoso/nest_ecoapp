@@ -37,7 +37,10 @@ describe("Delete Physical Document (E2E)", () => {
     const physicalDocumentToDelete =
       await physicalDocumentFactory.makeBqPhysicalDocument({});
 
-    const accessToken = jwt.sign({ sub: user.id.toString() });
+    const accessToken = jwt.sign({
+      sub: user.id.toString(),
+      type: "Administrador",
+    });
 
     const response = await request(app.getHttpServer())
       .delete(`/physical-documents/${physicalDocumentToDelete.id.toString()}`)

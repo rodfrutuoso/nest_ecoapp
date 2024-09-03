@@ -34,7 +34,11 @@ describe("Identifier Attribution (E2E)", () => {
   test("[POST] /physical-documents", async () => {
     const user = await storekeeperFactory.makeBqStorekeeper({});
 
-    const accessToken = jwt.sign({ sub: user.id.toString() });
+    const accessToken = jwt.sign({
+      sub: user.id.toString(),
+      type: "Administrador",
+    });
+    
     const project = await projectFactory.makeBqProject();
 
     const response = await request(app.getHttpServer())

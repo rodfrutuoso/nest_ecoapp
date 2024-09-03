@@ -36,7 +36,10 @@ describe("Delete Account (E2E)", () => {
       name: "Joao Excluido",
     });
 
-    const accessToken = jwt.sign({ sub: user.id.toString() });
+    const accessToken = jwt.sign({
+      sub: user.id.toString(),
+      type: "Administrador",
+    });
 
     const response = await request(app.getHttpServer())
       .delete(`/accounts/${userToDelete.id.toString()}`)

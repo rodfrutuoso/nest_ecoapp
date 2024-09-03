@@ -34,7 +34,10 @@ describe("Create account (E2E)", () => {
   test("[POST] /accounts", async () => {
     const user = await storekeeperFactory.makeBqStorekeeper({});
 
-    const accessToken = jwt.sign({ sub: user.id.toString() });
+    const accessToken = jwt.sign({
+      sub: user.id.toString(),
+      type: "Administrador",
+    });
     const base = await baseFactory.makeBqBase();
 
     const response = await request(app.getHttpServer())

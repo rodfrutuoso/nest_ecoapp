@@ -34,7 +34,10 @@ describe("Fetch Bases (E2E)", () => {
   test("[GET] /bases", async () => {
     const user = await storekeeperFactory.makeBqStorekeeper({});
 
-    const accessToken = jwt.sign({ sub: user.id.toString() });
+    const accessToken = jwt.sign({
+      sub: user.id.toString(),
+      type: "Administrador",
+    });
 
     await baseFactory.makeBqBase({});
     await baseFactory.makeBqBase({});

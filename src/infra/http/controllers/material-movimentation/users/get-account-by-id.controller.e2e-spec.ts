@@ -33,7 +33,10 @@ describe("Get Account by Id (E2E)", () => {
       cpf: "00011122234",
     });
 
-    const accessToken = jwt.sign({ sub: user.id.toString() });
+    const accessToken = jwt.sign({
+      sub: user.id.toString(),
+      type: "Administrador",
+    });
 
     const response = await request(app.getHttpServer())
       .get(`/accounts/${user.id.toString()}`)
