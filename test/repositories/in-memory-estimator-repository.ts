@@ -15,4 +15,12 @@ export class InMemoryEstimatorRepository implements EstimatorRepository {
 
     return estimator;
   }
+
+  async findByEmail(email: string): Promise<Estimator | null> {
+    const estimator = this.items.find((item) => item.email === email);
+
+    if (!estimator) return null;
+
+    return estimator;
+  }
 }

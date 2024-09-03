@@ -16,12 +16,15 @@ import { ContractRepository } from "src/domain/material-movimentation/applicatio
 import { MovimentationRepository } from "src/domain/material-movimentation/application/repositories/movimentation-repository";
 import { PhysicalDocumentRepository } from "src/domain/material-movimentation/application/repositories/physical-document-repository";
 import { ProjectRepository } from "src/domain/material-movimentation/application/repositories/project-repository";
+import { EstimatorRepository } from "src/domain/material-movimentation/application/repositories/estimator-repository";
+import { BqEstimatorRepository } from "./bigquery/repositories/bq-estimator-repository";
 
 @Module({
   imports: [BigQueryModule],
   exports: [
     BigQueryModule,
     { provide: StorekeeperRepository, useClass: BqStorekeeperRepository },
+    { provide: EstimatorRepository, useClass: BqEstimatorRepository },
     { provide: MaterialRepository, useClass: BqMaterialRepository },
     { provide: BaseRepository, useClass: BqBaseRepository },
     { provide: BudgetRepository, useClass: BqBudgetRepository },
@@ -35,6 +38,7 @@ import { ProjectRepository } from "src/domain/material-movimentation/application
   ],
   providers: [
     { provide: StorekeeperRepository, useClass: BqStorekeeperRepository },
+    { provide: EstimatorRepository, useClass: BqEstimatorRepository },
     { provide: MaterialRepository, useClass: BqMaterialRepository },
     { provide: BaseRepository, useClass: BqBaseRepository },
     { provide: BudgetRepository, useClass: BqBudgetRepository },

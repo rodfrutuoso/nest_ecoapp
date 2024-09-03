@@ -6,7 +6,7 @@ import { FetchMaterialController } from "./controllers/material-movimentation/ma
 import { DatabaseModule } from "../database/database.module";
 import { CreateMaterialUseCase } from "src/domain/material-movimentation/application/use-cases/material/create-material";
 import { FetchMaterialUseCase } from "src/domain/material-movimentation/application/use-cases/material/fetch-material";
-import { AuthenticateStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/authenticate-storekeeper";
+import { AuthenticateUserUseCase } from "src/domain/material-movimentation/application/use-cases/users/authenticate-user";
 import { RegisterStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/register-storekeeper";
 import { CryptographyModule } from "../cryptography/cryptography.module";
 import { GetStorekeeperByidController } from "./controllers/material-movimentation/users/get-account-by-id.controller";
@@ -75,7 +75,7 @@ import { FetchBudgetByProjectNameUseCase } from "src/domain/material-movimentati
   providers: [
     CreateMaterialUseCase,
     FetchMaterialUseCase,
-    AuthenticateStorekeeperUseCase,
+    AuthenticateUserUseCase,
     RegisterStorekeeperUseCase,
     GetStorekeeperByIdUseCase,
     EditStorekeeperUseCase,
