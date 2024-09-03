@@ -4,6 +4,8 @@ import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
 import { Project } from "../../../enterprise/entities/project";
 import { ProjectRepository } from "../../repositories/project-repository";
 import { ResourceAlreadyRegisteredError } from "../errors/resource-already-registered-error";
+import { BaseRepository } from "../../repositories/base-repository";
+import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 
 interface RegisterProjectUseCaseRequest {
   project_number: string;
@@ -14,7 +16,7 @@ interface RegisterProjectUseCaseRequest {
 }
 
 type RegisterProjectResponse = Eihter<
-  ResourceAlreadyRegisteredError,
+  ResourceAlreadyRegisteredError | ResourceNotFoundError,
   {
     project: Project;
   }
@@ -22,7 +24,10 @@ type RegisterProjectResponse = Eihter<
 
 @Injectable()
 export class RegisterProjectUseCase {
-  constructor(private projectRepository: ProjectRepository) {}
+  constructor(
+    private projectRepository: ProjectRepository,
+    private baseRepository: BaseRepository
+  ) {}
 
   async execute({
     project_number,
@@ -31,6 +36,9 @@ export class RegisterProjectUseCase {
     baseId,
     city,
   }: RegisterProjectUseCaseRequest): Promise<RegisterProjectResponse> {
+    const base = await this.baseRepository.findById(baseId);
+    if (!base) return left(new ResourceNotFoundError("baseId não encontrado"));
+
     const projectSearch = await this.projectRepository.findByProjectNumber(
       project_number
     );
