@@ -31,5 +31,7 @@ export class DeletePhysicalDocumentController {
           throw new BadRequestException();
       }
     }
+
+    return { message: "exclusão realizada" }
   }
 }

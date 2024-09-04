@@ -47,5 +47,7 @@ export class RegisterContractController {
           throw new BadRequestException();
       }
     }
+
+    return { message: "criação realizada" }
   }
 }

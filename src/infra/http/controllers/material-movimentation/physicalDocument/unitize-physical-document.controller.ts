@@ -58,5 +58,7 @@ export class UnitizePhysicalDocumentController {
           throw new BadRequestException();
       }
     }
+
+    return { message: "edição realizada" }
   }
 }

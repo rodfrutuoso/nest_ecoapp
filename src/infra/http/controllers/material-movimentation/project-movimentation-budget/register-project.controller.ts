@@ -56,5 +56,7 @@ export class RegisterProjectController {
           throw new BadRequestException();
       }
     }
+
+    return { message: "criação realizada" }
   }
 }

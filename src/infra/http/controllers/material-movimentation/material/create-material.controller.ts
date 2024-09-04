@@ -86,5 +86,7 @@ export class CreateMaterialController {
           throw new BadRequestException();
       }
     }
+
+    return { message: "criação realizada" }
   }
 }

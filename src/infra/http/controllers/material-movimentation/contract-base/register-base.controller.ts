@@ -61,5 +61,7 @@ export class RegisterBaseController {
           throw new BadRequestException();
       }
     }
+
+    return { message: "criação realizada" }
   }
 }

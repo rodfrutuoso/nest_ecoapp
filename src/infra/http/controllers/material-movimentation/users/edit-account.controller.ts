@@ -38,13 +38,15 @@ class EditAccountBodySchema {
   type!: string;
   @ApiProperty({
     example: "base-id",
-    description: "base's id that a storekeeper que interect. undefined if the user is not a storekeeper",
+    description:
+      "base's id that a storekeeper que interect. undefined if the user is not a storekeeper",
     required: false,
   })
   baseId!: string;
   @ApiProperty({
     example: "contract-id",
-    description: "contract's id that a estimator que interect. undefined if the user is not a estimator",
+    description:
+      "contract's id that a estimator que interect. undefined if the user is not a estimator",
     required: false,
   })
   contractId!: string;
@@ -92,5 +94,7 @@ export class EditAccountController {
           throw new BadRequestException();
       }
     }
+
+    return { message: "edição realizada" };
   }
 }

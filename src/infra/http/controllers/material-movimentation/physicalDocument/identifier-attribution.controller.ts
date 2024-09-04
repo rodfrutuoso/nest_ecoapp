@@ -58,5 +58,7 @@ export class IdentifierAttributionController {
           throw new BadRequestException();
       }
     }
+
+    return { message: "criação realizada" }
   }
 }

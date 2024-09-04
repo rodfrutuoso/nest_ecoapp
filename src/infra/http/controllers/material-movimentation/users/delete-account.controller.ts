@@ -34,5 +34,7 @@ export class DeleteAccountController {
           throw new BadRequestException();
       }
     }
+
+    return { message: "exclusão realizada" }
   }
 }
