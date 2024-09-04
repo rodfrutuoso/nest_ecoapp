@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { Eihter, left, right } from "../../../../../core/either";
-import { Storekeeper } from "../../../enterprise/entities/storekeeper";
 import { StorekeeperRepository } from "../../repositories/storekeeper-repository";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
+import { StorekeeperWithBase } from "src/domain/material-movimentation/enterprise/entities/value-objects/storekeeper-with-base";
 
 interface GetStorekeeperByIdUseCaseRequest {
   storekeeperId: string;
@@ -11,7 +11,7 @@ interface GetStorekeeperByIdUseCaseRequest {
 type GetStorekeeperByIdUseCaseResponse = Eihter<
   ResourceNotFoundError,
   {
-    storekeeper: Storekeeper;
+    storekeeper: StorekeeperWithBase;
   }
 >;
 @Injectable()
@@ -21,7 +21,7 @@ export class GetStorekeeperByIdUseCase {
   async execute({
     storekeeperId,
   }: GetStorekeeperByIdUseCaseRequest): Promise<GetStorekeeperByIdUseCaseResponse> {
-    const storekeeper = await this.storekeeperRepository.findById(storekeeperId);
+    const storekeeper = await this.storekeeperRepository.findByIdWithBase(storekeeperId);
 
     if (!storekeeper) return left(new ResourceNotFoundError());
 

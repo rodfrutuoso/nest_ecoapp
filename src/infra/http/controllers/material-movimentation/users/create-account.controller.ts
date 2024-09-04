@@ -96,6 +96,6 @@ export class CreateAccountController {
       }
     }
 
-    return { message: "criação realizada" };
+    return { message: "Usuário criado com sucesso!" };
   }
 }

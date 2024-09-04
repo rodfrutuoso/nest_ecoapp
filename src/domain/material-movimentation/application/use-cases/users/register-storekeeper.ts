@@ -48,7 +48,11 @@ export class RegisterStorekeeperUseCase {
     );
 
     if (storekeeperSearch)
-      return left(new ResourceAlreadyRegisteredError("email já utilizado"));
+      return left(
+        new ResourceAlreadyRegisteredError(
+          "O email informado já foi cadastrado!"
+        )
+      );
 
     const storekeeper = Storekeeper.create({
       name,

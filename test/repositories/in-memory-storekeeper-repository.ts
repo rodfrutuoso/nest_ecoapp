@@ -35,6 +35,30 @@ export class InMemoryStorekeeperRepository implements StorekeeperRepository {
     return storekeeper;
   }
 
+  async findByIdWithBase(id: string): Promise<StorekeeperWithBase | null> {
+    const storekeeper = this.items.find((item) => item.id.toString() === id);
+    if (!storekeeper) return null;
+
+    const base = this.baseRepository.items.find(
+      (base) => base.id === storekeeper.baseId
+    );
+
+    if (!base) {
+      throw new Error(`base ${storekeeper.baseId} does not exist.`);
+    }
+
+    return StorekeeperWithBase.create({
+      storekeeperId: storekeeper.id,
+      name: storekeeper.name,
+      email: storekeeper.email,
+      cpf: storekeeper.cpf,
+      type: storekeeper.type,
+      base: base,
+      status: storekeeper.status,
+      password: storekeeper.password,
+    });
+  }
+
   async findByIds(ids: string[]): Promise<Storekeeper[]> {
     const storekeeper = this.items.filter((item) =>
       ids.includes(item.id.toString())

@@ -8,7 +8,7 @@ Authorization: Bearer {{authToken}}
 
 {
     "name": "rodrigiodoadad",
-    "email": "rodrigo5@ecoeletrica.com.br",
+    "email": "rodrigo6@ecoeletrica.com.br",
     "cpf": "12131313131",
     "type": "Administrador",
     "baseId": "8f86a93d-7217-4390-8263-0969fe091d18",
@@ -55,7 +55,7 @@ Authorization: Bearer {{authToken}}
 ###
 
 # @name get_user_by_id
-GET {{baseURL}}/accounts/7ddd9b43-93f2-4474-9a8a-847bce3c1e6e
+GET {{baseURL}}/accounts/f43c5f66-1323-4799-9d8f-23f962e4e1b6
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
