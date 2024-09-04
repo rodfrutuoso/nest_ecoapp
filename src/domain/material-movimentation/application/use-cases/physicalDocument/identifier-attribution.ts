@@ -38,7 +38,7 @@ export class IdentifierAttributionUseCase {
       await this.physicaldocumentRepository.findByIdentifier(identifier);
 
     if (physicaldocumentSearch && physicaldocumentSearch.unitized === false)
-      return left(new ResourceAlreadyRegisteredError());
+      return left(new ResourceAlreadyRegisteredError("ID já utilizado"));
 
     const physicalDocument = PhysicalDocument.create({
       projectId: new UniqueEntityID(projectId),

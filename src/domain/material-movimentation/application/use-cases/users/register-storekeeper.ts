@@ -40,14 +40,15 @@ export class RegisterStorekeeperUseCase {
     baseId,
     password,
   }: RegisterStorekeeperUseCaseRequest): Promise<RegisterStorekeeperResponse> {
-    const base = await this.baseRepository.findById(baseId)
+    const base = await this.baseRepository.findById(baseId);
     if (!base) return left(new ResourceNotFoundError("baseId não encontrado"));
 
     const storekeeperSearch = await this.storekeeperRepository.findByEmail(
       email
     );
 
-    if (storekeeperSearch) return left(new ResourceAlreadyRegisteredError());
+    if (storekeeperSearch)
+      return left(new ResourceAlreadyRegisteredError("email já utilizado"));
 
     const storekeeper = Storekeeper.create({
       name,

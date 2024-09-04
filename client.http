@@ -7,12 +7,13 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-    "name": "Max",
-    "email": "max2@ecoeletrica.com.br",
-    "password": "123456",
-    "cpf":"12345678912",
-    "type": "Administrator",
-    "baseId": "35cf180f-140b-4aa6-855f-7e2f1117a0e8"
+    "name": "rodrigiodoadad",
+    "email": "rodrigo5@ecoeletrica.com.br",
+    "cpf": "12131313131",
+    "type": "Administrador",
+    "baseId": "8f86a93d-7217-4390-8263-0969fe091d18",
+    "contractId": "a100663c-5a6d-4198-ad7b-1062afa0c4f4",
+    "password": "testeteste"
 }
 
 ###

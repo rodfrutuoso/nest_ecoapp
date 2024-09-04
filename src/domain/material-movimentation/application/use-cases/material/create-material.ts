@@ -45,7 +45,12 @@ export class CreateMaterialUseCase {
       contractId
     );
 
-    if (materialSearch) return left(new ResourceAlreadyRegisteredError());
+    if (materialSearch)
+      return left(
+        new ResourceAlreadyRegisteredError(
+          "Código já utilizado por outro material nesse contrato"
+        )
+      );
 
     const material = Material.create({
       code,

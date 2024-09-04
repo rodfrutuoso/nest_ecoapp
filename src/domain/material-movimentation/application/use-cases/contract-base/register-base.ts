@@ -36,7 +36,10 @@ export class RegisterBaseUseCase {
 
     const baseSearch = await this.baseRepository.findByBaseName(baseName);
 
-    if (baseSearch) return left(new ResourceAlreadyRegisteredError());
+    if (baseSearch)
+      return left(
+        new ResourceAlreadyRegisteredError("Já existe uma base com esse nome")
+      );
 
     const base = Base.create({
       baseName,

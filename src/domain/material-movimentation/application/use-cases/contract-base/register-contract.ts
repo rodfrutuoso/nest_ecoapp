@@ -25,7 +25,12 @@ export class RegisterContractUseCase {
     const contractSearch = await this.contractRepository.findByContractName(
       contractName
     );
-    if (contractSearch) return left(new ResourceAlreadyRegisteredError());
+    if (contractSearch)
+      return left(
+        new ResourceAlreadyRegisteredError(
+          "Já existe um contrato com esse nome"
+        )
+      );
 
     const contract = Contract.create({
       contractName,

@@ -95,5 +95,7 @@ export class CreateAccountController {
           throw new BadRequestException();
       }
     }
+
+    // return { success: "success" };
   }
 }
