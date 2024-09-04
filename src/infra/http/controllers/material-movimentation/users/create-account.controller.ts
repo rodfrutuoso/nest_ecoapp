@@ -9,10 +9,12 @@ import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { RegisterStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/register-storekeeper";
 import { ResourceAlreadyRegisteredError } from "src/domain/material-movimentation/application/use-cases/errors/resource-already-registered-error";
-import { ApiProperty, ApiTags } from "@nestjs/swagger";
+import { ApiTags } from "@nestjs/swagger";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
+import { CreateAccountDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/users/response decorators/create-account.decorator";
+import { CreateAccountBodyDto } from "src/infra/http/swagger dto and decorators/material-movimentation/users/dto classes/create-account.dto";
 
-const createAccountBodySchema = z.object({
+const createAccountBodyDto = z.object({
   name: z.string(),
   email: z.string().email(),
   password: z.string().min(6),
@@ -22,47 +24,6 @@ const createAccountBodySchema = z.object({
   contractId: z.string().uuid().optional(),
 });
 
-class CreateAccountBodySchema {
-  @ApiProperty({
-    example: "João da Silva",
-    description: "user's name",
-  })
-  name!: string;
-  @ApiProperty({
-    example: "joaosilva@ecoeletrica.com.br",
-    description: "user's email in Ecoelétrica's domain",
-  })
-  email!: string;
-  @ApiProperty({
-    example: "12345678912",
-    description: "user's CPF, just number with the zeros",
-  })
-  cpf!: string;
-  @ApiProperty({
-    example: "Administrator/Storkeeper/Estimator",
-    description: "establish the type of access of the user",
-  })
-  type!: string;
-  @ApiProperty({
-    example: "base-id",
-    description:
-      "base's id that a storekeeper que interect. undefined if the user is not a storekeeper",
-  })
-  baseId!: string;
-  @ApiProperty({
-    example: "contract-id",
-    description:
-      "contract's id that a estimator que interect. undefined if the user is not a estimator",
-    required: false,
-  })
-  contractId!: string;
-  @ApiProperty({
-    example: "password123",
-    description: "user's password",
-  })
-  password!: string;
-}
-
 @ApiTags("user")
 @Controller("/accounts")
 export class CreateAccountController {
@@ -70,8 +31,9 @@ export class CreateAccountController {
 
   @Post()
   @HttpCode(201)
-  @UsePipes(new ZodValidationPipe(createAccountBodySchema))
-  async handle(@Body() body: CreateAccountBodySchema) {
+  @UsePipes(new ZodValidationPipe(createAccountBodyDto))
+  @CreateAccountDecorator()
+  async handle(@Body() body: CreateAccountBodyDto) {
     const { name, email, password, cpf, type, baseId, contractId } = body;
 
     const result = await this.registerStorekeeper.execute({

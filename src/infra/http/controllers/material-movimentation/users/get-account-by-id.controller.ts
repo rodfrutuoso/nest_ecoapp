@@ -7,9 +7,8 @@ import {
 import { Controller, HttpCode } from "@nestjs/common";
 import { GetStorekeeperByIdUseCase } from "src/domain/material-movimentation/application/use-cases/users/get-storekeeper-by-id";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
-import { UserPresenter } from "../../../presenters/user-presentar";
 import { ApiTags } from "@nestjs/swagger";
-import { GetStorekeeperByidDecorator } from "src/infra/http/decorators/material-movimentation/users/get-account-by-id.decorator";
+import { GetStorekeeperByidDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/users/response decorators/get-account-by-id.decorator";
 import { UserWithBaseContractPresenter } from "src/infra/http/presenters/user-with-base-contract-presenter";
 
 @ApiTags("user")

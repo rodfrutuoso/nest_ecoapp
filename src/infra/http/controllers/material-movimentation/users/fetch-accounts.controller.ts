@@ -10,7 +10,9 @@ import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { FetchStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/fetch-storekeeper";
 import { UserWithBaseContractPresenter } from "src/infra/http/presenters/user-with-base-contract-presenter";
-import { ApiProperty, ApiTags } from "@nestjs/swagger";
+import { ApiTags } from "@nestjs/swagger";
+import { FetchAccountsQueryDto } from "src/infra/http/swagger dto and decorators/material-movimentation/users/dto classes/fetch-accounts.dto";
+import { FetchAccountsDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/users/response decorators/fetch-accounts.decorator";
 
 const fetchAccountsBodySchema = z.object({
   page: z
@@ -23,29 +25,6 @@ const fetchAccountsBodySchema = z.object({
   name: z.string().optional(),
 });
 
-class FetchAccountsQueryDto {
-  @ApiProperty({
-    example: "1",
-    description: "Page number for pagination",
-    required: false,
-    default: 1,
-    minimum: 1,
-  })
-  page!: number;
-  @ApiProperty({
-    example: "user-id",
-    description: "user's id",
-    required: false,
-  })
-  baseId!: string;
-  @ApiProperty({
-    example: "João da Silva",
-    description: "name, or part of it, of the searched user",
-    required: false,
-  })
-  name!: string;
-}
-
 @ApiTags("user")
 @Controller("/accounts")
 export class FetchAccountsController {
@@ -53,6 +32,7 @@ export class FetchAccountsController {
 
   @Get()
   @HttpCode(200)
+  @FetchAccountsDecorator()
   async handle(
     @Query(new ZodValidationPipe(fetchAccountsBodySchema))
     query: FetchAccountsQueryDto

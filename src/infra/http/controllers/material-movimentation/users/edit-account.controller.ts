@@ -13,9 +13,11 @@ import { CurrentUser } from "src/infra/auth/current-user.decorator";
 import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
 import { NotAllowedError } from "src/domain/material-movimentation/application/use-cases/errors/not-allowed-error";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
-import { ApiProperty, ApiTags } from "@nestjs/swagger";
+import { ApiTags } from "@nestjs/swagger";
+import { EditAccountDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/users/response decorators/edit-account.decorator";
+import { EditAccountBodyDto } from "src/infra/http/swagger dto and decorators/material-movimentation/users/dto classes/edit-account.dto";
 
-const editAccountBodySchema = z.object({
+const editAccountBodyDto = z.object({
   status: z.string().optional(),
   type: z.string().optional(),
   baseId: z.string().uuid().optional(),
@@ -23,51 +25,17 @@ const editAccountBodySchema = z.object({
   password: z.string().optional(),
 });
 
-class EditAccountBodySchema {
-  @ApiProperty({
-    example: "ativo/inativo",
-    description: "status of user, if is active or not",
-    required: false,
-  })
-  status!: string;
-  @ApiProperty({
-    example: "Administrator/Storkeeper/Estimator",
-    description: "establish the type of access of the user",
-    required: false,
-  })
-  type!: string;
-  @ApiProperty({
-    example: "base-id",
-    description:
-      "base's id that a storekeeper que interect. undefined if the user is not a storekeeper",
-    required: false,
-  })
-  baseId!: string;
-  @ApiProperty({
-    example: "contract-id",
-    description:
-      "contract's id that a estimator que interect. undefined if the user is not a estimator",
-    required: false,
-  })
-  contractId!: string;
-  @ApiProperty({
-    example: "password123",
-    description: "user's password",
-    required: false,
-  })
-  password!: string;
-}
-
 @ApiTags("user")
 @Controller("/accounts/:id")
 export class EditAccountController {
   constructor(private editStorekeeper: EditStorekeeperUseCase) {}
 
   @Put()
-  @HttpCode(204)
+  @HttpCode(201)
+  @EditAccountDecorator()
   async handle(
-    @Body(new ZodValidationPipe(editAccountBodySchema))
-    body: EditAccountBodySchema,
+    @Body(new ZodValidationPipe(editAccountBodyDto))
+    body: EditAccountBodyDto,
     @CurrentUser() user: UserPayload,
     @Param("id") userId: string
   ) {

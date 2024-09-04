@@ -9,7 +9,8 @@ import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { AuthenticateUserUseCase } from "src/domain/material-movimentation/application/use-cases/users/authenticate-user";
 import { WrogCredentialsError } from "src/domain/material-movimentation/application/use-cases/errors/wrong-credentials";
 import { Public } from "../../../../auth/public.guard";
-import { ApiProperty, ApiTags } from "@nestjs/swagger";
+import { ApiTags } from "@nestjs/swagger";
+import { AuthenticateBodyDto } from "src/infra/http/swagger dto and decorators/material-movimentation/users/dto classes/authenticate.dto";
 
 const authenticateBodySchema = z
   .object({
@@ -17,20 +18,6 @@ const authenticateBodySchema = z
     password: z.string(),
   })
   .required();
-
-class AuthenticateBodyDto{
-  @ApiProperty({
-    description: 'Email of the user',
-    example: 'colaborador@ecoeletrica.com.br',
-  })
-  email!: string;
-
-  @ApiProperty({
-    description: 'Password of the user',
-    example: 'password123',
-  })
-  password!: string;
-}
 
 @ApiTags("auth")
 @Controller("/sessions")

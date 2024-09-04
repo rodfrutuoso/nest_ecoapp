@@ -55,21 +55,19 @@ Authorization: Bearer {{authToken}}
 ###
 
 # @name get_user_by_id
-GET {{baseURL}}/accounts/f43c5f66-1323-4799-9d8f-23f962e4e1b6
+GET {{baseURL}}/accounts/eb6d5475-fe24-4e1c-b9d3-d6be08178502
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 ###
 
 # @name edit_account
-PUT {{baseURL}}/accounts/eeeb2452-3010-4d98-bb20-cf663e5eab49
+PUT {{baseURL}}/accounts/650d92e2-2d2b-4827-819a-ba2f6a904a8c
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-    "password": "123456",
-    "type": "Almox",
-    "baseId": "352275c2-c358-4367-8f97-b21de8a170da"
+    "password": "123456"
 }
 
 ###
