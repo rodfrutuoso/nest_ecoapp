@@ -26,10 +26,13 @@ export class BqUserWithBaseContractMapper {
       );
     } else {
       return StorekeeperWithBase.create({
-        base: Base.create({
-          baseName: raw.base?.baseName ?? "",
-          contractId: new UniqueEntityID(raw.base?.contractId),
-        }),
+        base: Base.create(
+          {
+            baseName: raw.base?.baseName ?? "",
+            contractId: new UniqueEntityID(raw.base?.contractId),
+          },
+          new UniqueEntityID(raw.base?.id)
+        ),
         cpf: raw.cpf,
         email: raw.email,
         name: raw.name,

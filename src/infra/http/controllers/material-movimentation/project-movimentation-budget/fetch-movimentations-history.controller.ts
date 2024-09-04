@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Get,
   NotFoundException,
-  Param,
   Query,
 } from "@nestjs/common";
 import { Controller, HttpCode } from "@nestjs/common";
@@ -12,8 +11,6 @@ import { FetchMovimentationHistoryUseCase } from "src/domain/material-movimentat
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { MovimentationWithDetailsPresenter } from "src/infra/http/presenters/movimentation-with-details-presenter";
 import { ApiProperty, ApiTags } from "@nestjs/swagger";
-import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
-import { CurrentUser } from "src/infra/auth/current-user.decorator";
 
 const fetchMovimentationHistoryBodySchema = z.object({
   page: z

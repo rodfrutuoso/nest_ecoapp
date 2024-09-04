@@ -18,6 +18,8 @@ export class BudgetWithDetailsPresenter {
       project: {
         id: budget.project.id.toString(),
         project_number: budget.project.project_number,
+        description: budget.project.description,
+        city: budget.project.city,
       },
       material: {
         id: budget.material.id.toString(),

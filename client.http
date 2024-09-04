@@ -276,10 +276,10 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-    "project_number": "B-8795427",
+    "project_number": "B-8795422",
     "description": "MP-CASA-DE-JOAO",
     "type": "obra",
-    "baseId": "88b6a558-046d-47bf-be45-11fccec6d328",
+    "baseId": "dbe82710-e5e8-449a-ba49-471b356f808d",
     "city": "Ituí"
 }
 

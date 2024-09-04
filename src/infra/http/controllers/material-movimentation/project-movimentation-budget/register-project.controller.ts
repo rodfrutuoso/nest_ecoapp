@@ -10,6 +10,8 @@ import { RegisterProjectUseCase } from "src/domain/material-movimentation/applic
 import { ResourceAlreadyRegisteredError } from "src/domain/material-movimentation/application/use-cases/errors/resource-already-registered-error";
 import { ApiTags } from "@nestjs/swagger";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
+import { RegisterProjectDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/project-movimentation-budget/response decorators/register-project.decorator";
+import { RegisterProjectBodyDto } from "src/infra/http/swagger dto and decorators/material-movimentation/project-movimentation-budget/dto classes/register-project.dto";
 
 const registerProjectBodySchema = z
   .object({
@@ -21,8 +23,6 @@ const registerProjectBodySchema = z
   })
   .required();
 
-type RegisterProjectBodySchema = z.infer<typeof registerProjectBodySchema>;
-
 @ApiTags("project")
 @Controller("/projects")
 export class RegisterProjectController {
@@ -30,9 +30,10 @@ export class RegisterProjectController {
 
   @Post()
   @HttpCode(201)
+  @RegisterProjectDecorator()
   async handle(
     @Body(new ZodValidationPipe(registerProjectBodySchema))
-    body: RegisterProjectBodySchema
+    body: RegisterProjectBodyDto
   ) {
     const { city, description, type, project_number, baseId } = body;
 
@@ -57,6 +58,6 @@ export class RegisterProjectController {
       }
     }
 
-    return { message: "criação realizada" }
+    return { message: "criação realizada" };
   }
 }

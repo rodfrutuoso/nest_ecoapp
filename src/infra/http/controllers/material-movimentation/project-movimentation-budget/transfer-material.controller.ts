@@ -5,8 +5,10 @@ import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { CurrentUser } from "src/infra/auth/current-user.decorator";
 import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
 import { TransferMaterialUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/transfer-material";
-import { ApiBody, ApiProperty, ApiTags } from "@nestjs/swagger";
+import { ApiBody, ApiTags } from "@nestjs/swagger";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
+import { TransferMaterialDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/project-movimentation-budget/response decorators/transfer-material.decorator";
+import { TransferMaterialBodyDto } from "src/infra/http/swagger dto and decorators/material-movimentation/project-movimentation-budget/dto classes/transfer-material.dto";
 
 const transferMaterialBodySchema = z.array(
   z
@@ -20,35 +22,6 @@ const transferMaterialBodySchema = z.array(
     .required()
 );
 
-class TransferMaterialBodySchema {
-  @ApiProperty({
-    example: "material-id",
-    description: "material's ID to be movimentated",
-  })
-  materialId!: string;
-  @ApiProperty({
-    example: "project-id",
-    description:
-      "project's ID that the material movimentated will be associate",
-  })
-  projectId!: string;
-  @ApiProperty({
-    example: "o material estava com a embalagem rasgada",
-    description: "observation of the transfer of that material",
-  })
-  observation!: string;
-  @ApiProperty({
-    example: "base-id",
-    description: "base's ID of the storekeeper",
-  })
-  baseId!: string;
-  @ApiProperty({
-    example: 3,
-    description: "value to be transfer",
-  })
-  value!: number;
-}
-
 @ApiTags("movimentation")
 @Controller("/movimentation")
 export class TransferMaterialController {
@@ -56,16 +29,17 @@ export class TransferMaterialController {
 
   @Post()
   @HttpCode(201)
+  @TransferMaterialDecorator()
   @ApiBody({
-    type: TransferMaterialBodySchema,
+    type: TransferMaterialBodyDto,
     isArray: true,
   }) // for swagger
   async handle(
     @CurrentUser() user: UserPayload,
     @Body(new ZodValidationPipe(transferMaterialBodySchema))
-    body: TransferMaterialBodySchema[]
+    body: TransferMaterialBodyDto[]
   ) {
-    const transferMaterialRequest: TransferMaterialBodySchema[] = body;
+    const transferMaterialRequest: TransferMaterialBodyDto[] = body;
 
     const result = await this.transferMaterial.execute(
       transferMaterialRequest.map((item) => {
@@ -91,6 +65,6 @@ export class TransferMaterialController {
       }
     }
 
-    return { message: "criação realizada" }
+    return { message: "criação realizada" };
   }
 }
