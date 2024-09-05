@@ -8,8 +8,10 @@ import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { RegisterBaseUseCase } from "src/domain/material-movimentation/application/use-cases/contract-base/register-base";
 import { ResourceAlreadyRegisteredError } from "src/domain/material-movimentation/application/use-cases/errors/resource-already-registered-error";
-import { ApiProperty, ApiTags } from "@nestjs/swagger";
+import { ApiTags } from "@nestjs/swagger";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
+import { RegisterBaseDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/contract-base/response decorators/register-base.decorator";
+import { RegisterBaseBodyDto } from "src/infra/http/swagger dto and decorators/material-movimentation/contract-base/dto classes/register-base.dto";
 
 const registerBaseBodySchema = z
   .object({
@@ -18,19 +20,6 @@ const registerBaseBodySchema = z
   })
   .required();
 
-class RegisterBaseBodySchema {
-  @ApiProperty({
-    example: "Itaberaba",
-    description: "Name of the base",
-  })
-  baseName!: string;
-  @ApiProperty({
-    example: "contract-id",
-    description: "contract's id of that base",
-  })
-  contractId!: string;
-}
-
 @ApiTags("base")
 @Controller("/bases")
 export class RegisterBaseController {
@@ -38,9 +27,10 @@ export class RegisterBaseController {
 
   @Post()
   @HttpCode(201)
+  @RegisterBaseDecorator()
   async handle(
     @Body(new ZodValidationPipe(registerBaseBodySchema))
-    body: RegisterBaseBodySchema
+    body: RegisterBaseBodyDto
   ) {
     const { baseName, contractId } = body;
 
@@ -62,6 +52,6 @@ export class RegisterBaseController {
       }
     }
 
-    return { message: "criação realizada" }
+    return { message: "criação realizada" };
   }
 }

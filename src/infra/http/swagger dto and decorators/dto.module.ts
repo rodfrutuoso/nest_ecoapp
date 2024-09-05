@@ -13,6 +13,8 @@ import { IdentifierAttributionBodyDto } from "./material-movimentation/physicalD
 import { FetchPhysicalDocumentsQueryDto } from "./material-movimentation/physicalDocument/dto classes/fetch-physical-document.dto";
 import { FetchMaterialQueryDto } from "./material-movimentation/material/dto classes/fetch-materials.dto";
 import { CreateMaterialBodyDto } from "./material-movimentation/material/dto classes/create-material.dto";
+import { RegisterContractBodyDto } from "./material-movimentation/contract-base/dto classes/register-contract.dto";
+import { RegisterBaseBodyDto } from "./material-movimentation/contract-base/dto classes/register-base.dto";
 
 @Module({
   providers: [
@@ -30,6 +32,8 @@ import { CreateMaterialBodyDto } from "./material-movimentation/material/dto cla
     FetchPhysicalDocumentsQueryDto,
     FetchMaterialQueryDto,
     CreateMaterialBodyDto,
+    RegisterContractBodyDto,
+    RegisterBaseBodyDto,
   ],
   exports: [
     FetchAccountsQueryDto,
@@ -46,6 +50,8 @@ import { CreateMaterialBodyDto } from "./material-movimentation/material/dto cla
     FetchPhysicalDocumentsQueryDto,
     FetchMaterialQueryDto,
     CreateMaterialBodyDto,
+    RegisterContractBodyDto,
+    RegisterBaseBodyDto,
   ],
 })
 export class DtoModule {}

@@ -11,6 +11,7 @@ import {
   import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
   import { BasePresenter } from "src/infra/http/presenters/base-presenter";
 import { ApiTags } from "@nestjs/swagger";
+import { FetchBaseDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/contract-base/response decorators/fetch-base.decorator";
   
   const pageQueryParamSchema = z
     .string()
@@ -30,6 +31,7 @@ import { ApiTags } from "@nestjs/swagger";
   
     @Get()
     @HttpCode(200)
+    @FetchBaseDecorator()
     async handle(@Query("page", queryValidationPipe) page: PageQueryParamSchema) {
       const result = await this.fetchBaseUseCase.execute({
         page,

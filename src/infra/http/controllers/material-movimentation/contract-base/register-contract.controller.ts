@@ -5,20 +5,14 @@ import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { RegisterContractUseCase } from "src/domain/material-movimentation/application/use-cases/contract-base/register-contract";
 import { ResourceAlreadyRegisteredError } from "src/domain/material-movimentation/application/use-cases/errors/resource-already-registered-error";
 import { ApiProperty, ApiTags } from "@nestjs/swagger";
+import { RegisterContractDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/contract-base/response decorators/register-contract.decorator";
+import { RegisterContractBodyDto } from "src/infra/http/swagger dto and decorators/material-movimentation/contract-base/dto classes/register-contract.dto";
 
 const registerContractBodySchema = z
   .object({
     contractName: z.string(),
   })
   .required();
-
-class RegisterContractBodySchema {
-  @ApiProperty({
-    example: "Centro-Oeste",
-    description: "Name of the contract",
-  })
-  contractName!: string;
-}
 
 @ApiTags("contract")
 @Controller("/contracts")
@@ -27,9 +21,10 @@ export class RegisterContractController {
 
   @Post()
   @HttpCode(201)
+  @RegisterContractDecorator()
   async handle(
     @Body(new ZodValidationPipe(registerContractBodySchema))
-    body: RegisterContractBodySchema
+    body: RegisterContractBodyDto
   ) {
     const { contractName } = body;
 

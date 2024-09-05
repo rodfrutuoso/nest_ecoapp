@@ -4,14 +4,14 @@ import {
   NotFoundException,
   Query,
 } from "@nestjs/common";
-import {  Controller, HttpCode } from "@nestjs/common";
+import { Controller, HttpCode } from "@nestjs/common";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { FetchContractUseCase } from "src/domain/material-movimentation/application/use-cases/contract-base/fetch-contract";
-import { MaterialPresenter } from "../../../presenters/material-presenter";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { ContractPresenter } from "src/infra/http/presenters/contract-presenter";
 import { ApiTags } from "@nestjs/swagger";
+import { FetchContractDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/contract-base/response decorators/fetch-contracts.decorator";
 
 const pageQueryParamSchema = z
   .string()
@@ -31,6 +31,7 @@ export class FetchContractController {
 
   @Get()
   @HttpCode(200)
+  @FetchContractDecorator()
   async handle(@Query("page", queryValidationPipe) page: PageQueryParamSchema) {
     const result = await this.fetchContractUseCase.execute({
       page,
