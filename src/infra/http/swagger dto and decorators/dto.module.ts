@@ -8,6 +8,9 @@ import { TransferMaterialBodyDto } from "./material-movimentation/project-movime
 import { FetchMovimentationHistoryQueryDto } from "./material-movimentation/project-movimentation-budget/dto classes/fetch-movimentations-history.dto";
 import { FetchBudgetMovimentationByProjectQueryDto } from "./material-movimentation/project-movimentation-budget/dto classes/fetch-budget-movimentations-by-project.dto";
 import { FetchBudgetByProjectNameQueryDto } from "./material-movimentation/project-movimentation-budget/dto classes/fetch-budget-by-project-name.dto";
+import { UnitizePhysicalDocumentBodyDto } from "./material-movimentation/physicalDocument/dto classes/unitize-physical-document.dto";
+import { IdentifierAttributionBodyDto } from "./material-movimentation/physicalDocument/dto classes/identifier-attribution.dto";
+import { FetchPhysicalDocumentsQueryDto } from "./material-movimentation/physicalDocument/dto classes/fetch-physical-document.dto";
 
 @Module({
   providers: [
@@ -19,7 +22,10 @@ import { FetchBudgetByProjectNameQueryDto } from "./material-movimentation/proje
     TransferMaterialBodyDto,
     FetchMovimentationHistoryQueryDto,
     FetchBudgetMovimentationByProjectQueryDto,
-    FetchBudgetByProjectNameQueryDto
+    FetchBudgetByProjectNameQueryDto,
+    UnitizePhysicalDocumentBodyDto,
+    IdentifierAttributionBodyDto,
+    FetchPhysicalDocumentsQueryDto,
   ],
   exports: [
     FetchAccountsQueryDto,
@@ -30,7 +36,10 @@ import { FetchBudgetByProjectNameQueryDto } from "./material-movimentation/proje
     TransferMaterialBodyDto,
     FetchMovimentationHistoryQueryDto,
     FetchBudgetMovimentationByProjectQueryDto,
-    FetchBudgetByProjectNameQueryDto
+    FetchBudgetByProjectNameQueryDto,
+    UnitizePhysicalDocumentBodyDto,
+    IdentifierAttributionBodyDto,
+    FetchPhysicalDocumentsQueryDto,
   ],
 })
 export class DtoModule {}

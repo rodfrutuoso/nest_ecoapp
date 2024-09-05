@@ -4,13 +4,15 @@ import {
   NotFoundException,
   Query,
 } from "@nestjs/common";
-import { Body, Controller, HttpCode } from "@nestjs/common";
+import { Controller, HttpCode } from "@nestjs/common";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { FetchPhysicalDocumentUseCase } from "src/domain/material-movimentation/application/use-cases/physicalDocument/fetch-physical-document";
 import { PhysicalDocumentWithProjectPresenter } from "src/infra/http/presenters/physical-document-with-project-presenter";
 import { ApiProperty, ApiTags } from "@nestjs/swagger";
+import { FetchPhysicalDocumentsDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/physicalDocument/response decorators/fetch-physical-document.decorator";
+import { FetchPhysicalDocumentsQueryDto } from "src/infra/http/swagger dto and decorators/material-movimentation/physicalDocument/dto classes/fetch-physical-document.dto";
 
 const fetchPhysicalDocumentsBodySchema = z.object({
   page: z
@@ -27,29 +29,6 @@ const fetchPhysicalDocumentsBodySchema = z.object({
     .optional(),
 });
 
-class FetchPhysicalDocumentsQuerySchema {
-  @ApiProperty({
-    example: "1",
-    description: "Page number for pagination",
-    required: false,
-    default: 1,
-    minimum: 1,
-  })
-  page!: number;
-  @ApiProperty({
-    example: "project-id",
-    description: "project's id of the identifier",
-    required: false,
-  })
-  projectId!: string;
-  @ApiProperty({
-    example: 3,
-    description: "ID or identifier to be found",
-    required: false,
-  })
-  identifier!: number;
-}
-
 @ApiTags("physical document")
 @Controller("/physical-documents")
 export class FetchPhysicalDocumentsController {
@@ -57,9 +36,10 @@ export class FetchPhysicalDocumentsController {
 
   @Get()
   @HttpCode(200)
+  @FetchPhysicalDocumentsDecorator()
   async handle(
     @Query(new ZodValidationPipe(fetchPhysicalDocumentsBodySchema))
-    query: FetchPhysicalDocumentsQuerySchema
+    query: FetchPhysicalDocumentsQueryDto
   ) {
     const { page, identifier, projectId } = query;
 
