@@ -51,7 +51,7 @@ describe("Delete Physical Document (E2E)", () => {
       where: { id: physicalDocumentToDelete.id.toString() },
     });
 
-    expect(response.statusCode).toBe(204);
+    expect(response.statusCode).toBe(201);
     expect(search).toHaveLength(0);
   });
 });

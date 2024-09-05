@@ -53,7 +53,7 @@ describe("Unitize Physical Document (E2E)", () => {
       where: { identifier: 1 },
     });
 
-    expect(response.statusCode).toBe(204);
+    expect(response.statusCode).toBe(201);
     expect(physicalDocumentDataBase.unitized).toEqual(true);
   });
 });

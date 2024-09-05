@@ -50,7 +50,7 @@ describe("Delete Account (E2E)", () => {
       where: { name: "Joao Excluido" },
     });
 
-    expect(response.statusCode).toBe(204);
+    expect(response.statusCode).toBe(201);
     expect(search).toHaveLength(0);
   });
 });

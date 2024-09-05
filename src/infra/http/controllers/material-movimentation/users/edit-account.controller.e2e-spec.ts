@@ -55,7 +55,7 @@ describe("Edit account (E2E)", () => {
       where: { email: user.email },
     });
 
-    expect(response.statusCode).toBe(204);
+    expect(response.statusCode).toBe(201);
     expect(userDataBase.baseId).toEqual(base.id.toString());
   });
 });
