@@ -12,6 +12,8 @@ import { CreateMaterialUseCase } from "src/domain/material-movimentation/applica
 import { ResourceAlreadyRegisteredError } from "src/domain/material-movimentation/application/use-cases/errors/resource-already-registered-error";
 import { ApiProperty, ApiTags } from "@nestjs/swagger";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
+import { CreateMaterialDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/material/response decorators/create-material.decorator";
+import { CreateMaterialBodyDto } from "src/infra/http/swagger dto and decorators/material-movimentation/material/dto classes/create-material.dto";
 
 const createMaterialBodySchema = z
   .object({
@@ -23,35 +25,6 @@ const createMaterialBodySchema = z
   })
   .required();
 
-class CreateMaterialBodySchema {
-  @ApiProperty({
-    example: 123456,
-    description: "material's code. Has to be number",
-  })
-  code!: number;
-  @ApiProperty({
-    example: "CABO 4CAA ALMU",
-    description: "material's description",
-  })
-  description!: string;
-  @ApiProperty({
-    example: "FERRAGEM",
-    description:
-      "It's one of the following types: FERRAGEM/CONCRETO/EQUIPAMENTO",
-  })
-  type!: string;
-  @ApiProperty({
-    example: "CDA",
-    description: "The unit of the material. Could be M, CDA, UN, KG etc",
-  })
-  unit!: string;
-  @ApiProperty({
-    example: "contract-id",
-    description: "contract's id of the material",
-  })
-  contractId!: string;
-}
-
 @ApiTags("material")
 @Controller("/materials")
 export class CreateMaterialController {
@@ -59,10 +32,11 @@ export class CreateMaterialController {
 
   @Post()
   @HttpCode(201)
+  @CreateMaterialDecorator()
   async handle(
     @CurrentUser() user: UserPayload,
     @Body(new ZodValidationPipe(createMaterialBodySchema))
-    body: CreateMaterialBodySchema
+    body: CreateMaterialBodyDto
   ) {
     const { code, description, type, unit, contractId } = body;
 

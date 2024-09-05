@@ -11,6 +11,8 @@ import { FetchBudgetByProjectNameQueryDto } from "./material-movimentation/proje
 import { UnitizePhysicalDocumentBodyDto } from "./material-movimentation/physicalDocument/dto classes/unitize-physical-document.dto";
 import { IdentifierAttributionBodyDto } from "./material-movimentation/physicalDocument/dto classes/identifier-attribution.dto";
 import { FetchPhysicalDocumentsQueryDto } from "./material-movimentation/physicalDocument/dto classes/fetch-physical-document.dto";
+import { FetchMaterialQueryDto } from "./material-movimentation/material/dto classes/fetch-materials.dto";
+import { CreateMaterialBodyDto } from "./material-movimentation/material/dto classes/create-material.dto";
 
 @Module({
   providers: [
@@ -26,6 +28,8 @@ import { FetchPhysicalDocumentsQueryDto } from "./material-movimentation/physica
     UnitizePhysicalDocumentBodyDto,
     IdentifierAttributionBodyDto,
     FetchPhysicalDocumentsQueryDto,
+    FetchMaterialQueryDto,
+    CreateMaterialBodyDto,
   ],
   exports: [
     FetchAccountsQueryDto,
@@ -40,6 +44,8 @@ import { FetchPhysicalDocumentsQueryDto } from "./material-movimentation/physica
     UnitizePhysicalDocumentBodyDto,
     IdentifierAttributionBodyDto,
     FetchPhysicalDocumentsQueryDto,
+    FetchMaterialQueryDto,
+    CreateMaterialBodyDto,
   ],
 })
 export class DtoModule {}

@@ -11,6 +11,8 @@ import { FetchMaterialUseCase } from "src/domain/material-movimentation/applicat
 import { MaterialPresenter } from "../../../presenters/material-presenter";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { ApiProperty, ApiTags } from "@nestjs/swagger";
+import { FetchMaterialDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/material/response decorators/fetch-materials.decorator";
+import { FetchMaterialQueryDto } from "src/infra/http/swagger dto and decorators/material-movimentation/material/dto classes/fetch-materials.dto";
 
 const fetchMaterialQuerySchema = z.object({
   page: z
@@ -23,28 +25,6 @@ const fetchMaterialQuerySchema = z.object({
   contractId: z.string().uuid(),
 });
 
-class FetchMaterialQuerySchema {
-  @ApiProperty({
-    example: "1",
-    description: "Page number for pagination",
-    required: false,
-    default: 1,
-    minimum: 1,
-  })
-  page!: number;
-  @ApiProperty({
-    example: "user-id",
-    description: "user's id that made the movimentation",
-    required: false,
-  })
-  type!: string;
-  @ApiProperty({
-    example: "cotnract-id",
-    description: "cotnract's id of the material",
-  })
-  contractId!: string;
-}
-
 @ApiTags("material")
 @Controller("/materials")
 export class FetchMaterialController {
@@ -52,9 +32,10 @@ export class FetchMaterialController {
 
   @Get()
   @HttpCode(200)
+  @FetchMaterialDecorator()
   async handle(
     @Query(new ZodValidationPipe(fetchMaterialQuerySchema))
-    query: FetchMaterialQuerySchema
+    query: FetchMaterialQueryDto
   ) {
     const { page, type, contractId } = query;
 
