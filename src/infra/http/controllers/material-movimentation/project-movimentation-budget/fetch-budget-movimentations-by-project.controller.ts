@@ -14,18 +14,12 @@ import { BudgetWithDetailsPresenter } from "src/infra/http/presenters/budget-wit
 import { ApiProperty, ApiTags } from "@nestjs/swagger";
 import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
 import { CurrentUser } from "src/infra/auth/current-user.decorator";
+import { FetchBudgetMovimentationByProjectDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/project-movimentation-budget/response decorators/fetch-budget-movimentations-by-project.decorator";
+import { FetchBudgetMovimentationByProjectQueryDto } from "src/infra/http/swagger dto and decorators/material-movimentation/project-movimentation-budget/dto classes/fetch-budget-movimentations-by-project.dto";
 
 const fetchBudgetMovimentationByProjectQuerySchema = z.object({
   project_number: z.string(),
 });
-
-class FetchBudgetMovimentationByProjectQueryDto {
-  @ApiProperty({
-    example: "B-1234567",
-    description: "project identification number",
-  })
-  project_number!: string;
-}
 
 @ApiTags("movimentation")
 @Controller("/movimentations-budgets")
@@ -36,6 +30,7 @@ export class FetchBudgetMovimentationByProjectController {
 
   @Get()
   @HttpCode(200)
+  @FetchBudgetMovimentationByProjectDecorator()
   async handle(
     @CurrentUser() user: UserPayload,
     @Query(new ZodValidationPipe(fetchBudgetMovimentationByProjectQuerySchema))
@@ -44,7 +39,8 @@ export class FetchBudgetMovimentationByProjectController {
     const { project_number } = query;
 
     const result = await this.fetchBudgetMovimentationByProjectUseCase.execute({
-      project_number, baseId: user.baseId ?? ""
+      project_number,
+      baseId: user.baseId ?? "",
     });
 
     if (result.isLeft()) {

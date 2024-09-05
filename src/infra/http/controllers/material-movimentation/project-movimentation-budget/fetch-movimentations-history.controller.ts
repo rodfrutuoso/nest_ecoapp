@@ -11,6 +11,8 @@ import { FetchMovimentationHistoryUseCase } from "src/domain/material-movimentat
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { MovimentationWithDetailsPresenter } from "src/infra/http/presenters/movimentation-with-details-presenter";
 import { ApiProperty, ApiTags } from "@nestjs/swagger";
+import { FetchMovimentationHistoryDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/project-movimentation-budget/response decorators/fetch-movimentations-history.decorator";
+import { FetchMovimentationHistoryQueryDto } from "src/infra/http/swagger dto and decorators/material-movimentation/project-movimentation-budget/dto classes/fetch-movimentations-history.dto";
 
 const fetchMovimentationHistoryBodySchema = z.object({
   page: z
@@ -37,54 +39,6 @@ const fetchMovimentationHistoryBodySchema = z.object({
     .transform((value) => (value ? new Date(value) : undefined)),
 });
 
-class FetchMovimentationHistoryQueryDto {
-  @ApiProperty({
-    example: "1",
-    description: "Page number for pagination",
-    required: false,
-    default: 1,
-    minimum: 1,
-  })
-  page!: number;
-  @ApiProperty({
-    example: "storekeeper@ecoeletrica.com.br",
-    description: "user's email that made the movimentation",
-    required: false,
-  })
-  email!: string;
-  @ApiProperty({
-    example: "id-da-base-para-pesquisar",
-    description: "base's id that the movimentation was made",
-    required: false,
-  })
-  baseId!: string;
-  @ApiProperty({
-    example: "B-1234567",
-    description: "project's number that was movimetated",
-    required: false,
-  })
-  project_number!: string;
-  @ApiProperty({
-    example: 123456,
-    description: "material's code that was movimetated",
-    required: false,
-    minimum: 1,
-  })
-  material_code!: number;
-  @ApiProperty({
-    example: "2024-03-31",
-    description: "start date for search",
-    required: false,
-  })
-  startDate!: Date;
-  @ApiProperty({
-    example: "2024-03-31",
-    description: "end date for search",
-    required: false,
-  })
-  endDate!: Date;
-}
-
 @ApiTags("movimentation")
 @Controller("/movimentations")
 export class FetchMovimentationHistoryController {
@@ -94,6 +48,7 @@ export class FetchMovimentationHistoryController {
 
   @Get()
   @HttpCode(200)
+  @FetchMovimentationHistoryDecorator()
   async handle(
     @Query(new ZodValidationPipe(fetchMovimentationHistoryBodySchema))
     query: FetchMovimentationHistoryQueryDto

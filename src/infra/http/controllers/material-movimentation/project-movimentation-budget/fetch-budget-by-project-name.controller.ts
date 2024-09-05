@@ -10,23 +10,17 @@ import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { FetchBudgetByProjectNameUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/fetch-budget-by-project-name";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { BudgetWithDetailsPresenter } from "src/infra/http/presenters/budget-with-details";
-import { ApiProperty, ApiTags } from "@nestjs/swagger";
+import { ApiTags } from "@nestjs/swagger";
 import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
 import { CurrentUser } from "src/infra/auth/current-user.decorator";
+import { FetchBudgetByProjectNameDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/project-movimentation-budget/response decorators/fetch-budget-by-project-name.decorator";
+import { FetchBudgetByProjectNameQueryDto } from "src/infra/http/swagger dto and decorators/material-movimentation/project-movimentation-budget/dto classes/fetch-budget-by-project-name.dto";
 
 const fetchBudgetByProjectNameBodySchema = z
   .object({
     project_number: z.string(),
   })
   .required();
-
-class FetchBudgetByProjectNameQuerySchema {
-  @ApiProperty({
-    example: "B-1234567",
-    description: "project identification number",
-  })
-  project_number!: string;
-}
 
 @ApiTags("budgets")
 @Controller("/budgets")
@@ -37,10 +31,11 @@ export class FetchBudgetByProjectNameController {
 
   @Get()
   @HttpCode(200)
+  @FetchBudgetByProjectNameDecorator()
   async handle(
     @CurrentUser() user: UserPayload,
     @Query(new ZodValidationPipe(fetchBudgetByProjectNameBodySchema))
-    query: FetchBudgetByProjectNameQuerySchema
+    query: FetchBudgetByProjectNameQueryDto
   ) {
     const { project_number } = query;
 
