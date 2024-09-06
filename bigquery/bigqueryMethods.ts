@@ -31,8 +31,11 @@ export interface IncludeOptions<T> {
 
 export class BigQueryMethods<T extends Record<string, any>> {
   private readonly bigquery = new BigQuery({
-    keyFilename: "bigquery/bigquery-key-api.json",
-    projectId: "ecoeletricatech",
+    projectId: process.env.BIGQUERY_PROJECT_ID,
+    credentials: {
+      private_key: process.env.BIGQUERY_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+      client_email: process.env.BIGQUERY_CLIENT_EMAIL,
+    },
   });
 
   private readonly datasetId: string;
