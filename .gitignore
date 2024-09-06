@@ -57,6 +57,3 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # API Key Bigquery
 /bigquery/bigquery-key-api.json
-
-#documentation from Compodoc
-/documentation
