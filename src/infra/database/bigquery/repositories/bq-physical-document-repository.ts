@@ -79,7 +79,7 @@ export class BqPhysicalDocumentRepository
         project: {
           join: {
             table: "project",
-            on: "physical-document.projectId = project.id",
+            on: "physical_document.projectId = project.id",
           },
           relationType: "one-to-one",
         },

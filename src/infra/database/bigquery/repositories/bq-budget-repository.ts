@@ -45,15 +45,15 @@ export class BqBudgetRepository implements BudgetRepository {
         },
         user: {
           join: {
-            table: "users",
-            on: "budget.userId = users.id",
+            table: "user",
+            on: "budget.userId = user.id",
           },
           relationType: "one-to-one",
         },
         material: {
           join: {
-            table: "materials",
-            on: "budget.materialId = materials.id",
+            table: "material",
+            on: "budget.materialId = material.id",
           },
           relationType: "one-to-one",
         },

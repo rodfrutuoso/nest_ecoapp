@@ -8,7 +8,7 @@ export const FetchAccountsDecorator = () => {
       description: "Accounts fetched successfully",
       schema: {
         example: {
-          users: [
+          user: [
             {
               id: "1d25306b-4658-4d2e-bfd6-d7bd54334b7b",
               name: "rafafaafa",

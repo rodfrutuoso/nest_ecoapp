@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { BigQueryMethods } from "bigquery/bigqueryMethods";
 
-const tableId = "materials";
+const tableId = "material";
 
 export interface BqMaterialProps {
   id?: string;

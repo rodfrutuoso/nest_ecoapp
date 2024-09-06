@@ -60,12 +60,12 @@ Authorization: Bearer {{authToken}}
 ###
 
 # @name edit_account
-PUT {{baseURL}}/accounts/650d92e2-2d2b-4827-819a-ba2f6a904a8c
+PUT {{baseURL}}/accounts/627a842b-eeee-42f2-b8aa-9a9fbdee0b83
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-    "password": "123456"
+    "type": "Administrator"
 }
 
 ###

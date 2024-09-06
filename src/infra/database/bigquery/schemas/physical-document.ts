@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { BigQueryMethods } from "bigquery/bigqueryMethods";
 import { BqProjectProps } from "./project";
 
-const tableId = "physical-document";
+const tableId = "physical_document";
 
 export interface BqPhysicalDocumentProps {
   id?: string;

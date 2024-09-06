@@ -49,7 +49,7 @@ const allSchemas = {
       { name: "contractName", type: "STRING", mode: "REQUIRED" },
     ],
   },
-  materials: {
+  material: {
     fields: [
       { name: "id", type: "STRING", mode: "NULLABLE" },
       { name: "code", type: "BIGNUMERIC", mode: "NULLABLE" },
@@ -81,7 +81,7 @@ const allSchemas = {
       { name: "baseId", type: "STRING", mode: "NULLABLE" },
     ],
   },
-  "physical-document": {
+  physical_document: {
     fields: [
       {
         name: "id",
@@ -96,35 +96,35 @@ const allSchemas = {
   },
   project: {
     fields: [
-        { name: 'project_number', type: 'STRING', mode: 'REQUIRED' },
-        { name: 'description', type: 'STRING', mode: 'NULLABLE' },
-        { name: 'type', type: 'STRING', mode: 'REQUIRED' },
-        { name: 'baseId', type: 'STRING', mode: 'REQUIRED' },
-        { name: 'city', type: 'STRING', mode: 'NULLABLE' },
-        {
-          name: 'id',
-          type: 'STRING',
-          mode: 'NULLABLE',
-          defaultValueExpression: 'GENERATE_UUID()'
-        }
-      ]
+      { name: "project_number", type: "STRING", mode: "REQUIRED" },
+      { name: "description", type: "STRING", mode: "NULLABLE" },
+      { name: "type", type: "STRING", mode: "REQUIRED" },
+      { name: "baseId", type: "STRING", mode: "REQUIRED" },
+      { name: "city", type: "STRING", mode: "NULLABLE" },
+      {
+        name: "id",
+        type: "STRING",
+        mode: "NULLABLE",
+        defaultValueExpression: "GENERATE_UUID()",
+      },
+    ],
   },
-  users:{
+  user: {
     fields: [
-        {
-          name: 'id',
-          type: 'STRING',
-          mode: 'REQUIRED',
-          defaultValueExpression: 'GENERATE_UUID()'
-        },
-        { name: 'name', type: 'STRING', mode: 'REQUIRED' },
-        { name: 'email', type: 'STRING', mode: 'NULLABLE' },
-        { name: 'password', type: 'STRING', mode: 'REQUIRED' },
-        { name: 'cpf', type: 'STRING', mode: 'NULLABLE' },
-        { name: 'type', type: 'STRING', mode: 'NULLABLE' },
-        { name: 'status', type: 'STRING', mode: 'NULLABLE' },
-        { name: 'baseId', type: 'STRING', mode: 'NULLABLE' },
-        { name: 'contractId', type: 'STRING', mode: 'NULLABLE' }
-      ]
-  }
+      {
+        name: "id",
+        type: "STRING",
+        mode: "REQUIRED",
+        defaultValueExpression: "GENERATE_UUID()",
+      },
+      { name: "name", type: "STRING", mode: "REQUIRED" },
+      { name: "email", type: "STRING", mode: "NULLABLE" },
+      { name: "password", type: "STRING", mode: "REQUIRED" },
+      { name: "cpf", type: "STRING", mode: "NULLABLE" },
+      { name: "type", type: "STRING", mode: "NULLABLE" },
+      { name: "status", type: "STRING", mode: "NULLABLE" },
+      { name: "baseId", type: "STRING", mode: "NULLABLE" },
+      { name: "contractId", type: "STRING", mode: "NULLABLE" },
+    ],
+  },
 };

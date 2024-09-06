@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { BigQueryMethods } from "bigquery/bigqueryMethods";
 import { BqBaseProps } from "./base";
 
-const tableId = "users";
+const tableId = "user";
 
 export interface BqUserProps {
   id?: string;

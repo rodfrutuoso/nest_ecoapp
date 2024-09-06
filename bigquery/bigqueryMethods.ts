@@ -43,10 +43,9 @@ export class BigQueryMethods<T extends Record<string, any>> {
   }
 
   async runQuery(query: string) {
-    console.log(query);
     const options = { query };
     const [rows] = await this.bigquery.query(options);
-    console.log(rows);
+
     return rows;
   }
 
@@ -62,7 +61,7 @@ export class BigQueryMethods<T extends Record<string, any>> {
     const query = this.buildSelectQuery(options);
     let rows = await this.runQuery(query);
     rows = await this.processQueryResults(rows, options.include);
-    console.log("rows dps do converted rows: ", rows);
+
     return rows;
   }
 
@@ -223,15 +222,22 @@ export class BigQueryMethods<T extends Record<string, any>> {
     return whereClauses.filter((clause) => clause !== "");
   }
 
-  private buildWhereClause(tableAlias: string, where: Partial<T>): string {
+  private buildWhereClause(
+    tableAlias: string | null,
+    where: Partial<T>
+  ): string {
     return Object.keys(where)
       .filter((key) => where[key] !== undefined)
       .map((key) => {
         const value = where[key];
+        const columnName = tableAlias
+          ? `${tableAlias}.${String(key)}`
+          : String(key);
+
         if (this.isDate(value)) {
-          return `${tableAlias}.${String(key)} = '${value.toISOString()}'`;
+          return `${columnName} = '${value.toISOString()}'`;
         }
-        return `${tableAlias}.${String(key)} = ${
+        return `${columnName} = ${
           typeof value === "string" ? `'${value}'` : value
         }`;
       })
@@ -331,8 +337,21 @@ export class BigQueryMethods<T extends Record<string, any>> {
       } ON ${on}`;
     });
 
+    const includeColumns = Object.entries(include)
+      .map(([alias, options]) => {
+        const includeTable = options!.join.table;
+        const schema = BigqueryShemas.getSchema(includeTable).fields;
+        return schema
+          .map(
+            (field) =>
+              `${includeTable}.${field.name} AS ${includeTable}_${field.name}`
+          )
+          .join(", ");
+      })
+      .join(", ");
+
     return `
-      SELECT ${distinctClause} ${selectColumns} 
+      SELECT ${distinctClause} ${selectColumns}, ${includeColumns}
       FROM \`${this.datasetId}\` AS ${tableAlias}
       ${includeClauses.join(" ")}
       ${whereClause}
@@ -346,7 +365,7 @@ export class BigQueryMethods<T extends Record<string, any>> {
   private buildUpdateQuery(props: UpdateProps<T>): string {
     const { data, where } = props;
     const setClause = this.buildSetClause(data);
-    const whereClause = this.buildWhereClause("", where);
+    const whereClause = this.buildWhereClause(null, where);
     return `
       UPDATE \`${this.datasetId}\`
       SET ${setClause}
@@ -366,7 +385,7 @@ export class BigQueryMethods<T extends Record<string, any>> {
   }
 
   private buildDeleteQuery(where: Partial<T>): string {
-    const whereClause = this.buildWhereClause("", where);
+    const whereClause = this.buildWhereClause(null, where);
     return `
       DELETE FROM \`${this.datasetId}\`
       WHERE ${whereClause}
@@ -385,12 +404,10 @@ export class BigQueryMethods<T extends Record<string, any>> {
     const mainSchema = await this.getTableSchema();
     const includeSchemas: Record<string, any[]> = {};
 
-    console.log("mainSchema: ", mainSchema);
-
     if (include) {
       for (const [alias, options] of Object.entries(include)) {
         const relatedSchema = await this.getTableSchema(options!.join.table);
-        includeSchemas[alias] = relatedSchema;
+        includeSchemas[options!.join.table] = relatedSchema;
       }
     }
 
@@ -433,63 +450,49 @@ export class BigQueryMethods<T extends Record<string, any>> {
     includeSchemas: Record<string, any[]>
   ): void {
     for (const [alias, schema] of Object.entries(includeSchemas)) {
-      const suffix = `_${Object.keys(includeSchemas).indexOf(alias) + 1}`;
-      const relatedData = this.extractRelatedData(row, suffix);
-      const convertedRelatedData = this.convertRelatedData(relatedData, schema);
+      const convertedRelatedData = {} as Record<string, any>;
+      let hasData = false;
+
+      schema.forEach((field) => {
+        const originalFieldName = field.name;
+        const bigQueryFieldName = `${alias}_${originalFieldName}`;
+        let value = row[bigQueryFieldName];
+
+        if (value !== undefined) {
+          value = this.convertValue(value, field.type);
+          convertedRelatedData[originalFieldName] = value;
+          hasData = true;
+        }
+      });
 
       convertedRow[alias as keyof T] = (
-        Object.keys(convertedRelatedData).length > 0
-          ? convertedRelatedData
-          : null
+        hasData ? convertedRelatedData : null
       ) as T[keyof T];
     }
   }
 
-  private extractRelatedData(row: any, suffix: string): Record<string, any> {
-    return Object.entries(row)
-      .filter(([key]) => key.endsWith(suffix) || !key.includes("_"))
-      .reduce((acc, [key, value]) => {
-        const cleanKey = key.replace(suffix, "");
-        acc[cleanKey] = value;
-        return acc;
-      }, {} as Record<string, any>);
-  }
-
-  private convertRelatedData(
-    relatedData: Record<string, any>,
-    schema: any[]
-  ): Record<string, any> {
-    const convertedRelatedData = {} as Record<string, any>;
-
-    for (const field of schema) {
-      const fieldName = field.name;
-      const fieldType = field.type;
-      let value = relatedData[fieldName];
-
-      value = this.convertValue(value, fieldType);
-      convertedRelatedData[fieldName] = value;
-    }
-
-    return convertedRelatedData;
-  }
-
   private convertValue(value: any, fieldType: string): any {
-    if (fieldType === "INTEGER") {
-      return parseInt(value, 10);
-    } else if (
-      fieldType === "FLOAT" ||
-      fieldType === "NUMERIC" ||
-      fieldType === "BIGNUMERIC"
-    ) {
-      return parseFloat(value);
-    } else if (
-      fieldType === "DATE" ||
-      fieldType === "TIMESTAMP" ||
-      fieldType === "DATETIME"
-    ) {
-      return new Date(value.value);
+    if (value === null || value === undefined) {
+      return null;
     }
-    return value;
+    switch (fieldType) {
+      case "INTEGER":
+      case "BIGNUMERIC":
+        return typeof value === "object" && value.hasOwnProperty("value")
+          ? Number(value.value)
+          : Number(value);
+      case "FLOAT":
+      case "NUMERIC":
+        return parseFloat(value);
+      case "DATE":
+      case "TIMESTAMP":
+      case "DATETIME":
+        return new Date(value.value || value);
+      case "BOOLEAN":
+        return Boolean(value);
+      default:
+        return value;
+    }
   }
 
   private isDate(value: unknown): value is Date {

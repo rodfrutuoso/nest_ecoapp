@@ -50,15 +50,15 @@ export class BqMovimentationRepository implements MovimentationRepository {
         },
         user: {
           join: {
-            table: "users",
-            on: "movimentation.userId = users.id",
+            table: "user",
+            on: "movimentation.userId = user.id",
           },
           relationType: "one-to-one",
         },
         material: {
           join: {
-            table: "materials",
-            on: "movimentation.materialId = materials.id",
+            table: "material",
+            on: "movimentation.materialId = material.id",
           },
           relationType: "one-to-one",
         },
@@ -130,15 +130,15 @@ export class BqMovimentationRepository implements MovimentationRepository {
         },
         user: {
           join: {
-            table: "users",
-            on: "movimentation.userId = users.id",
+            table: "user",
+            on: "movimentation.userId = user.id",
           },
           relationType: "one-to-one",
         },
         material: {
           join: {
-            table: "materials",
-            on: "movimentation.materialId = materials.id",
+            table: "material",
+            on: "movimentation.materialId = material.id",
           },
           relationType: "one-to-one",
         },
