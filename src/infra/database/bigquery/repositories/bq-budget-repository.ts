@@ -32,28 +32,28 @@ export class BqBudgetRepository implements BudgetRepository {
         project: {
           join: {
             table: "project",
-            on: "movimentation.projectId = project.id",
+            on: "budget.projectId = project.id",
           },
           relationType: "one-to-one",
         },
         contract: {
           join: {
             table: "contract",
-            on: "movimentation.contractId = contract.id",
+            on: "budget.contractId = contract.id",
           },
           relationType: "one-to-one",
         },
         user: {
           join: {
             table: "users",
-            on: "movimentation.userId = users.id",
+            on: "budget.userId = users.id",
           },
           relationType: "one-to-one",
         },
         material: {
           join: {
             table: "materials",
-            on: "movimentation.materialId = materials.id",
+            on: "budget.materialId = materials.id",
           },
           relationType: "one-to-one",
         },

@@ -1,6 +1,7 @@
 import { BigQuery } from "@google-cloud/bigquery";
 import { NotFoundException } from "@nestjs/common";
 import "dotenv/config";
+import { BigqueryShemas } from "src/infra/database/bigquery/schemas/bigquery schemas/bigquerySchemas";
 
 export interface UpdateProps<T> {
   data: Partial<T>;
@@ -25,7 +26,7 @@ export interface SelectOptions<T> {
 
 export interface IncludeOptions<T> {
   join: { table: string; on: string };
-  relationType: "one-to-one" | "one-to-many" | "many-to-many";
+  relationType: "one-to-one" | "one-to-many" | "many-to-many" | "many-to-one";
 }
 
 export class BigQueryMethods<T extends Record<string, any>> {
@@ -42,49 +43,77 @@ export class BigQueryMethods<T extends Record<string, any>> {
   }
 
   async runQuery(query: string) {
-    const options = {
-      query,
-    };
+    console.log(query);
+    const options = { query };
     const [rows] = await this.bigquery.query(options);
+    console.log(rows);
     return rows;
   }
 
   async create(data: T[]): Promise<{}> {
-    if (data.length === 0)
+    if (data.length === 0) {
       throw new NotFoundException("Não há dados a serem retornados");
+    }
+    const query = this.buildInsertQuery(data);
+    return this.runQuery(query);
+  }
 
-    const fields = Object.keys(data[0])
-      .filter((key) => data[0][key] !== undefined)
-      .join(", ");
-    const values = data
-      .map(
-        (row) =>
-          "(" +
-          Object.entries(row)
-            .filter(([_, value]) => value !== undefined)
-            .map(([_, value]) =>
-              typeof value === "string"
-                ? `'${value}'`
-                : value instanceof Date
-                ? `'${value.toISOString()}'` // Converte o Date para o formato ISO 8601 do bigquery
-                : value
-            )
-            .join(", ") +
-          ")"
-      )
-      .join(", ");
+  async select(options: SelectOptions<T> = {}): Promise<T[]> {
+    const query = this.buildSelectQuery(options);
+    let rows = await this.runQuery(query);
+    rows = await this.processQueryResults(rows, options.include);
+    console.log("rows dps do converted rows: ", rows);
+    return rows;
+  }
 
-    const query = `
+  async update(props: UpdateProps<T>): Promise<{}> {
+    const query = this.buildUpdateQuery(props);
+    return this.runQuery(query);
+  }
+
+  async delete(where: Partial<T>): Promise<{}> {
+    const query = this.buildDeleteQuery(where);
+    return this.runQuery(query);
+  }
+
+  private buildInsertQuery(data: T[]): string {
+    const fields = this.getFieldsForInsert(data[0]);
+    const values = this.getValuesForInsert(data);
+    return `
       INSERT INTO \`${this.datasetId}\`
       (${fields})
       VALUES
       ${values}
     `;
-
-    return this.runQuery(query);
   }
 
-  async select(options: SelectOptions<T> = {}): Promise<T[]> {
+  private getFieldsForInsert(data: T): string {
+    return Object.keys(data)
+      .filter((key) => data[key] !== undefined)
+      .join(", ");
+  }
+
+  private getValuesForInsert(data: T[]): string {
+    return data
+      .map(
+        (row) =>
+          "(" +
+          Object.entries(row)
+            .filter(([_, value]) => value !== undefined)
+            .map(([_, value]) => this.formatValue(value))
+            .join(", ") +
+          ")"
+      )
+      .join(", ");
+  }
+
+  private formatValue(value: any): string {
+    if (typeof value === "string") return `'${value}'`;
+    if (value instanceof Date) return `'${value.toISOString()}'`;
+    return value;
+  }
+
+  private buildSelectQuery(options: SelectOptions<T>): string {
     const {
       where,
       whereIn,
@@ -101,102 +130,27 @@ export class BigQueryMethods<T extends Record<string, any>> {
       include,
     } = options;
 
-    const selectColumns = columns ? columns.join(", ") : "*";
+    const tableAlias = this.datasetId.split(".")[1];
+    const selectColumns = this.buildSelectColumns(tableAlias, columns);
     const distinctClause = distinct ? "DISTINCT" : "";
-    const whereClauses: string[] = [];
-
-    if (where) {
-      const whereClause = Object.keys(where)
-        .filter((key) => where[key] !== undefined)
-        .map((key) => {
-          const value = where[key];
-          if (this.isDate(value)) {
-            return `${String(key)} = '${value.toISOString()}'`;
-          }
-          return `${String(key)} = ${
-            typeof value === "string" ? `'${value}'` : value
-          }`;
-        })
-        .join(" AND ");
-      if (whereClause) whereClauses.push(whereClause);
-    }
-
-    if (whereIn) {
-      const whereInClauses = Object.keys(whereIn)
-        .filter((key) => whereIn[key] && whereIn[key].length > 0)
-        .map((key) => {
-          const values = whereIn[key]!
-            .map((value) =>
-              typeof value === "string" ? `'${value}'` : value
-            )
-            .join(", ");
-          return `${String(key)} IN (${values})`;
-        })
-        .join(" AND ");
-      if (whereInClauses) whereClauses.push(whereInClauses);
-    }
-
-    if (greaterOrEqualThan) {
-      const greaterOrEqualThanClause = Object.keys(greaterOrEqualThan)
-        .filter((key) => greaterOrEqualThan[key] !== undefined)
-        .map((key) => {
-          const value = greaterOrEqualThan[key];
-          if (this.isDate(value)) {
-            return `${String(key)} >= '${value.toISOString()}'`;
-          }
-          return `${String(key)} >= ${
-            typeof value === "string" ? `'${value}'` : value
-          }`;
-        })
-        .join(" AND ");
-      if (greaterOrEqualThanClause) whereClauses.push(greaterOrEqualThanClause);
-    }
-
-    if (lessOrEqualThan) {
-      const lessOrEqualThanClause = Object.keys(lessOrEqualThan)
-        .filter((key) => lessOrEqualThan[key] !== undefined)
-        .map((key) => {
-          const value = lessOrEqualThan[key];
-          if (this.isDate(value)) {
-            return `${String(key)} <= '${value.toISOString()}'`;
-          }
-          return `${String(key)} <= ${
-            typeof value === "string" ? `'${value}'` : value
-          }`;
-        })
-        .join(" AND ");
-      if (lessOrEqualThanClause) whereClauses.push(lessOrEqualThanClause);
-    }
-
-    if (like) {
-      const likeClause = Object.keys(like)
-        .filter((key) => like[key] !== undefined)
-        .map(
-          (key) =>
-            `${String(key)} LIKE ${
-              typeof like[key] === "string" ? `'%${like[key]}%'` : like[key]
-            }`
-        )
-        .join(" AND ");
-      if (likeClause) whereClauses.push(likeClause);
-    }
-
+    const whereClauses = this.buildWhereClauses(
+      tableAlias,
+      where,
+      whereIn,
+      greaterOrEqualThan,
+      lessOrEqualThan,
+      like
+    );
     const whereClause =
       whereClauses.length > 0 ? `WHERE ${whereClauses.join(" AND ")}` : "";
-    const joinClause = join
-      ? `JOIN \`${this.datasetId.split(".")[0]}.${join.table}\` ON ${join.on}`
-      : "";
-    const groupByClause = groupBy
-      ? `GROUP BY ${groupBy.map((col) => String(col)).join(", ")}`
-      : "";
-    const orderByClause = orderBy
-      ? `ORDER BY ${String(orderBy.column)} ${orderBy.direction}`
-      : "";
+    const joinClause = this.buildJoinClause(join);
+    const groupByClause = this.buildGroupByClause(tableAlias, groupBy);
+    const orderByClause = this.buildOrderByClause(tableAlias, orderBy);
     const limitClause = limit ? `LIMIT ${limit}` : "";
     const offsetClause = offset ? `OFFSET ${offset}` : "";
 
-    const query = `
-      SELECT ${distinctClause} ${selectColumns} FROM \`${this.datasetId}\`
+    let query = `
+      SELECT ${distinctClause} ${selectColumns} FROM \`${this.datasetId}\` AS ${tableAlias}
       ${joinClause}
       ${whereClause}
       ${groupByClause}
@@ -205,20 +159,203 @@ export class BigQueryMethods<T extends Record<string, any>> {
       ${offsetClause}
     `;
 
-    let rows = await this.runQuery(query);
-    const schema = await this.getTableSchema();
-    rows = this.convertRows(rows, schema);
-
     if (include) {
-      rows = await this.selectIncludes(options, rows);
+      query = this.buildQueryWithIncludes(
+        query,
+        tableAlias,
+        include,
+        distinctClause,
+        selectColumns,
+        whereClause,
+        groupByClause,
+        orderByClause,
+        limitClause,
+        offsetClause
+      );
     }
 
-    return rows;
+    return query;
   }
 
-  async update(props: UpdateProps<T>): Promise<{}> {
+  private buildSelectColumns(
+    tableAlias: string,
+    columns?: (keyof T)[]
+  ): string {
+    return columns
+      ? columns.map((col) => `${tableAlias}.${String(col)}`).join(", ")
+      : `*`;
+  }
+
+  private buildWhereClauses(
+    tableAlias: string,
+    where?: Partial<T>,
+    whereIn?: { [K in keyof T]?: any[] },
+    greaterOrEqualThan?: Partial<T>,
+    lessOrEqualThan?: Partial<T>,
+    like?: Partial<T>
+  ): string[] {
+    const whereClauses: string[] = [];
+
+    if (where) {
+      whereClauses.push(this.buildWhereClause(tableAlias, where));
+    }
+
+    if (whereIn) {
+      whereClauses.push(this.buildWhereInClause(tableAlias, whereIn));
+    }
+
+    if (greaterOrEqualThan) {
+      whereClauses.push(
+        this.buildComparisonClause(tableAlias, greaterOrEqualThan, ">=")
+      );
+    }
+
+    if (lessOrEqualThan) {
+      whereClauses.push(
+        this.buildComparisonClause(tableAlias, lessOrEqualThan, "<=")
+      );
+    }
+
+    if (like) {
+      whereClauses.push(this.buildLikeClause(tableAlias, like));
+    }
+
+    return whereClauses.filter((clause) => clause !== "");
+  }
+
+  private buildWhereClause(tableAlias: string, where: Partial<T>): string {
+    return Object.keys(where)
+      .filter((key) => where[key] !== undefined)
+      .map((key) => {
+        const value = where[key];
+        if (this.isDate(value)) {
+          return `${tableAlias}.${String(key)} = '${value.toISOString()}'`;
+        }
+        return `${tableAlias}.${String(key)} = ${
+          typeof value === "string" ? `'${value}'` : value
+        }`;
+      })
+      .join(" AND ");
+  }
+
+  private buildWhereInClause(
+    tableAlias: string,
+    whereIn: { [K in keyof T]?: any[] }
+  ): string {
+    return Object.keys(whereIn)
+      .filter((key) => whereIn[key] && whereIn[key]!.length > 0)
+      .map((key) => {
+        const values = whereIn[key]!.map((value) =>
+          typeof value === "string" ? `'${value}'` : value
+        ).join(", ");
+        return `${tableAlias}.${String(key)} IN (${values})`;
+      })
+      .join(" AND ");
+  }
+
+  private buildComparisonClause(
+    tableAlias: string,
+    comparison: Partial<T>,
+    operator: string
+  ): string {
+    return Object.keys(comparison)
+      .filter((key) => comparison[key] !== undefined)
+      .map((key) => {
+        const value = comparison[key];
+        if (this.isDate(value)) {
+          return `${tableAlias}.${String(
+            key
+          )} ${operator} '${value.toISOString()}'`;
+        }
+        return `${tableAlias}.${String(key)} ${operator} ${
+          typeof value === "string" ? `'${value}'` : value
+        }`;
+      })
+      .join(" AND ");
+  }
+
+  private buildLikeClause(tableAlias: string, like: Partial<T>): string {
+    return Object.keys(like)
+      .filter((key) => like[key] !== undefined)
+      .map(
+        (key) =>
+          `${tableAlias}.${String(key)} LIKE ${
+            typeof like[key] === "string" ? `'%${like[key]}%'` : like[key]
+          }`
+      )
+      .join(" AND ");
+  }
+
+  private buildJoinClause(join?: { table: string; on: string }): string {
+    return join
+      ? `JOIN \`${this.datasetId.split(".")[0]}.${join.table}\` ON ${join.on}`
+      : "";
+  }
+
+  private buildGroupByClause(
+    tableAlias: string,
+    groupBy?: (keyof T)[]
+  ): string {
+    return groupBy
+      ? `GROUP BY ${groupBy
+          .map((col) => `${tableAlias}.${String(col)}`)
+          .join(", ")}`
+      : "";
+  }
+
+  private buildOrderByClause(
+    tableAlias: string,
+    orderBy?: { column: keyof T; direction: "ASC" | "DESC" }
+  ): string {
+    return orderBy
+      ? `ORDER BY ${tableAlias}.${String(orderBy.column)} ${orderBy.direction}`
+      : "";
+  }
+
+  private buildQueryWithIncludes(
+    query: string,
+    tableAlias: string,
+    include: { [K in keyof T]?: IncludeOptions<T[K]> },
+    distinctClause: string,
+    selectColumns: string,
+    whereClause: string,
+    groupByClause: string,
+    orderByClause: string,
+    limitClause: string,
+    offsetClause: string
+  ): string {
+    const includeClauses = Object.entries(include).map(([alias, options]) => {
+      const { table, on } = options!.join;
+      return `LEFT JOIN \`${this.datasetId.split(".")[0]}.${table}\` AS ${
+        options!.join.table
+      } ON ${on}`;
+    });
+
+    return `
+      SELECT ${distinctClause} ${selectColumns} 
+      FROM \`${this.datasetId}\` AS ${tableAlias}
+      ${includeClauses.join(" ")}
+      ${whereClause}
+      ${groupByClause}
+      ${orderByClause}
+      ${limitClause}
+      ${offsetClause}
+    `;
+  }
+
+  private buildUpdateQuery(props: UpdateProps<T>): string {
     const { data, where } = props;
-    const setClause = Object.keys(data)
+    const setClause = this.buildSetClause(data);
+    const whereClause = this.buildWhereClause("", where);
+    return `
+      UPDATE \`${this.datasetId}\`
+      SET ${setClause}
+      WHERE ${whereClause}
+    `;
+  }
+
+  private buildSetClause(data: Partial<T>): string {
+    return Object.keys(data)
       .map(
         (key) =>
           `${key} = ${
@@ -226,164 +363,133 @@ export class BigQueryMethods<T extends Record<string, any>> {
           }`
       )
       .join(", ");
-    const whereClause = Object.keys(where)
-      .map(
-        (key) =>
-          `${key} = ${
-            typeof where[key] === "string" ? `'${where[key]}'` : where[key]
-          }`
-      )
-      .join(" AND ");
-    const query = `
-      UPDATE \`${this.datasetId}\`
-      SET ${setClause}
-      WHERE ${whereClause}
-    `;
-    return this.runQuery(query);
   }
 
-  async delete(where: Partial<T>): Promise<{}> {
-    const whereClause = Object.keys(where)
-      .map(
-        (key) =>
-          `${key} = ${
-            typeof where[key] === "string" ? `'${where[key]}'` : where[key]
-          }`
-      )
-      .join(" AND ");
-    const query = `
+  private buildDeleteQuery(where: Partial<T>): string {
+    const whereClause = this.buildWhereClause("", where);
+    return `
       DELETE FROM \`${this.datasetId}\`
       WHERE ${whereClause}
     `;
-    return this.runQuery(query);
   }
 
   private async getTableSchema(table?: string) {
-    const tableId = table || this.datasetId.split(".")[1];
-    const [metadata] = await this.bigquery
-      .dataset(this.datasetId.split(".")[0])
-      .table(tableId)
-      .getMetadata();
-    return metadata.schema.fields;
+    if (!table) table = this.datasetId.split(".")[1];
+    return BigqueryShemas.getSchema(table).fields;
   }
 
-  private convertRows(rows: any[], schema: any[]): T[] {
+  private async processQueryResults(
+    rows: any[],
+    include?: { [K in keyof T]?: IncludeOptions<T[K]> }
+  ): Promise<T[]> {
+    const mainSchema = await this.getTableSchema();
+    const includeSchemas: Record<string, any[]> = {};
+
+    console.log("mainSchema: ", mainSchema);
+
+    if (include) {
+      for (const [alias, options] of Object.entries(include)) {
+        const relatedSchema = await this.getTableSchema(options!.join.table);
+        includeSchemas[alias] = relatedSchema;
+      }
+    }
+
+    return this.convertRows(rows, mainSchema, includeSchemas);
+  }
+
+  private async convertRows(
+    rows: any[],
+    mainSchema: any[],
+    includeSchemas: Record<string, any[]> = {}
+  ): Promise<T[]> {
     return rows.map((row) => {
       const convertedRow = {} as T;
-      for (const field of schema) {
-        const fieldName = field.name;
-        const fieldType = field.type;
 
-        let value = row[fieldName];
+      this.convertMainColumns(convertedRow, row, mainSchema);
+      this.convertIncludedColumns(convertedRow, row, includeSchemas);
 
-        if (fieldType === "INTEGER") {
-          value = parseInt(value, 10);
-        } else if (
-          fieldType === "FLOAT" ||
-          fieldType === "NUMERIC" ||
-          fieldType === "BIGNUMERIC"
-        ) {
-          value = parseFloat(value);
-        } else if (
-          fieldType === "DATE" ||
-          fieldType === "TIMESTAMP" ||
-          fieldType === "DATETIME"
-        ) {
-          value = new Date(value.value); // Acessa o campo "value" do objeto de data retornado pelo BigQuery
-        }
-
-        convertedRow[fieldName as keyof T] = value;
-      }
       return convertedRow;
     });
   }
 
-  private async selectIncludes(
-    options: SelectOptions<T>,
-    primaryRows: T[]
-  ): Promise<T[]> {
-    if (!options.include) return primaryRows;
+  private convertMainColumns(
+    convertedRow: T,
+    row: any,
+    mainSchema: any[]
+  ): void {
+    for (const field of mainSchema) {
+      const fieldName = field.name;
+      const fieldType = field.type;
+      let value = row[fieldName];
 
-    for (const [key, includeOptions] of Object.entries(options.include)) {
-      if (!includeOptions) continue;
-
-      const includedRows = await this.runIncludeQuery(
-        includeOptions,
-        primaryRows
-      );
-
-      const foreignSchema = await this.getTableSchema(
-        includeOptions.join.table
-      );
-      const convertedIncludedRows = this.convertRows(
-        includedRows,
-        foreignSchema
-      );
-
-      const [primaryTable, primaryKey] = includeOptions.join.on
-        .split("=")[0]
-        .trim()
-        .split(".");
-      const [foreignTable, foreignKey] = includeOptions.join.on
-        .split("=")[1]
-        .trim()
-        .split(".");
-
-      if (!primaryKey || !foreignKey) {
-        throw new Error(
-          "A chave primária ou estrangeira não está definida corretamente."
-        );
-      }
-
-      if (includeOptions.relationType === "one-to-one") {
-        primaryRows = primaryRows.map((row) => {
-          const includedRow = convertedIncludedRows.find(
-            (includeRow) => includeRow[foreignKey] === row[primaryKey]
-          );
-          return {
-            ...row,
-            [key]: includedRow || null,
-          };
-        });
-      } else {
-        primaryRows = primaryRows.map((row) => ({
-          ...row,
-          [key]: convertedIncludedRows.filter(
-            (includeRow) => includeRow[foreignKey] === row[primaryKey]
-          ),
-        }));
-      }
+      value = this.convertValue(value, fieldType);
+      convertedRow[fieldName as keyof T] = value;
     }
-
-    return primaryRows;
   }
 
-  private async runIncludeQuery(
-    includeOptions: IncludeOptions<any>,
-    primaryRows: T[]
-  ) {
-    const { table, on } = includeOptions.join;
+  private convertIncludedColumns(
+    convertedRow: T,
+    row: any,
+    includeSchemas: Record<string, any[]>
+  ): void {
+    for (const [alias, schema] of Object.entries(includeSchemas)) {
+      const suffix = `_${Object.keys(includeSchemas).indexOf(alias) + 1}`;
+      const relatedData = this.extractRelatedData(row, suffix);
+      const convertedRelatedData = this.convertRelatedData(relatedData, schema);
 
-    const [primaryCondition, foreignCondition] = on.split("=");
+      convertedRow[alias as keyof T] = (
+        Object.keys(convertedRelatedData).length > 0
+          ? convertedRelatedData
+          : null
+      ) as T[keyof T];
+    }
+  }
 
-    const primaryColumn = primaryCondition.trim().split(".")[1];
-    const foreignColumn = foreignCondition.trim().split(".")[1];
+  private extractRelatedData(row: any, suffix: string): Record<string, any> {
+    return Object.entries(row)
+      .filter(([key]) => key.endsWith(suffix) || !key.includes("_"))
+      .reduce((acc, [key, value]) => {
+        const cleanKey = key.replace(suffix, "");
+        acc[cleanKey] = value;
+        return acc;
+      }, {} as Record<string, any>);
+  }
 
-    const ids = primaryRows.map((row) => row[primaryColumn]).filter(Boolean);
+  private convertRelatedData(
+    relatedData: Record<string, any>,
+    schema: any[]
+  ): Record<string, any> {
+    const convertedRelatedData = {} as Record<string, any>;
 
-    if (ids.length === 0) {
-      return [];
+    for (const field of schema) {
+      const fieldName = field.name;
+      const fieldType = field.type;
+      let value = relatedData[fieldName];
+
+      value = this.convertValue(value, fieldType);
+      convertedRelatedData[fieldName] = value;
     }
 
-    const fullTableName = `\`${this.datasetId.split(".")[0]}.${table}\``;
+    return convertedRelatedData;
+  }
 
-    const query = `
-  SELECT * FROM ${fullTableName} 
-  WHERE ${foreignColumn} IN (${ids.map((id) => `'${id}'`).join(", ")})
-  `;
-
-    const rows = await this.runQuery(query);
-    return rows;
+  private convertValue(value: any, fieldType: string): any {
+    if (fieldType === "INTEGER") {
+      return parseInt(value, 10);
+    } else if (
+      fieldType === "FLOAT" ||
+      fieldType === "NUMERIC" ||
+      fieldType === "BIGNUMERIC"
+    ) {
+      return parseFloat(value);
+    } else if (
+      fieldType === "DATE" ||
+      fieldType === "TIMESTAMP" ||
+      fieldType === "DATETIME"
+    ) {
+      return new Date(value.value);
+    }
+    return value;
   }
 
   private isDate(value: unknown): value is Date {

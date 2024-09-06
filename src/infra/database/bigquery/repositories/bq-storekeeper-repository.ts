@@ -44,7 +44,7 @@ export class BqStorekeeperRepository implements StorekeeperRepository {
       where: { id: storekeeperId },
       include: {
         base: {
-          join: { table: "base", on: "user.baseId = base.id" },
+          join: { table: "base", on: "users.baseId = base.id" },
           relationType: "one-to-one",
         },
       },
@@ -114,7 +114,7 @@ export class BqStorekeeperRepository implements StorekeeperRepository {
       orderBy: { column: "cpf", direction: "ASC" },
       include: {
         base: {
-          join: { table: "base", on: "user.baseId = base.id" },
+          join: { table: "base", on: "users.baseId = base.id" },
           relationType: "one-to-one",
         },
       },
