@@ -1,6 +1,6 @@
 # Query Builder para Bigquery
 
-Para este projeto foi escolhido o Bigquery como banco de dados pela segurança de armazenamento dos dados e facilidade de criar uma aplicação escalonável com o Cloud Run da Google Cloud.
+Para este projeto foi escolhido o Bigquery como banco de dados pela segurança de armazenamento dos dados e facilidade de criar uma aplicação escalonável com o Cloud Run da Google Cloud. Para isso, é utilizado API do Bigquery para fazer essa comunicação.
 
 ## Funcionalidades Principais
 
