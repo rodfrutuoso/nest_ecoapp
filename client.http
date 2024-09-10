@@ -7,13 +7,12 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-    "name": "rodrigiodoadad",
-    "email": "rodrigo6@ecoeletrica.com.br",
-    "cpf": "12131313131",
+    "name": "Rodrio Frutuoso dos Santos",
+    "email": "rodrigo@ecoeletrica.com.br",
+    "cpf": "05921427527",
     "type": "Administrador",
     "baseId": "8f86a93d-7217-4390-8263-0969fe091d18",
-    "contractId": "a100663c-5a6d-4198-ad7b-1062afa0c4f4",
-    "password": "testeteste"
+    "password": "91916407"
 }
 
 ###
@@ -23,8 +22,8 @@ POST {{baseURL}}/sessions
 Content-Type: application/json
 
 {
-    "email": "rodrigo1@ecoeletrica.com.br",
-    "password": "123456" 
+    "email": "rodrigo@ecoeletrica.com.br",
+    "password": "ECO@2012" 
 }
 
 ###
