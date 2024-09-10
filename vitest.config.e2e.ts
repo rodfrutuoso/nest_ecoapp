@@ -10,11 +10,6 @@ export default defineConfig({
     setupFiles: ["./test/setup-e2e.ts"],
     testTimeout: 60000,
     hookTimeout: 60000,
-    // poolOptions: {
-    //   threads: {
-    //     singleThread: true,
-    //   },
-    // },
   },
   plugins: [
     tsConfigParh(),
