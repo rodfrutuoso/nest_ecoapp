@@ -38,6 +38,10 @@ BIGQUERY_CLIENT_EMAIL=seu_client_email
 Para iniciar a aplicação em modo de desenvolvimento:
 npm run start:dev ou
 yarn start:dev
+
+## Documentação das rotas via Swagger
+Para visualizar a documentação do swagger basta acessar o endereço que essa aplicação estiver funcionando e acessar a rota `/api` no seu navegador. Se a aplicação for iniciada sem modificações, acesse [localhost:3333/api](http://localhost:3333/api).
+
 ## Estrutura de Pastas do Projeto
 ```Principais arquivos e pastas```
 ```plaintext

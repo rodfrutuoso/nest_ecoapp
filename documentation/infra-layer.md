@@ -106,3 +106,86 @@ export class MovimentationWithDetailsPresenter {
   }
 }
 ```
+
+### [Swagger: DTO's and Response Decorators](../src/infra/http/swagger%20dto%20and%20decorators)
+
+Essa sessão do código instrui a ferramenta do _Swagger_ em como deverão ser os dados enviados para essa API e exemplos de respostas que ela pode enviar.
+
+A disposição dos arquivos está feita da mesma maneira que os casos de uso da camada de domínio e dos controladores. Dentro de cada pasta de conjunto (users, contract-base etc) há duas pastas. Uma contendo os DTO's e outra contendo os _decorators_ da resposta.
+
+#### DTO's
+
+Essas classes, além de serem utilizadas para fazer a validação dos dados que são enviados para os controladores, elas contém os tipos, descrição e exemplos para cada parâmetro do recebimento das rotas.
+
+Para configurar esse DTO basta injetar ele em um módulo e usar o _decorator_ `@ApiProperty` como no exemplo abaixo
+
+```typescript
+@Injectable()
+export class AuthenticateBodyDto {
+  @ApiProperty({
+    description: "Email of the user",
+    example: "colaborador@ecoeletrica.com.br",
+  })
+  email!: string;
+
+  @ApiProperty({
+    description: "Password of the user",
+    example: "password123",
+  })
+  password!: string;
+}
+```
+
+#### Response Decorators
+
+Nesses arquivos, foi criado um _decorator_ para cada rota da aplicação com o `applyDecorators` para que pudéssemos utilizar os diversos exemplos de tipos de resposta da API sem poluir os arquivos dos controladores. Através desse método, Utilizamos os _decorators_ do _Swagger_ `@ApiResponse` para cada tipo de resposta diferente que possa ter. Segue o exemplo abaixo:
+
+```typescript
+export const AuthenticateDecorator = () => {
+  return applyDecorators(
+    ApiResponse({
+      status: 201,
+      description: "Account authenticated successfully",
+      schema: {
+        example: {
+          access_token:
+            "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MjdhODQyYi1lZWVlLTQyZjItYjhhYS05YTlmYmRlZTBiODMiLCJ0eXBlIjoiQWRtaW5pc3RyYXRvciIsImJhc2VJZCI6ImRiZTgyNzEwLWU1ZTgtNDQ5YS1iYTQ5LTQ3MWIzNTZmODA4ZCIsImlhdCI6MTcyNTQ3NjM2NH0.Up0q-gBW5ai7u01D7dFeB0zy1T0zm9ffqethtRuMwq1g2bVxB_XTqrzJRzVT9Z5m2rPW17Ysu408oCsG5Zg8ddFjwtIBhqhu_FL1eQjGqmAh6KVG4mPVXwd-ydAygpXLwYgjFrG_HVxnGTqlfcwvKenCq5euGa_Kk8dVAUCOy_TmPCGrWLXeG8mpQiU00XDMMrLLL7ozJNovCbRbwE1YjaShsRZuq4ZTx-fy5b5kiWw6Omh5iFKihYxAsA6d7I9KShXPA_hp4SRxRiM2qh2ms2adj2du5bZQ9ajjmsxSBH5Qj4-_hzF0qSpK7wqnbQ3nkOrfyPUGTyRhf7eaSrka_A",
+        },
+      },
+    }),
+    ApiResponse({
+      status: 401,
+      description: "Unauthorized Exception",
+      schema: {
+        example: {
+          message: "As credenciais não são válidas",
+          error: "Unauthorized",
+          statusCode: 401,
+        },
+      },
+    }),
+    ApiResponse({
+      status: 404,
+      description: "Not Found Exception",
+      schema: {
+        example: {
+          message: "Recurso não encontrado",
+          error: "Not Found",
+          statusCode: 404,
+        },
+      },
+    }),
+    ApiResponse({
+      status: 400,
+      description: "Bad request",
+      schema: {
+        example: {
+          statusCode: 400,
+          message: "Invalid query parameters",
+          error: "Bad Request",
+        },
+      },
+    })
+  );
+};
+```
