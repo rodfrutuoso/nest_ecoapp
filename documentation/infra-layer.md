@@ -4,16 +4,16 @@ Essa é a camada mais externa da aplicação. Responsável por gerir as requisi�
 
 Para fazer essa gestão há módulos de autenticação, criptografia, banco de dados e http.
 
-- O de autenticação configura a geração, criptografia e inserção de dados no _cccess token_.
+- O de autenticação configura a geração, criptografia e inserção de dados no _access token_.
 - O módulo de criptografia faz o relacionamento dos casos de uso com as ferramentas utilizadas para codificar e encriptar os dados.
 - O módulo do banco de dados é responsável por implementar e configurar os contratos de repositório da camada de uso. Além disso, faz a transformação dos dados entre a camada de domínio e o banco de dados. Há uma sessão só para tratar de suas especificidades.
-- O módulo de http faz a gestão das requisições que chegam à aplicação através dos controladores, pipes e apresentadores. Também haverá uma sessãoa baixo para esse módulo.
+- O módulo de http faz a gestão das requisições que chegam à aplicação através dos controladores, pipes e apresentadores. Também haverá uma sessão abaixo para esse módulo.
 
 Além desses módulos, há nessa pasta os dois arquivos mais importantes dessa aplicação. O [main](../src/infra/main.ts), que configura o recebimento de requisições ao ouvir uma porta e aponta para o [app.module](../src/infra/app.module.ts) para que ele direcione as requisições para os controladores responsáveis.
 
 ## Módulos
 
-No Nestjs, os módulos organizam quais arquivos devem ser utilizados e suas dependências. Sendo importantes na agregação dos componentes da aplicação. Abaixo serão listados todos os módulos da dessa aplicação e o que fazem.
+No Nestjs, os módulos organizam quais arquivos devem ser utilizados e suas dependências. Sendo importantes na agregação dos componentes da aplicação. Abaixo serão listados todos os módulos dessa aplicação e o que fazem.
 
 | Módulo                                                                        | Descrição                                                                             | Módulos Importados                             |
 | :---------------------------------------------------------------------------- | :------------------------------------------------------------------------------------ | :--------------------------------------------- |
@@ -35,9 +35,9 @@ A camada do banco de dados está dividida em três seguimentos (esquemas, reposi
 
 ### [Schemas](../src/infra/database/bigquery/schemas/)
 
-Essa parte do projeto possui os esquemas de todas as tabelas do banco de dados. Além disso, o [BigqueryShemas](../src/infra/database/bigquery/schemas/bigquery%20schemas/bigquerySchemas.ts) contém todas os esquemas no padrão aceito pela API do Bigquery para que o BigqueryMethods não precise enviar uma requisição a mais a se precisar verificar o esquema de uma tabela.
+Essa parte do projeto possui os esquemas de todas as tabelas do banco de dados. Além disso, o [BigqueryShemas](../src/infra/database/bigquery/schemas/bigquery%20schemas/bigquerySchemas.ts) contém todas os esquemas no padrão aceito pela API do Bigquery para que o BigqueryMethods não precise enviar uma requisição a mais se precisar verificar o esquema de uma tabela.
 
-Esses Esquemas estendem o BigqueryMethods para utilizar seus métodos para essa tabela e enviam também o nome da tabela no bancod de dados. Além de trazer já os relacionamentos na própria interface. Porém, ao utilizar uma consulta também aparecem, o que deve ser modificado no futuro.
+Esses Esquemas estendem o BigqueryMethods para utilizar seus métodos para essa tabela e enviam também o nome da tabela no banco de dados. Além de trazer já os relacionamentos na própria interface. Porém, ao utilizar uma consulta também aparecem, o que deve ser modificado no futuro.
 
 ### [Repositories](../src/infra/database/bigquery/repositories/)
 
@@ -115,7 +115,7 @@ A disposição dos arquivos está feita da mesma maneira que os casos de uso da 
 
 #### DTO's
 
-Essas classes, além de serem utilizadas para fazer a validação dos dados que são enviados para os controladores, elas contém os tipos, descrição e exemplos para cada parâmetro do recebimento das rotas.
+As classes DTO (_Data Transformation Object_), além de serem utilizadas para fazer a validação dos dados que são enviados para os controladores, elas contém os tipos, descrição e exemplos para cada parâmetro do recebimento das rotas.
 
 Para configurar esse DTO basta injetar ele em um módulo e usar o _decorator_ `@ApiProperty` como no exemplo abaixo
 

@@ -18,7 +18,7 @@ const createAccountBodyDto = z.object({
   name: z.string(),
   email: z.string().email(),
   password: z.string().min(6),
-  cpf: z.string().regex(/^\d{11,}$/, "O CPF precisa ter 11 dígitos"),
+  cpf: z.string().regex(/^\d{11,}$/, "O CPF precisa ter 11 dígitos numéricos"),
   type: z.string(),
   baseId: z.string().uuid(),
   contractId: z.string().uuid().optional(),
