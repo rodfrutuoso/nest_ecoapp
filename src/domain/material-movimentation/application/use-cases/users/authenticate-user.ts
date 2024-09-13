@@ -47,8 +47,8 @@ export class AuthenticateUserUseCase {
     const accessToken = await this.encrypter.encrypter({
       sub: user.id.toString(),
       type: user.type,
-      ...(user instanceof Storekeeper ? { baseId: user.baseId.toString() } : {}),
-      ...(user instanceof Estimator ? { contractId: user.contractId.toString() } : {}),
+      baseId: user.baseId.toString(),
+      contractId: user.contractId.toString(),
     });
 
     return right({ accessToken });

@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { BigQueryMethods } from "bigquery/bigqueryMethods";
 import { BqBaseProps } from "./base";
-import { UserType } from "src/core/types/user-type";
 
 const tableId = "user";
 

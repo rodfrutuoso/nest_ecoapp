@@ -1,5 +1,6 @@
 import { UserType } from "src/core/types/user-type";
 import { Entity } from "../../../../core/entities/entity";
+import { UniqueEntityID } from "src/core/entities/unique-entity-id";
 
 export interface UserProps {
   name: string;
@@ -8,6 +9,8 @@ export interface UserProps {
   status: string;
   type: UserType;
   password: string;
+  baseId: UniqueEntityID;
+  contractId: UniqueEntityID;
 }
 
 export class User<Props extends UserProps> extends Entity<Props> {
@@ -45,5 +48,21 @@ export class User<Props extends UserProps> extends Entity<Props> {
 
   set type(type: UserType) {
     this.props.type = type;
+  }
+
+  get baseId() {
+    return this.props.baseId;
+  }
+
+  set baseId(baseId: UniqueEntityID) {
+    this.props.baseId = baseId;
+  }
+
+  get contractId() {
+    return this.props.contractId;
+  }
+
+  set contractId(contractId: UniqueEntityID) {
+    this.props.contractId = contractId;
   }
 }
