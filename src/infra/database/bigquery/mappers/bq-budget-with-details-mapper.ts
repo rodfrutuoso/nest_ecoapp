@@ -63,9 +63,7 @@ export class BqBudgetWithDetailsMapper {
     });
   }
 
-  private static isUserType(type: string): type is UserType {
-    return ["Administrador", "Orçamentista", "Almoxarife"].includes(
-      type as UserType
-    );
+  private static isUserType(type: string): type is "Orçamentista" {
+    return ["Orçamentista"].includes(type as UserType);
   }
 }

@@ -10,7 +10,10 @@ import { UserType } from "src/core/types/user-type";
 export class BqMovimentationWithDetailsMapper {
   static toDomin(raw: BqMovimentationProps): MovimentationWithDetails {
     let userType: UserType = "Almoxarife";
-    if (raw.user?.type && BqMovimentationWithDetailsMapper.isUserType(raw.user.type)) {
+    if (
+      raw.user?.type &&
+      BqMovimentationWithDetailsMapper.isUserType(raw.user.type)
+    ) {
       userType = raw.user.type;
     }
     return MovimentationWithDetails.create({
@@ -65,9 +68,9 @@ export class BqMovimentationWithDetailsMapper {
     });
   }
 
-  private static isUserType(type: string): type is UserType {
-    return ["Administrador", "Orçamentista", "Almoxarife"].includes(
-      type as UserType
-    );
+  private static isUserType(
+    type: string
+  ): type is "Administrador" | "Almoxarife" {
+    return ["Administrador", "Almoxarife"].includes(type as UserType);
   }
 }

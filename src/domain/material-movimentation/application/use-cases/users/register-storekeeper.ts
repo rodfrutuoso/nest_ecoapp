@@ -78,9 +78,7 @@ export class RegisterStorekeeperUseCase {
     return right({ storekeeper });
   }
 
-  private isUserType(type: string): type is UserType {
-    return ["Administrador", "Orçamentista", "Almoxarife"].includes(
-      type as UserType
-    );
+  private isUserType(type: string): type is "Administrador" | "Almoxarife" {
+    return ["Administrador", "Almoxarife"].includes(type as UserType);
   }
 }

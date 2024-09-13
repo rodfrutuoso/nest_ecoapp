@@ -70,9 +70,9 @@ export class BqUserMapper {
     }
   }
 
-  private static isUserType(type: string): type is UserType {
-    return ["Administrador", "Orçamentista", "Almoxarife"].includes(
-      type as UserType
-    );
+  private static isUserType(
+    type: string
+  ): type is "Administrador" | "Almoxarife" {
+    return ["Administrador", "Almoxarife"].includes(type as UserType);
   }
 }
