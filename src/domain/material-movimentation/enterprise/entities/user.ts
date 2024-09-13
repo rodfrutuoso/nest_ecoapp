@@ -1,3 +1,4 @@
+import { UserType } from "src/core/types/user-type";
 import { Entity } from "../../../../core/entities/entity";
 
 export interface UserProps {
@@ -5,7 +6,7 @@ export interface UserProps {
   email: string;
   cpf: string;
   status: string;
-  type: string;
+  type: UserType;
   password: string;
 }
 
@@ -42,7 +43,7 @@ export class User<Props extends UserProps> extends Entity<Props> {
     this.props.password = password;
   }
 
-  set type(type: string) {
+  set type(type: UserType) {
     this.props.type = type;
   }
 }

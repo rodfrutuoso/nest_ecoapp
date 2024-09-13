@@ -5,9 +5,14 @@ import { Material } from "src/domain/material-movimentation/enterprise/entities/
 import { Project } from "src/domain/material-movimentation/enterprise/entities/project";
 import { Estimator } from "src/domain/material-movimentation/enterprise/entities/estimator";
 import { Contract } from "src/domain/material-movimentation/enterprise/entities/contract";
- 
+import { UserType } from "src/core/types/user-type";
+
 export class BqBudgetWithDetailsMapper {
   static toDomin(raw: BqBudgetProps): BudgetWithDetails {
+    let userType: UserType = "Orçamentista";
+    if (raw.user?.type && BqBudgetWithDetailsMapper.isUserType(raw.user.type)) {
+      userType = raw.user.type;
+    }
     return BudgetWithDetails.create({
       budgetId: new UniqueEntityID(raw.id),
       value: raw.value,
@@ -27,11 +32,14 @@ export class BqBudgetWithDetailsMapper {
           contractId: new UniqueEntityID(
             raw.user?.contractId == null ? undefined : raw.user?.contractId
           ),
+          baseId: new UniqueEntityID(
+            raw.user?.baseId == null ? undefined : raw.user?.baseId
+          ),
           cpf: raw.user?.cpf ?? "",
           email: raw.user?.email ?? "",
           name: raw.user?.name ?? "",
           password: raw.user?.password ?? "",
-          type: raw.user?.type ?? "",
+          type: userType,
           status: raw.user?.status ?? "",
         },
         new UniqueEntityID(raw.user?.id)
@@ -53,5 +61,11 @@ export class BqBudgetWithDetailsMapper {
         new UniqueEntityID(raw.contract?.id)
       ),
     });
+  }
+
+  private static isUserType(type: string): type is UserType {
+    return ["Administrador", "Orçamentista", "Almoxarife"].includes(
+      type as UserType
+    );
   }
 }

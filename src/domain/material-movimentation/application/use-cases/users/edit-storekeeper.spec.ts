@@ -36,7 +36,7 @@ describe("Edit Storekeeper", () => {
     await inMemoryBaseRepository.create(base);
 
     const storekeeper = makeStorekeeper();
-    const author = makeStorekeeper({ type: "Administrator" });
+    const author = makeStorekeeper({ type: "Administrador" });
 
     await inMemoryStorekeeperRepository.create(author);
     await inMemoryStorekeeperRepository.create(storekeeper);

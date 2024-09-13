@@ -7,6 +7,8 @@ import { StorekeeperRepository } from "../../repositories/storekeeper-repository
 import { ResourceAlreadyRegisteredError } from "../errors/resource-already-registered-error";
 import { BaseRepository } from "../../repositories/base-repository";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
+import { UserType } from "src/core/types/user-type";
+import { WrongTypeError } from "../errors/wrong-type";
 
 interface RegisterStorekeeperUseCaseRequest {
   name: string;
@@ -54,17 +56,31 @@ export class RegisterStorekeeperUseCase {
         )
       );
 
+    if (!this.isUserType(type))
+      return left(
+        new WrongTypeError(
+          "o 'type' informado precisa ser 'Administrador' ou 'Orçamentista' ou 'Almoxarife'"
+        )
+      );
+
     const storekeeper = Storekeeper.create({
       name,
       email,
       cpf,
       type,
       baseId: new UniqueEntityID(baseId),
+      contractId: base.contractId,
       password: await this.hashGenerator.hash(password),
     });
 
     await this.storekeeperRepository.create(storekeeper);
 
     return right({ storekeeper });
+  }
+
+  private isUserType(type: string): type is UserType {
+    return ["Administrador", "Orçamentista", "Almoxarife"].includes(
+      type as UserType
+    );
   }
 }

@@ -11,10 +11,11 @@ type BqUserWithBaseContract = BqUserProps & {
 
 export class BqUserWithBaseContractMapper {
   static toDomin(raw: BqUserWithBaseContract): StorekeeperWithBase | Estimator {
-    if (raw.contractId && !raw.baseId) {
+    if (raw.type === "Orçamentista") {
       return Estimator.create(
         {
           contractId: new UniqueEntityID(raw.contractId),
+          baseId: new UniqueEntityID(raw.baseId),
           cpf: raw.cpf,
           email: raw.email,
           name: raw.name,
@@ -41,41 +42,6 @@ export class BqUserWithBaseContractMapper {
         status: raw.status,
         storekeeperId: new UniqueEntityID(raw.id),
       });
-    }
-  }
-
-  static toBigquery(
-    storekeeperOrEstimator: StorekeeperWithBase | Estimator
-  ): BqUserWithBaseContract {
-    if (storekeeperOrEstimator instanceof StorekeeperWithBase)
-      return {
-        id: storekeeperOrEstimator.storekeeperId.toString(),
-        cpf: storekeeperOrEstimator.cpf,
-        email: storekeeperOrEstimator.email,
-        name: storekeeperOrEstimator.name,
-        password: storekeeperOrEstimator.password,
-        status: storekeeperOrEstimator.status,
-        type: storekeeperOrEstimator.type,
-        base: {
-          id: storekeeperOrEstimator.base.id.toString(),
-          baseName: storekeeperOrEstimator.base.baseName,
-          contractId: storekeeperOrEstimator.base.contractId.toString(),
-        },
-      };
-
-    if (storekeeperOrEstimator instanceof Estimator) {
-      return {
-        id: storekeeperOrEstimator.id.toString(),
-        cpf: storekeeperOrEstimator.cpf,
-        email: storekeeperOrEstimator.email,
-        name: storekeeperOrEstimator.name,
-        password: storekeeperOrEstimator.password,
-        status: storekeeperOrEstimator.status,
-        type: storekeeperOrEstimator.type,
-        contractId: storekeeperOrEstimator.contractId.toString(),
-      };
-    } else {
-      throw new Error();
     }
   }
 }

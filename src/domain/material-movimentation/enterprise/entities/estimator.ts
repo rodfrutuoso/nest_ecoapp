@@ -4,6 +4,7 @@ import { User, UserProps } from "./user";
 
 export interface EstimatorProps extends UserProps {
   contractId: UniqueEntityID;
+  baseId: UniqueEntityID;
 }
 
 export class Estimator extends User<EstimatorProps> {
@@ -13,6 +14,14 @@ export class Estimator extends User<EstimatorProps> {
 
   set contractId(contractId: UniqueEntityID) {
     this.props.contractId = contractId;
+  }
+
+  get baseId() {
+    return this.props.baseId;
+  }
+
+  set baseId(baseId: UniqueEntityID) {
+    this.props.baseId = baseId;
   }
 
   static create(

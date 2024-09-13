@@ -5,9 +5,14 @@ import { Material } from "src/domain/material-movimentation/enterprise/entities/
 import { Project } from "src/domain/material-movimentation/enterprise/entities/project";
 import { Storekeeper } from "src/domain/material-movimentation/enterprise/entities/storekeeper";
 import { Base } from "src/domain/material-movimentation/enterprise/entities/base";
+import { UserType } from "src/core/types/user-type";
 
 export class BqMovimentationWithDetailsMapper {
   static toDomin(raw: BqMovimentationProps): MovimentationWithDetails {
+    let userType: UserType = "Almoxarife";
+    if (raw.user?.type && BqMovimentationWithDetailsMapper.isUserType(raw.user.type)) {
+      userType = raw.user.type;
+    }
     return MovimentationWithDetails.create({
       movimentationId: new UniqueEntityID(raw.id),
       value: raw.value,
@@ -32,8 +37,11 @@ export class BqMovimentationWithDetailsMapper {
           email: raw.user?.email ?? "",
           name: raw.user?.name ?? "",
           password: raw.user?.password ?? "",
-          type: raw.user?.type ?? "",
+          type: userType,
           status: raw.user?.status ?? "",
+          contractId: new UniqueEntityID(
+            raw.user?.contractId == null ? undefined : raw.user?.contractId
+          ),
         },
         new UniqueEntityID(raw.user?.id)
       ),
@@ -55,5 +63,11 @@ export class BqMovimentationWithDetailsMapper {
         new UniqueEntityID(raw.base?.id)
       ),
     });
+  }
+
+  private static isUserType(type: string): type is UserType {
+    return ["Administrador", "Orçamentista", "Almoxarife"].includes(
+      type as UserType
+    );
   }
 }

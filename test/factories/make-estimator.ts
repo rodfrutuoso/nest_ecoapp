@@ -7,6 +7,7 @@ import {
 import { faker } from "@faker-js/faker";
 import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { BqUserMapper } from "src/infra/database/bigquery/mappers/bq-user-mapper";
+import { UserType } from "src/core/types/user-type";
 
 export function makeEstimator(
   override: Partial<EstimatorProps> = {},
@@ -17,9 +18,10 @@ export function makeEstimator(
       name: faker.person.firstName(),
       cpf: faker.number.int({ min: 100000000, max: 10000000000 }).toString(),
       contractId: new UniqueEntityID(),
+      baseId: new UniqueEntityID(),
       email: faker.internet.email({ provider: "ecoeletrica.com.br" }),
       status: faker.helpers.arrayElement(status),
-      type: faker.helpers.arrayElement(types),
+      type: faker.helpers.arrayElement(types) as UserType,
       password: faker.internet.password(),
       ...override,
     },
@@ -44,5 +46,5 @@ export class EstimatorFactory {
   }
 }
 
-const status = ["active", "inactive"];
-const types = ["Administrador", "Almoxarife"];
+const status = ["ativo", "inativo"];
+const types = ["Administrador", "Orçamentista"];

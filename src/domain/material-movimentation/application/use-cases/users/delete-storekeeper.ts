@@ -26,7 +26,7 @@ export class DeleteStorekeeperUseCase {
 
     if (!author) return left(new ResourceNotFoundError()); //throw new Error("usuário não encontrado");
 
-    if (author.type != "Administrator") return left(new NotAllowedError());
+    if (author.type != "Administrador") return left(new NotAllowedError());
 
     const storekeeper = await this.storekeeperRepository.findById(
       storekeeperId

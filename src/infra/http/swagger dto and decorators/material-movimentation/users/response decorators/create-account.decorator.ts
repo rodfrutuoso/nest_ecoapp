@@ -42,6 +42,18 @@ export const CreateAccountDecorator = () => {
           error: "Bad Request",
         },
       },
+    }),
+    ApiResponse({
+      status: 422,
+      description: "Unprocessable Entity",
+      schema: {
+        example: {
+          message:
+            "o 'type' informado precisa ser 'Administrador' ou 'Orçamentista' ou 'Almoxarife'",
+          error: "Unprocessable Entity",
+          statusCode: 422,
+        },
+      },
     })
   );
 };

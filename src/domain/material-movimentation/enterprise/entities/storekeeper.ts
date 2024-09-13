@@ -4,6 +4,7 @@ import { User, UserProps } from "./user";
 
 export interface StorekeeperProps extends UserProps {
   baseId: UniqueEntityID;
+  contractId: UniqueEntityID;
 }
 
 export class Storekeeper extends User<StorekeeperProps> {
@@ -13,6 +14,14 @@ export class Storekeeper extends User<StorekeeperProps> {
 
   set baseId(baseId: UniqueEntityID) {
     this.props.baseId = baseId;
+  }
+
+  get contractId() {
+    return this.props.contractId;
+  }
+
+  set contractId(contractId: UniqueEntityID) {
+    this.props.contractId = contractId;
   }
 
   static create(

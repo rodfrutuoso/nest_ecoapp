@@ -8,6 +8,7 @@ import { InMemoryContractRepository } from "test/repositories/in-memory-contract
 import { makeBase } from "test/factories/make-base";
 import { makeStorekeeper } from "test/factories/make-storekeeper";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
+import { WrongTypeError } from "../errors/wrong-type";
 
 let inMemoryStorekeeperRepository: InMemoryStorekeeperRepository;
 let inMemoryContractRepository: InMemoryContractRepository;
@@ -40,7 +41,7 @@ describe("Create storekeeper", () => {
       name: "Rodrigo",
       email: "rodrigo@ecoeletrica.com.br",
       cpf: "12345678901",
-      type: "administrador",
+      type: "Administrador",
       baseId: base.id.toString(),
       password: "123456",
     });
@@ -69,7 +70,7 @@ describe("Create storekeeper", () => {
       name: "Rodrigo",
       email: "rodrigo@ecoeletrica.com.br",
       cpf: "12345678901",
-      type: "administrador",
+      type: "Administrador",
       baseId: base.id.toString(),
       password: "123456",
     });
@@ -78,7 +79,7 @@ describe("Create storekeeper", () => {
     expect(result.value).toBeInstanceOf(ResourceAlreadyRegisteredError);
   });
 
-  it("Sould not be able to register a storekeeper baseId does not exist", async () => {
+  it("Sould not be able to register a storekeeper if baseId does not exist", async () => {
     const result = await sut.execute({
       name: "Rodrigo",
       email: "rodrigo@ecoeletrica.com.br",
@@ -90,5 +91,22 @@ describe("Create storekeeper", () => {
 
     expect(result.isLeft()).toBeTruthy();
     expect(result.value).toBeInstanceOf(ResourceNotFoundError);
+  });
+
+  it("Sould not be able to register a storekeeper if type is not valid", async () => {
+    const base = makeBase();
+    await inMemoryBaseRepository.create(base);
+
+    const result = await sut.execute({
+      name: "Rodrigo",
+      email: "rodrigo@ecoeletrica.com.br",
+      cpf: "12345678901",
+      type: "Assistente",
+      baseId: base.id.toString(),
+      password: "123456",
+    });
+
+    expect(result.isLeft()).toBeTruthy();
+    expect(result.value).toBeInstanceOf(WrongTypeError);
   });
 });

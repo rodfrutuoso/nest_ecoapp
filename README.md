@@ -92,7 +92,7 @@ Para executar os testes:
 - [Query Builder do Bigquery](/documentation/bigquery-query-builder.md)
 - [Camada de Domínio](/documentation/domain-layer.md)
 - [Camada de Infraestrutura](/documentation/infra-layer.md)
-- [Testes Automatizados]()
+- [Testes Automatizados](/documentation/automated-tests.md)
 
 
 ## Contato

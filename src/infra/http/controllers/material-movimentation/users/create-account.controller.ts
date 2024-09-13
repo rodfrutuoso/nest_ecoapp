@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   NotFoundException,
+  UnprocessableEntityException,
   UsePipes,
 } from "@nestjs/common";
 import { Body, Controller, HttpCode, Post } from "@nestjs/common";
@@ -13,6 +14,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { CreateAccountDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/users/response decorators/create-account.decorator";
 import { CreateAccountBodyDto } from "src/infra/http/swagger dto and decorators/material-movimentation/users/dto classes/create-account.dto";
+import { WrongTypeError } from "src/domain/material-movimentation/application/use-cases/errors/wrong-type";
 
 const createAccountBodyDto = z.object({
   name: z.string(),
@@ -53,6 +55,8 @@ export class CreateAccountController {
           throw new ConflictException(error.message);
         case ResourceNotFoundError:
           throw new NotFoundException(error.message);
+        case WrongTypeError:
+          throw new UnprocessableEntityException(error.message);
         default:
           throw new BadRequestException();
       }

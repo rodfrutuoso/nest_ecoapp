@@ -7,6 +7,8 @@
 - ajust user fetch [x]
 - put controller classes on another archive 
 - refact storekeeper and estimator use cases to include mother class user and auth by it
+- create filter by code in fetch materials
+- in fecth materials extrect contractId by the accessToken
 
 
 # Order
@@ -16,3 +18,13 @@
 
 # Test 1 file
 - pnpm vitest run .\src\infra\http\controllers\get-account-by-id.controller.e2e-spec.ts --config ./vitest.config.e2e.ts 
+
+
+# Casos de uso para orçamento
+- o orçamentista irá inserir dados dos orçamentos das obras
+- o orçamento inserido será verificado se há itens repetidos no banco de dados
+- é preciso poderem corrigir os orçamentos e registrar essa modificação
+- é preciso poder consultar projetos em massa
+- os dados consultados em massa precisam sinalizar quais obras foram encontradas ou não
+- esses dados consultados tem que ser extraídos por EXCEL
+- o orçamentista irá excluir orçamentos do banco de dados

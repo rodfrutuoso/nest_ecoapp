@@ -25,7 +25,7 @@ describe("Delete Storekeeper", () => {
 
   it("sould be able to delete a storekeeper", async () => {
     const storekeeper = makeStorekeeper();
-    const author = makeStorekeeper({ type: "Administrator" });
+    const author = makeStorekeeper({ type: "Administrador" });
 
     await inMemoryStorekeeperRepository.create(author);
     await inMemoryStorekeeperRepository.create(storekeeper);

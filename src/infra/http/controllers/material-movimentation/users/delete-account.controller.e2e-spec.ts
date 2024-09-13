@@ -30,7 +30,7 @@ describe("Delete Account (E2E)", () => {
 
   test("[DELETE] /accounts:id", async () => {
     const user = await storekeeperFactory.makeBqStorekeeper({
-      type: "Administrator",
+      type: "Administrador",
     });
     const userToDelete = await storekeeperFactory.makeBqStorekeeper({
       name: "Joao Excluido",

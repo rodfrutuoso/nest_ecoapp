@@ -2,13 +2,15 @@ import { Storekeeper } from "src/domain/material-movimentation/enterprise/entiti
 import { Estimator } from "src/domain/material-movimentation/enterprise/entities/estimator";
 import { UniqueEntityID } from "src/core/entities/unique-entity-id";
 import { BqUserProps } from "../schemas/user";
+import { UserType } from "src/core/types/user-type";
 
 export class BqUserMapper {
   static toDomin(raw: BqUserProps): Storekeeper | Estimator {
-    if (raw.contractId && !raw.baseId) {
+    if (raw.type === "Orçamentista") {
       return Estimator.create(
         {
           contractId: new UniqueEntityID(raw.contractId),
+          baseId: new UniqueEntityID(raw.baseId),
           cpf: raw.cpf,
           email: raw.email,
           name: raw.name,
@@ -21,14 +23,13 @@ export class BqUserMapper {
     } else {
       return Storekeeper.create(
         {
-          baseId: new UniqueEntityID(
-            raw.baseId == null ? undefined : raw.baseId
-          ),
+          contractId: new UniqueEntityID(raw.contractId),
+          baseId: new UniqueEntityID(raw.baseId),
           cpf: raw.cpf,
           email: raw.email,
           name: raw.name,
           password: raw.password,
-          type: raw.type,
+          type: BqUserMapper.isUserType(raw.type) ? raw.type : "Almoxarife",
           status: raw.status,
         },
         new UniqueEntityID(raw.id)
@@ -49,6 +50,7 @@ export class BqUserMapper {
         status: storekeeperOrEstimator.status,
         type: storekeeperOrEstimator.type,
         baseId: storekeeperOrEstimator.baseId.toString(),
+        contractId: storekeeperOrEstimator.contractId.toString(),
       };
 
     if (storekeeperOrEstimator instanceof Estimator) {
@@ -61,9 +63,16 @@ export class BqUserMapper {
         status: storekeeperOrEstimator.status,
         type: storekeeperOrEstimator.type,
         contractId: storekeeperOrEstimator.contractId.toString(),
+        baseId: storekeeperOrEstimator.baseId.toString(),
       };
     } else {
       throw new Error();
     }
+  }
+
+  private static isUserType(type: string): type is UserType {
+    return ["Administrador", "Orçamentista", "Almoxarife"].includes(
+      type as UserType
+    );
   }
 }

@@ -6,6 +6,7 @@ import { NotAllowedError } from "../errors/not-allowed-error";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 import { HashGenerator } from "../../cryptography/hash-generator";
 import { BaseRepository } from "../../repositories/base-repository";
+import { UserType } from "src/core/types/user-type";
 
 interface EditStorekeeperUseCaseRequest {
   storekeeperId: string;
@@ -42,7 +43,7 @@ export class EditStorekeeperUseCase {
     if (!author)
       return left(new ResourceNotFoundError("authorId não encontrado"));
 
-    if (author.type != "Administrator") return left(new NotAllowedError());
+    if (author.type != "Administrador") return left(new NotAllowedError());
 
     const storekeeper = await this.storekeeperRepository.findById(
       storekeeperId
@@ -59,7 +60,7 @@ export class EditStorekeeperUseCase {
         return left(new ResourceNotFoundError("baseId não encontrado"));
     }
 
-    storekeeper.type = type ?? storekeeper.type;
+    storekeeper.type = (type ?? storekeeper.type) as UserType;
     storekeeper.baseId =
       baseId === undefined ? storekeeper.baseId : new UniqueEntityID(baseId);
     storekeeper.status = status ?? storekeeper.status;

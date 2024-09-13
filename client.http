@@ -8,9 +8,9 @@ Authorization: Bearer {{authToken}}
 
 {
     "name": "Rodrio Frutuoso dos Santos",
-    "email": "rodrigo@ecoeletrica.com.br",
+    "email": "rodrigo5@ecoeletrica.com.br",
     "cpf": "05921427527",
-    "type": "Administrador",
+    "type": "Administrator",
     "baseId": "8f86a93d-7217-4390-8263-0969fe091d18",
     "password": "91916407"
 }

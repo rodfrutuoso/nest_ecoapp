@@ -33,7 +33,7 @@ describe("Edit account (E2E)", () => {
 
   test("[PUT] /accounts:id", async () => {
     const user = await storekeeperFactory.makeBqStorekeeper({
-      type: "Administrator",
+      type: "Administrador",
     });
 
     const accessToken = jwt.sign({
@@ -47,7 +47,7 @@ describe("Edit account (E2E)", () => {
       .set("Authorization", `Bearer ${accessToken}`)
       .send({
         password: "123456",
-        type: "Administrator",
+        type: "Administrador",
         baseId: base.id.toString(),
       });
 
