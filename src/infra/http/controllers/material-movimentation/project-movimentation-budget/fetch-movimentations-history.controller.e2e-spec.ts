@@ -58,8 +58,9 @@ describe("Fetch Movimentation History (E2E)", () => {
 
     const accessToken = jwt.sign({
       sub: user.id.toString(),
-      type: "Administrador",
-      baseId: base.id.toString(),
+      type: user.type,
+      baseId: user.baseId.toString(),
+      contractId: user.contractId.toString(),
     });
     const project = await projectFactory.makeBqProject({ baseId: base.id });
 

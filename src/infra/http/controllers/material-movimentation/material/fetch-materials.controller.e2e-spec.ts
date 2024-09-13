@@ -9,6 +9,7 @@ import { StorekeeperFactory } from "test/factories/make-storekeeper";
 import { MaterialFactory } from "test/factories/make-material";
 import { UniqueEntityID } from "src/core/entities/unique-entity-id";
 import { DatabaseModule } from "src/infra/database/database.module";
+import { ContractFactory } from "test/factories/make-contract";
 
 describe("Fetch Materials (E2E)", () => {
   let app: INestApplication;
@@ -16,11 +17,12 @@ describe("Fetch Materials (E2E)", () => {
   let jwt: JwtService;
   let storekeeperFactory: StorekeeperFactory;
   let materialFactory: MaterialFactory;
+  let contractFactory: ContractFactory;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StorekeeperFactory, MaterialFactory],
+      providers: [StorekeeperFactory, MaterialFactory, ContractFactory],
     }).compile();
 
     app = moduleRef.createNestApplication();
@@ -29,39 +31,44 @@ describe("Fetch Materials (E2E)", () => {
     jwt = moduleRef.get(JwtService);
     storekeeperFactory = moduleRef.get(StorekeeperFactory);
     materialFactory = moduleRef.get(MaterialFactory);
+    contractFactory = moduleRef.get(ContractFactory);
 
     await app.init();
   });
 
   test("[GET] /materials", async () => {
-    const user = await storekeeperFactory.makeBqStorekeeper({});
+    const contract = await contractFactory.makeBqContract({});
+    const user = await storekeeperFactory.makeBqStorekeeper({
+      contractId: contract.id,
+    });
 
     const accessToken = jwt.sign({
       sub: user.id.toString(),
-      type: "Administrador",
+      type: user.type,
+      baseId: user.baseId.toString(),
+      contractId: user.contractId.toString(),
     });
-    const contractId = randomUUID();
 
     await materialFactory.makeBqMaterial({
       code: 123132,
       type: "concreto",
-      contractId: new UniqueEntityID(contractId),
+      contractId: contract.id,
     });
 
     await materialFactory.makeBqMaterial({
       code: 123133,
       type: "concreto",
-      contractId: new UniqueEntityID(contractId),
+      contractId: contract.id,
     });
 
     await materialFactory.makeBqMaterial({
       code: 123134,
       type: "concreto",
-      contractId: new UniqueEntityID(contractId),
+      contractId: contract.id,
     });
 
     const response = await request(app.getHttpServer())
-      .get(`/materials?contractId=${contractId}&type=concreto`)
+      .get(`/materials?contractId=${contract.id.toString()}&type=concreto`)
       .set("Authorization", `Bearer ${accessToken}`)
       .send();
 

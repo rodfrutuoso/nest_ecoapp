@@ -36,12 +36,14 @@ describe("Get Account by Id (E2E)", () => {
 
     const user = await storekeeperFactory.makeBqStorekeeper({
       cpf: "00011122234",
-      baseId: base.id
+      baseId: base.id,
     });
 
     const accessToken = jwt.sign({
       sub: user.id.toString(),
-      type: "Administrador",
+      type: user.type,
+      baseId: user.baseId.toString(),
+      contractId: user.contractId.toString(),
     });
 
     const response = await request(app.getHttpServer())

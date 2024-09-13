@@ -17,9 +17,4 @@ export class FetchMaterialQueryDto {
     required: false,
   })
   type!: string;
-  @ApiProperty({
-    example: "cotnract-id",
-    description: "cotnract's id of the material",
-  })
-  contractId!: string;
 }

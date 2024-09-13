@@ -13,6 +13,8 @@ import { ResourceNotFoundError } from "src/domain/material-movimentation/applica
 import { ApiTags } from "@nestjs/swagger";
 import { FetchMaterialDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/material/response decorators/fetch-materials.decorator";
 import { FetchMaterialQueryDto } from "src/infra/http/swagger dto and decorators/material-movimentation/material/dto classes/fetch-materials.dto";
+import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
+import { CurrentUser } from "src/infra/auth/current-user.decorator";
 
 const fetchMaterialQuerySchema = z.object({
   page: z
@@ -22,7 +24,6 @@ const fetchMaterialQuerySchema = z.object({
     .transform(Number)
     .pipe(z.number().min(1)),
   type: z.string().optional(),
-  contractId: z.string().uuid(),
 });
 
 @ApiTags("material")
@@ -34,13 +35,14 @@ export class FetchMaterialController {
   @HttpCode(200)
   @FetchMaterialDecorator()
   async handle(
+    @CurrentUser() user: UserPayload,
     @Query(new ZodValidationPipe(fetchMaterialQuerySchema))
     query: FetchMaterialQueryDto
   ) {
-    const { page, type, contractId } = query;
+    const { page, type } = query;
 
     const result = await this.fetchMaterialUseCase.execute({
-      contractId,
+      contractId: user.contractId,
       page,
       type,
     });

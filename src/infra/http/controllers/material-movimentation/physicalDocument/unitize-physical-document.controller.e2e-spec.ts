@@ -39,7 +39,9 @@ describe("Unitize Physical Document (E2E)", () => {
 
     const accessToken = jwt.sign({
       sub: user.id.toString(),
-      type: "Administrador",
+      type: user.type,
+      baseId: user.baseId.toString(),
+      contractId: user.contractId.toString(),
     });
 
     const response = await request(app.getHttpServer())

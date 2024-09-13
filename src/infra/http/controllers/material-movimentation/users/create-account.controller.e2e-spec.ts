@@ -7,6 +7,7 @@ import { JwtService } from "@nestjs/jwt";
 import { StorekeeperFactory } from "test/factories/make-storekeeper";
 import { DatabaseModule } from "src/infra/database/database.module";
 import { BaseFactory } from "test/factories/make-base";
+import { randomUUID } from "crypto";
 
 describe("Create account (E2E)", () => {
   let app: INestApplication;
@@ -32,11 +33,15 @@ describe("Create account (E2E)", () => {
   });
 
   test("[POST] /accounts", async () => {
-    const user = await storekeeperFactory.makeBqStorekeeper({});
+    const user = await storekeeperFactory.makeBqStorekeeper({
+      type: "Administrador",
+    });
 
     const accessToken = jwt.sign({
       sub: user.id.toString(),
-      type: "Administrador",
+      type: user.type,
+      baseId: user.baseId.toString(),
+      contractId: user.contractId.toString(),
     });
     const base = await baseFactory.makeBqBase();
 
