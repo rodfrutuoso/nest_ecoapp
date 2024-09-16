@@ -5,10 +5,9 @@
 - transfer-material needs verification if parameters exists [x]
 - ajust history movimentation fetch [x]
 - ajust user fetch [x]
-- put controller classes on another archive 
-- refact storekeeper and estimator use cases to include mother class user and auth by it
-- create filter by code in fetch materials
-- in fecth materials extrect contractId by the accessToken
+- put controller classes on another archive [x]
+- refact storekeeper and estimator use cases to include mother class user and auth by it [x]
+- in fecth materials extrect contractId by the accessToken [x]
 
 
 # Order
@@ -22,9 +21,10 @@
 
 # Casos de uso para orçamento
 - o orçamentista irá inserir dados dos orçamentos das obras
-- o orçamento inserido será verificado se há itens repetidos no banco de dados
+- para inserir o orçamento, é preciso verificar se o projeto existe.
+- o orçamento inserido deverá ser verificado se há itens repetidos
 - é preciso poderem corrigir os orçamentos e registrar essa modificação
 - é preciso poder consultar projetos em massa
 - os dados consultados em massa precisam sinalizar quais obras foram encontradas ou não
-- esses dados consultados tem que ser extraídos por EXCEL
-- o orçamentista irá excluir orçamentos do banco de dados
+- esses dados consultados devem poder ser extraídos por EXCEL
+- o orçamentista irá excluir orçamentos

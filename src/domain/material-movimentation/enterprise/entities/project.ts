@@ -30,6 +30,10 @@ export class Project extends Entity<ProjectProps> {
     this.props.baseId = baseId;
   }
 
+  set description(description: string | null | undefined) {
+    this.props.description = description;
+  }
+
   get city() {
     return this.props.city;
   }

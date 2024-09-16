@@ -5,6 +5,10 @@ export abstract class ProjectRepository {
     project_number: string,
     baseId: string
   ): Promise<Project | null>;
+  abstract findByProjectNumberAndContractId(
+    project_number: string,
+    contractId: string
+  ): Promise<Project | null>;
   abstract findByProjectNumberWithoutBase(
     project_number: string
   ): Promise<Project | null>;

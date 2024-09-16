@@ -46,6 +46,7 @@ Para visualizar a documentação do swagger basta acessar o endereço que essa a
 ```Principais arquivos e pastas```
 ```plaintext
 bigquery/
+test
 src/
 ├── core/
 │   ├── types/

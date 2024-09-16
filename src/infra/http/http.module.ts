@@ -46,6 +46,8 @@ import { FetchBudgetMovimentationByProjectController } from "./controllers/mater
 import { FetchBudgetMovimentationByProjectUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/fetch-budget-movimentations-by-project";
 import { FetchBudgetByProjectNameController } from "./controllers/material-movimentation/project-movimentation-budget/fetch-budget-by-project-name.controller";
 import { FetchBudgetByProjectNameUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/fetch-budget-by-project-name";
+import { GetProjectByProjectNumberController } from "./controllers/material-movimentation/project-movimentation-budget/get-project-by-project_number.controller";
+import { GetProjectByProjectNumberUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/get-project-by-project_number";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, DtoModule],
@@ -72,6 +74,7 @@ import { FetchBudgetByProjectNameUseCase } from "src/domain/material-movimentati
     FetchMovimentationHistoryController,
     FetchBudgetMovimentationByProjectController,
     FetchBudgetByProjectNameController,
+    GetProjectByProjectNumberController,
   ],
   providers: [
     CreateMaterialUseCase,
@@ -96,6 +99,7 @@ import { FetchBudgetByProjectNameUseCase } from "src/domain/material-movimentati
     FetchMovimentationHistoryUseCase,
     FetchBudgetMovimentationByProjectUseCase,
     FetchBudgetByProjectNameUseCase,
+    GetProjectByProjectNumberUseCase,
   ],
 })
 export class HttpModule {}

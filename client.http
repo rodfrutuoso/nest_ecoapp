@@ -325,3 +325,12 @@ GET {{baseURL}}/budgets
 ?project_number=B-12345678
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
+
+
+###
+
+# @name get_project_by_project_number
+GET {{baseURL}}/projects
+?project_number=B-12345678
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
