@@ -66,13 +66,9 @@ describe("Fetch Movimentation History (E2E)", () => {
     });
 
     const response = await request(app.getHttpServer())
-      .get(`/projects?project_nummber=B-test-project`)
+      .get(`/projects?project_number=B-test-project`)
       .set("Authorization", `Bearer ${accessToken}`)
       .send();
-
-    console.log(response.headers);
-    console.log(response.text);
-    console.log(response.body);
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({
