@@ -48,6 +48,8 @@ import { FetchBudgetByProjectNameController } from "./controllers/material-movim
 import { FetchBudgetByProjectNameUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/fetch-budget-by-project-name";
 import { GetProjectByProjectNumberController } from "./controllers/material-movimentation/project-movimentation-budget/get-project-by-project_number.controller";
 import { GetProjectByProjectNumberUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/get-project-by-project_number";
+import { RegisterBudgetController } from "./controllers/material-movimentation/project-movimentation-budget/register-budget.controller";
+import { RegisterBudgetUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/register-budget";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, DtoModule],
@@ -75,6 +77,7 @@ import { GetProjectByProjectNumberUseCase } from "src/domain/material-movimentat
     FetchBudgetMovimentationByProjectController,
     FetchBudgetByProjectNameController,
     GetProjectByProjectNumberController,
+    RegisterBudgetController,
   ],
   providers: [
     CreateMaterialUseCase,
@@ -100,6 +103,7 @@ import { GetProjectByProjectNumberUseCase } from "src/domain/material-movimentat
     FetchBudgetMovimentationByProjectUseCase,
     FetchBudgetByProjectNameUseCase,
     GetProjectByProjectNumberUseCase,
+    RegisterBudgetUseCase,
   ],
 })
 export class HttpModule {}

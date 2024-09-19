@@ -334,3 +334,63 @@ GET {{baseURL}}/projects
 ?project_number=B-12345678
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
+
+
+
+###
+
+# @name register_budget
+POST  {{baseURL}}/budgets
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+[
+    {
+        "materialId": "b21ba24a-b752-4415-9fc4-702ec851c5cf",
+        "projectId": "44e9fa57-e4fd-4c41-a7d6-c456cc75ea98",
+        "contractId": "e816f105-e022-4560-b32c-d2af40c18351",
+        "value": 5
+    },
+    {
+        "materialId": "7a7b5a91-e91a-4340-8a5f-5e1acdf502f8",
+        "projectId": "44e9fa57-e4fd-4c41-a7d6-c456cc75ea98",
+        "contractId": "e816f105-e022-4560-b32c-d2af40c18351",
+        "value": 2
+    },
+    {
+        "materialId": "b21ba24a-b752-4415-9fc4-702ec851c5cf",
+        "projectId": "44e9fa57-e4fd-4c41-a7d6-c456cc75ea98",
+        "contractId": "e816f105-e022-4560-b32c-d2af40c18351",
+        "value": 2
+    },
+    {
+        "materialId": "d5fd168d-1a00-48b6-abe6-1668c9d4e507",
+        "projectId": "44e9fa57-e4fd-4c41-a7d6-c456cc75ea98",
+        "contractId": "e816f105-e022-4560-b32c-d2af40c18351",
+        "value": 1.32
+    },
+    {
+        "materialId": "b21ba24a-b752-4415-9fc4-702ec851c5cf",
+        "projectId": "44e9fa57-e4fd-4c41-a7d6-c456cc75ea98",
+        "contractId": "e816f105-e022-4560-b32c-d2af40c18351",
+        "value": 5
+    },
+    {
+        "materialId": "7a7b5a91-e91a-4340-8a5f-5e1acdf502f8",
+        "projectId": "44e9fa57-e4fd-4c41-a7d6-c456cc75ea98",
+        "contractId": "e816f105-e022-4560-b32c-d2af40c18351",
+        "value": 2
+    },
+    {
+        "materialId": "7a7b5a91-e91a-4340-8a5f-5e1acdf502f8",
+        "projectId": "44e9fa57-e4fd-4c41-a7d6-c456cc75ea98",
+        "contractId": "e816f105-e022-4560-b32c-d2af40c18351",
+        "value": 2.32
+    },
+    {
+        "materialId": "d5fd168d-1a00-48b6-abe6-1668c9d4e507",
+        "projectId": "44e9fa57-e4fd-4c41-a7d6-c456cc75ea98",
+        "contractId": "e816f105-e022-4560-b32c-d2af40c18351",
+        "value": 458.2
+    }
+]

@@ -9,7 +9,6 @@
 - put controller classes on another archive [x]
 - refact storekeeper and estimator use cases to include mother class user and auth by it [x]
 - in fecth materials extrect contractId by the accessToken [x]
-- create regex to register project []
 - create 'edited by' and 'edited at' fields on budget entity [x]
 - create get project by project_number [x]
 - create register budgets []
@@ -21,6 +20,8 @@
 - create delete estimator []
 - create fetch estimators []
 - ajust user controllers to chose use case by type []
+- create regex to register project []
+- ajust create estimator/storekeeper to insert contractId and baseId correctly []
 
 # Test 1 file
 
