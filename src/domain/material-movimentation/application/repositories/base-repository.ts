@@ -5,6 +5,7 @@ import { BaseWithContract } from "../../enterprise/entities/value-objects/base-w
 export abstract class BaseRepository {
   abstract create(Base: Base): Promise<void>;
   abstract findByBaseName(baseName: string): Promise<Base | null>;
+  abstract findManyByContractId(contractId: string): Promise<Base[]>;
   abstract findById(baseId: string): Promise<Base | null>;
   abstract findByIds(baseIds: string[]): Promise<Base[]>;
   abstract findMany(params: PaginationParams): Promise<Base[]>;

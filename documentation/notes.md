@@ -21,7 +21,7 @@
 - create fetch estimators []
 - ajust user controllers to chose use case by type []
 - create regex to register project []
-- ajust create estimator/storekeeper to insert contractId and baseId correctly []
+- ajust create estimator/storekeeper to insert contractId and baseId correctly [x]
 
 # Test 1 file
 

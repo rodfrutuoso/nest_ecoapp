@@ -27,6 +27,14 @@ export class BqBaseRepository implements BaseRepository {
     return BqBaseMapper.toDomin(base);
   }
 
+  async findManyByContractId(contractId: string): Promise<Base[]> {
+    const bases = await this.bigquery.base.select({
+      where: { contractId },
+    });
+
+    return bases.map(BqBaseMapper.toDomin);
+  }
+
   async findById(baseId: string): Promise<Base | null> {
     const [base] = await this.bigquery.base.select({
       where: { id: baseId },

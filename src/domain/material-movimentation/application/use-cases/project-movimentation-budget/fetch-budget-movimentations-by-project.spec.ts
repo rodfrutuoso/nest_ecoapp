@@ -142,8 +142,6 @@ describe("Fetch budgets and Movimentations by project", () => {
       baseId: base.id.toString(),
     });
 
-    console.log(inMemoryBudgetRepository.items);
-
     expect(result.isRight()).toBeTruthy();
     if (result.isRight()) {
       expect(result.value.movimentations).toHaveLength(2);
