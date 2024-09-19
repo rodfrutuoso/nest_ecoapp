@@ -17,6 +17,16 @@ export class BqEstimatorRepository implements EstimatorRepository {
     return result instanceof Estimator ? result : null;
   }
 
+  async findByIds(estimatorIds: string[]): Promise<Estimator[]> {
+    const estimators = await this.bigquery.user.select({
+      whereIn: { id: estimatorIds },
+    });
+
+    return estimators
+      .map(BqUserMapper.toDomin)
+      .filter((estimator) => estimator instanceof Estimator);
+  }
+
   async findByEmail(email: string): Promise<Estimator | null> {
     const [estimator] = await this.bigquery.user.select({
       where: { email },

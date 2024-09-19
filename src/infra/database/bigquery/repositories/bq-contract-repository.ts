@@ -35,6 +35,14 @@ export class BqContractRepository implements ContractRepository {
     return BqContractMapper.toDomin(contract);
   }
 
+  async findByIds(contractIds: string[]): Promise<Contract[]> {
+    const contracts = await this.bigquery.contract.select({
+      whereIn: { id: contractIds },
+    });
+
+    return contracts.map(BqContractMapper.toDomin);
+  }
+
   async findMany({ page }: PaginationParams): Promise<Contract[]> {
     const pageCount = 40;
 

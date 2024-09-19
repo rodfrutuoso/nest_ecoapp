@@ -15,6 +15,8 @@ export interface BqBudgetProps {
   materialId: string;
   value: number;
   createdAt: Date;
+  updatedAuthorId?: string;
+  updatedAt?: Date
 
   contract?: BqContractProps;
   user?: BqUserProps;

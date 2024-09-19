@@ -65,9 +65,9 @@ export class BqBudgetRepository implements BudgetRepository {
     return budgetsMapped;
   }
 
-  async create(budget: Budget): Promise<void> {
-    const data = BqBudgetMapper.toBigquery(budget);
+  async create(budgets: Budget[]): Promise<void> {
+    const data = budgets.map(BqBudgetMapper.toBigquery);
 
-    await this.bigquery.budget.create([data]);
+    await this.bigquery.budget.create(data);
   }
 }

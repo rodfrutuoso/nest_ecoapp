@@ -5,5 +5,6 @@ export abstract class ContractRepository {
   abstract create(Contract: Contract): Promise<void>;
   abstract findByContractName(contractName: string): Promise<Contract | null>;
   abstract findById(contractId: string): Promise<Contract | null>;
+  abstract findByIds(contractIds: string[]): Promise<Contract[]>;
   abstract findMany(params: PaginationParams): Promise<Contract[]>;
 }

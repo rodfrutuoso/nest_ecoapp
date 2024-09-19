@@ -25,6 +25,14 @@ export class InMemoryContractRepository implements ContractRepository {
     return contract;
   }
 
+  async findByIds(contractIds: string[]): Promise<Contract[]> {
+    const contracts = this.items.filter((item) =>
+      contractIds.includes(item.id.toString())
+    );
+
+    return contracts;
+  }
+
   async create(contract: Contract) {
     this.items.push(contract);
   }

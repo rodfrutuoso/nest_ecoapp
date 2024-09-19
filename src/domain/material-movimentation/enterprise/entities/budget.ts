@@ -8,6 +8,8 @@ import {
 export interface BudgetProps extends MaterialPerProjectProps {
   estimatorId: UniqueEntityID;
   contractId: UniqueEntityID;
+  updatedAuthorId?: UniqueEntityID;
+  updatedAt?: Date;
 }
 
 export class Budget extends MaterialPerProject<BudgetProps> {
@@ -19,12 +21,25 @@ export class Budget extends MaterialPerProject<BudgetProps> {
     return this.props.contractId;
   }
 
+  get updatedAuthorId() {
+    return this.props.updatedAuthorId;
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt;
+  }
+
   set contractId(contractId: UniqueEntityID) {
     this.props.contractId = contractId;
   }
 
   set estimatorId(estimatorId: UniqueEntityID) {
     this.props.estimatorId = estimatorId;
+  }
+
+  set updatedAuthorId(updatedAuthorId: UniqueEntityID | undefined) {
+    this.props.updatedAuthorId = updatedAuthorId;
+    this.touch();
   }
 
   static create(
@@ -40,5 +55,9 @@ export class Budget extends MaterialPerProject<BudgetProps> {
     );
 
     return transferRegister;
+  }
+
+  private touch() {
+    this.props.updatedAt = new Date();
   }
 }

@@ -80,7 +80,7 @@ export class InMemoryBudgetRepository implements BudgetRepository {
     return budgets;
   }
 
-  async create(budget: Budget) {
-    this.items.push(budget);
+  async create(budgets: Budget[]) {
+    budgets.map((budget) => this.items.push(budget));
   }
 }

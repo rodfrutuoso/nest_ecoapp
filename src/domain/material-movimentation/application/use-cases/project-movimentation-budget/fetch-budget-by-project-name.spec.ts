@@ -30,7 +30,9 @@ describe("Get Budget by project", () => {
     inMemoryBaseRepository = new InMemoryBaseRepository(
       inMemoryContractRepository
     );
-    inMemoryProjectRepository = new InMemoryProjectRepository();
+    inMemoryProjectRepository = new InMemoryProjectRepository(
+      inMemoryBaseRepository
+    );
     inMemoryBudgetRepository = new InMemoryBudgetRepository(
       inMemoryEstimatorRepository,
       inMemoryMaterialRepository,
@@ -84,9 +86,7 @@ describe("Get Budget by project", () => {
       estimatorId: estimator.id,
     });
 
-    await inMemoryBudgetRepository.create(newBudget1);
-    await inMemoryBudgetRepository.create(newBudget2);
-    await inMemoryBudgetRepository.create(newBudget3);
+    await inMemoryBudgetRepository.create([newBudget1, newBudget2, newBudget3]);
 
     const result = await sut.execute({
       project_number: "B-10101010",
@@ -139,9 +139,7 @@ describe("Get Budget by project", () => {
       estimatorId: estimator.id,
     });
 
-    await inMemoryBudgetRepository.create(newBudget1);
-    await inMemoryBudgetRepository.create(newBudget2);
-    await inMemoryBudgetRepository.create(newBudget3);
+    await inMemoryBudgetRepository.create([newBudget1, newBudget2, newBudget3]);
 
     const result = await sut.execute({
       project_number: "B-dntExists",
@@ -198,9 +196,7 @@ describe("Get Budget by project", () => {
       estimatorId: estimator.id,
     });
 
-    await inMemoryBudgetRepository.create(newBudget1);
-    await inMemoryBudgetRepository.create(newBudget2);
-    await inMemoryBudgetRepository.create(newBudget3);
+    await inMemoryBudgetRepository.create([newBudget1, newBudget2, newBudget3]);
 
     const result = await sut.execute({
       project_number: "B-to-be-search",

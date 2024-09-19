@@ -16,6 +16,14 @@ export class InMemoryEstimatorRepository implements EstimatorRepository {
     return estimator;
   }
 
+  async findByIds(ids: string[]): Promise<Estimator[]> {
+    const estimator = this.items.filter((item) =>
+      ids.includes(item.id.toString())
+    );
+
+    return estimator;
+  }
+
   async findByEmail(email: string): Promise<Estimator | null> {
     const estimator = this.items.find((item) => item.email === email);
 

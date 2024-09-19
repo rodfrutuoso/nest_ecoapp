@@ -9,12 +9,18 @@
 - put controller classes on another archive [x]
 - refact storekeeper and estimator use cases to include mother class user and auth by it [x]
 - in fecth materials extrect contractId by the accessToken [x]
-
-# Order
-
-- Repositories
-- mappers
-- controllers
+- create regex to register project []
+- create 'edited by' and 'edited at' fields on budget entity [x]
+- create get project by project_number [x]
+- create register budgets []
+- create get budgets by project_number []
+- create update budget (this use case'll create lines new budgets for that project) []
+- create fetch budgets (by list of projects and returning just found projects) []
+- create register estimator []
+- create update estimator []
+- create delete estimator []
+- create fetch estimators []
+- ajust user controllers to chose use case by type []
 
 # Test 1 file
 

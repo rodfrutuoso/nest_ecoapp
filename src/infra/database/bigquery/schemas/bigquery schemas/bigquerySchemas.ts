@@ -36,6 +36,8 @@ const allSchemas = {
       },
       { name: "userId", type: "STRING", mode: "REQUIRED" },
       { name: "contractId", type: "STRING", mode: "REQUIRED" },
+      { name: "updatedAuthorId", type: "STRING", mode: "NULLABLE" },
+      { name: "updatedAt", type: "TIMESTAMP", mode: "NULLABLE" },
     ],
   },
   contract: {

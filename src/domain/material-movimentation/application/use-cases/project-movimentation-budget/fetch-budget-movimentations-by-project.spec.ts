@@ -39,7 +39,9 @@ describe("Fetch budgets and Movimentations by project", () => {
       inMemoryBaseRepository
     );
     inMemoryEstimatorRepository = new InMemoryEstimatorRepository();
-    inMemoryProjectRepository = new InMemoryProjectRepository();
+    inMemoryProjectRepository = new InMemoryProjectRepository(
+      inMemoryBaseRepository
+    );
     inMemoryMovimentationRepository = new InMemoryMovimentationRepository(
       inMemoryStorekeeperRepository,
       inMemoryMaterialRepository,
@@ -63,19 +65,19 @@ describe("Fetch budgets and Movimentations by project", () => {
   it("should be able to fetch budgets and movimentations by project", async () => {
     // entity creation for details
     const contract = makeContract();
-    inMemoryContractRepository.create(contract);
+    await inMemoryContractRepository.create(contract);
 
     const base = makeBase({ contractId: contract.id });
-    inMemoryBaseRepository.create(base);
+    await inMemoryBaseRepository.create(base);
 
     const storekeeper = makeStorekeeper({ baseId: base.id });
-    inMemoryStorekeeperRepository.create(storekeeper);
+    await inMemoryStorekeeperRepository.create(storekeeper);
 
     const estimator = makeEstimator({ contractId: contract.id });
-    inMemoryEstimatorRepository.create(estimator);
+    await inMemoryEstimatorRepository.create(estimator);
 
-    const material = makeMaterial();
-    inMemoryMaterialRepository.create(material);
+    const material = makeMaterial({ contractId: contract.id });
+    await inMemoryMaterialRepository.create(material);
 
     const newProject = makeProject({
       project_number: "Obra-teste",
@@ -133,14 +135,14 @@ describe("Fetch budgets and Movimentations by project", () => {
       estimatorId: estimator.id,
     });
 
-    await inMemoryBudgetRepository.create(newBudget1);
-    await inMemoryBudgetRepository.create(newBudget2);
-    await inMemoryBudgetRepository.create(newBudget3);
+    await inMemoryBudgetRepository.create([newBudget1, newBudget2, newBudget3]);
 
     const result = await sut.execute({
       project_number: "Obra-teste",
       baseId: base.id.toString(),
     });
+
+    console.log(inMemoryBudgetRepository.items);
 
     expect(result.isRight()).toBeTruthy();
     if (result.isRight()) {
@@ -216,9 +218,9 @@ describe("Fetch budgets and Movimentations by project", () => {
       estimatorId: estimator.id,
     });
 
-    await inMemoryBudgetRepository.create(newBudget1);
-    await inMemoryBudgetRepository.create(newBudget2);
-    await inMemoryBudgetRepository.create(newBudget3);
+    await inMemoryBudgetRepository.create([newBudget1]);
+    await inMemoryBudgetRepository.create([newBudget2]);
+    await inMemoryBudgetRepository.create([newBudget3]);
 
     const result = await sut.execute({
       project_number: "Obra-teste2",

@@ -1,0 +1,10 @@
+{
+    "spellright.language": [
+        "pt-BR"
+    ],
+    "spellright.documentTypes": [
+        "markdown",
+        "plaintext",
+        "jsonc"
+    ]
+}

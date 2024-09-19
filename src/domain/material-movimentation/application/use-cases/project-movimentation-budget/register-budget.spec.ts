@@ -1,27 +1,28 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { TransferMaterialUseCase } from "./transfer-material";
-import { InMemoryMovimentationRepository } from "../../../../../../test/repositories/in-memory-movimentation-repository";
-import { InMemoryStorekeeperRepository } from "test/repositories/in-memory-storekeeper-repository";
+import { InMemoryBudgetRepository } from "../../../../../../test/repositories/in-memory-budget-repository";
+import { InMemoryEstimatorRepository } from "test/repositories/in-memory-estimator-repository";
 import { InMemoryMaterialRepository } from "test/repositories/in-memory-material-repository";
 import { InMemoryProjectRepository } from "test/repositories/in-memory-project-repository";
 import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
 import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
 import { makeProject } from "test/factories/make-project";
 import { UniqueEntityID } from "src/core/entities/unique-entity-id";
-import { makeStorekeeper } from "test/factories/make-storekeeper";
+import { makeEstimator } from "test/factories/make-estimator";
 import { makeMaterial } from "test/factories/make-material";
 import { makeBase } from "test/factories/make-base";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
+import { RegisterBudgetUseCase } from "./register-budget";
+import { makeContract } from "test/factories/make-contract";
 
 let inMemoryContractRepository: InMemoryContractRepository;
 let inMemoryBaseRepository: InMemoryBaseRepository;
-let inMemoryStorekeeperRepository: InMemoryStorekeeperRepository;
+let inMemoryEstimatorRepository: InMemoryEstimatorRepository;
 let inMemoryMaterialRepository: InMemoryMaterialRepository;
 let inMemoryProjectRepository: InMemoryProjectRepository;
-let inMemoryMovimentationRepository: InMemoryMovimentationRepository;
-let sut: TransferMaterialUseCase;
+let inMemoryBudgetRepository: InMemoryBudgetRepository;
+let sut: RegisterBudgetUseCase;
 
-describe("Transfer Material", () => {
+describe("Register Budget", () => {
   beforeEach(() => {
     inMemoryContractRepository = new InMemoryContractRepository();
     inMemoryBaseRepository = new InMemoryBaseRepository(
@@ -31,59 +32,64 @@ describe("Transfer Material", () => {
       inMemoryBaseRepository
     );
     inMemoryMaterialRepository = new InMemoryMaterialRepository();
-    inMemoryStorekeeperRepository = new InMemoryStorekeeperRepository(
-      inMemoryBaseRepository
-    );
-    inMemoryMovimentationRepository = new InMemoryMovimentationRepository(
-      inMemoryStorekeeperRepository,
+    inMemoryEstimatorRepository = new InMemoryEstimatorRepository();
+    inMemoryBudgetRepository = new InMemoryBudgetRepository(
+      inMemoryEstimatorRepository,
       inMemoryMaterialRepository,
       inMemoryProjectRepository,
+      inMemoryContractRepository,
       inMemoryBaseRepository
     );
-    sut = new TransferMaterialUseCase(
-      inMemoryMovimentationRepository,
-      inMemoryStorekeeperRepository,
+    sut = new RegisterBudgetUseCase(
+      inMemoryBudgetRepository,
+      inMemoryEstimatorRepository,
       inMemoryMaterialRepository,
       inMemoryProjectRepository,
-      inMemoryBaseRepository
+      inMemoryContractRepository
     );
   });
 
-  it("should be able to transfer a material", async () => {
-    const project = makeProject({}, new UniqueEntityID("1"));
-    await inMemoryProjectRepository.create(project);
+  it("should be able to register a list of budgets", async () => {
+    const contract = makeContract({}, new UniqueEntityID("ID-CONTRACT-BA"));
+    await inMemoryContractRepository.create(contract);
 
-    const material = makeMaterial({}, new UniqueEntityID("4"));
-    await inMemoryMaterialRepository.create(material);
-
-    const base = makeBase({}, new UniqueEntityID("ID-BASE-VCA"));
+    const base = makeBase(
+      { contractId: contract.id },
+      new UniqueEntityID("ID-BASE-VCA")
+    );
     await inMemoryBaseRepository.create(base);
 
-    const storekeeper = makeStorekeeper(
-      { baseId: base.id },
+    const project = makeProject({ baseId: base.id }, new UniqueEntityID("1"));
+    await inMemoryProjectRepository.create(project);
+
+    const material = makeMaterial(
+      { contractId: contract.id },
+      new UniqueEntityID("4")
+    );
+    await inMemoryMaterialRepository.create(material);
+
+    const estimator = makeEstimator(
+      { contractId: contract.id },
       new UniqueEntityID("5")
     );
-    await inMemoryStorekeeperRepository.create(storekeeper);
+    await inMemoryEstimatorRepository.create(estimator);
 
     const result = await sut.execute([
       {
         projectId: "1",
         materialId: "4",
-        storekeeperId: "5",
-        observation: "Material Movimentado",
-        baseId: "ID-BASE-VCA",
+        estimatorId: "5",
+        contractId: "ID-CONTRACT-BA",
         value: 5,
       },
     ]);
 
     expect(result.isRight()).toBe(true);
     if (result.isRight()) {
-      expect(result.value.movimentations[0].value).toEqual(5);
-      expect(result.value.movimentations[0].observation).toEqual(
-        "Material Movimentado"
-      );
+      expect(result.value.budgets[0].value).toEqual(5);
+      expect(result.value.budgets[0].estimatorId.toString()).toEqual("5");
     }
-    expect(inMemoryMovimentationRepository.items[0].id).toBeTruthy();
+    expect(inMemoryBudgetRepository.items[0].id).toBeTruthy();
   });
 
   it("should not be able to transfer a material if informed Ids are not found", async () => {
@@ -91,9 +97,8 @@ describe("Transfer Material", () => {
       {
         projectId: "1",
         materialId: "4",
-        storekeeperId: "5",
-        observation: "Material Movimentado",
-        baseId: "ID-BASE-VCA",
+        estimatorId: "5",
+        contractId: "ID-CONTRACT-BA",
         value: 5,
       },
     ]);

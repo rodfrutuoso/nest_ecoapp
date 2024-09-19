@@ -7,5 +7,5 @@ export abstract class BudgetRepository {
     projectid: string,
     baseId: string
   ): Promise<BudgetWithDetails[]>;
-  abstract create(budget: Budget): Promise<void>;
+  abstract create(budgets: Budget[]): Promise<void>;
 }
