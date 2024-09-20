@@ -1,12 +1,10 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { RegisterEstimatorUseCase } from "./register-estimator";
 import { InMemoryEstimatorRepository } from "test/repositories/in-memory-estimator-repository";
-import { ResourceAlreadyRegisteredError } from "../errors/resource-already-registered-error";
 import { FakeHasher } from "test/cryptography/fake-hasher";
 import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
 import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
 import { makeBase } from "test/factories/make-base";
-import { makeEstimator } from "test/factories/make-estimator";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 import { WrongTypeError } from "../errors/wrong-type";
 import { makeContract } from "test/factories/make-contract";
@@ -56,32 +54,6 @@ describe("Create estimator", () => {
       expect(result.value.estimator.password).toEqual(hashedPassword);
     }
     expect(inMemoryEstimatorRepository.items[0].id).toBeTruthy();
-  });
-
-  it("Sould not be able to register a estimator if email is already registered", async () => {
-    const contract = makeContract();
-    await inMemoryContractRepository.create(contract);
-
-    const base = makeBase({ contractId: contract.id });
-    await inMemoryBaseRepository.create(base);
-
-    const estimator = makeEstimator({
-      email: "rodrigo@ecoeletrica.com.br",
-      baseId: contract.id,
-    });
-    await inMemoryEstimatorRepository.create(estimator);
-
-    const result = await sut.execute({
-      name: "Rodrigo",
-      email: "rodrigo@ecoeletrica.com.br",
-      cpf: "12345678901",
-      type: "Orçamentista",
-      contractId: contract.id.toString(),
-      password: "123456",
-    });
-
-    expect(result.isLeft()).toBeTruthy();
-    expect(result.value).toBeInstanceOf(ResourceAlreadyRegisteredError);
   });
 
   it("Sould not be able to register a estimator if contractId does not exist", async () => {

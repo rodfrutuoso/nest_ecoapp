@@ -31,4 +31,17 @@ export class InMemoryEstimatorRepository implements EstimatorRepository {
 
     return estimator;
   }
+
+  async findByEmailOrCpf(
+    email: string,
+    cpf: string
+  ): Promise<Estimator | null> {
+    const estimator = this.items.find(
+      (item) => item.email.toString() === email || item.cpf === cpf
+    );
+
+    if (!estimator) return null;
+
+    return estimator;
+  }
 }

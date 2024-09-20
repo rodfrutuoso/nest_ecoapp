@@ -15,6 +15,7 @@ import { ResourceNotFoundError } from "src/domain/material-movimentation/applica
 import { CreateAccountDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/users/response decorators/create-account.decorator";
 import { CreateAccountBodyDto } from "src/infra/http/swagger dto and decorators/material-movimentation/users/dto classes/create-account.dto";
 import { WrongTypeError } from "src/domain/material-movimentation/application/use-cases/errors/wrong-type";
+import { RegisterEstimatorUseCase } from "src/domain/material-movimentation/application/use-cases/users/register-estimator";
 
 const createAccountBodyDto = z.object({
   name: z.string(),
@@ -29,7 +30,10 @@ const createAccountBodyDto = z.object({
 @ApiTags("user")
 @Controller("/accounts")
 export class CreateAccountController {
-  constructor(private registerStorekeeper: RegisterStorekeeperUseCase) {}
+  constructor(
+    private registerStorekeeper: RegisterStorekeeperUseCase,
+    private registerEstimatorUseCase: RegisterEstimatorUseCase
+  ) {}
 
   @Post()
   @HttpCode(201)
@@ -37,15 +41,27 @@ export class CreateAccountController {
   @CreateAccountDecorator()
   async handle(@Body() body: CreateAccountBodyDto) {
     const { name, email, password, cpf, type, baseId, contractId } = body;
+    let result
 
-    const result = await this.registerStorekeeper.execute({
-      name,
-      email,
-      password,
-      cpf,
-      type,
-      baseId,
-    });
+    if (type === "Orçamentista") {
+      result = await this.registerEstimatorUseCase.execute({
+        name,
+        email,
+        password,
+        cpf,
+        type,
+        contractId,
+      });
+    } else {
+      result = await this.registerStorekeeper.execute({
+        name,
+        email,
+        password,
+        cpf,
+        type,
+        baseId,
+      });
+    }
 
     if (result.isLeft()) {
       const error = result.value;

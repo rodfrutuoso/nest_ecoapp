@@ -50,6 +50,7 @@ import { GetProjectByProjectNumberController } from "./controllers/material-movi
 import { GetProjectByProjectNumberUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/get-project-by-project_number";
 import { RegisterBudgetController } from "./controllers/material-movimentation/project-movimentation-budget/register-budget.controller";
 import { RegisterBudgetUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/register-budget";
+import { RegisterEstimatorUseCase } from "src/domain/material-movimentation/application/use-cases/users/register-estimator";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, DtoModule],
@@ -84,6 +85,7 @@ import { RegisterBudgetUseCase } from "src/domain/material-movimentation/applica
     FetchMaterialUseCase,
     AuthenticateUserUseCase,
     RegisterStorekeeperUseCase,
+    RegisterEstimatorUseCase,
     GetStorekeeperByIdUseCase,
     EditStorekeeperUseCase,
     DeleteStorekeeperUseCase,

@@ -4,7 +4,6 @@ import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
 import { Storekeeper } from "../../../enterprise/entities/storekeeper";
 import { HashGenerator } from "../../cryptography/hash-generator";
 import { StorekeeperRepository } from "../../repositories/storekeeper-repository";
-import { ResourceAlreadyRegisteredError } from "../errors/resource-already-registered-error";
 import { BaseRepository } from "../../repositories/base-repository";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 import { UserType } from "src/core/types/user-type";
@@ -20,7 +19,7 @@ interface RegisterStorekeeperUseCaseRequest {
 }
 
 type RegisterStorekeeperResponse = Eihter<
-  ResourceAlreadyRegisteredError | ResourceNotFoundError,
+  ResourceNotFoundError | WrongTypeError,
   {
     storekeeper: Storekeeper;
   }
@@ -44,17 +43,6 @@ export class RegisterStorekeeperUseCase {
   }: RegisterStorekeeperUseCaseRequest): Promise<RegisterStorekeeperResponse> {
     const base = await this.baseRepository.findById(baseId);
     if (!base) return left(new ResourceNotFoundError("baseId não encontrado"));
-
-    const storekeeperSearch = await this.storekeeperRepository.findByEmail(
-      email
-    );
-
-    if (storekeeperSearch)
-      return left(
-        new ResourceAlreadyRegisteredError(
-          "O email informado já foi cadastrado!"
-        )
-      );
 
     if (!this.isUserType(type))
       return left(

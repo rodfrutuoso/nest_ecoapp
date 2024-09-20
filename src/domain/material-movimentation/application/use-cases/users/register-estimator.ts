@@ -4,7 +4,6 @@ import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
 import { Estimator } from "../../../enterprise/entities/estimator";
 import { HashGenerator } from "../../cryptography/hash-generator";
 import { EstimatorRepository } from "../../repositories/estimator-repository";
-import { ResourceAlreadyRegisteredError } from "../errors/resource-already-registered-error";
 import { BaseRepository } from "../../repositories/base-repository";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 import { UserType } from "src/core/types/user-type";
@@ -20,7 +19,7 @@ interface RegisterEstimatorUseCaseRequest {
 }
 
 type RegisterEstimatorResponse = Eihter<
-  ResourceAlreadyRegisteredError | ResourceNotFoundError,
+  WrongTypeError | ResourceNotFoundError,
   {
     estimator: Estimator;
   }
@@ -47,15 +46,6 @@ export class RegisterEstimatorUseCase {
       return left(
         new ResourceNotFoundError(
           "Não há bases registradas com esse contractId ou esse contractId não existe"
-        )
-      );
-
-    const estimatorSearch = await this.estimatorRepository.findByEmail(email);
-
-    if (estimatorSearch)
-      return left(
-        new ResourceAlreadyRegisteredError(
-          "O email informado já foi cadastrado!"
         )
       );
 

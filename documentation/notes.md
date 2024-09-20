@@ -22,6 +22,7 @@
 - ajust user controllers to chose use case by type []
 - create regex to register project []
 - ajust create estimator/storekeeper to insert contractId and baseId correctly [x]
+- exclude baseId from transfer Material and contract Id from Register Budget [x]
 
 # Test 1 file
 

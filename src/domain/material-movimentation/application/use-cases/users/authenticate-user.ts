@@ -5,8 +5,6 @@ import { HashComparer } from "../../cryptography/hash-comperer";
 import { StorekeeperRepository } from "../../repositories/storekeeper-repository";
 import { WrogCredentialsError } from "../errors/wrong-credentials";
 import { EstimatorRepository } from "../../repositories/estimator-repository";
-import { Storekeeper } from "src/domain/material-movimentation/enterprise/entities/storekeeper";
-import { Estimator } from "src/domain/material-movimentation/enterprise/entities/estimator";
 
 interface AuthenticateUserUseCaseRequest {
   email: string;

@@ -7,9 +7,15 @@ export abstract class StorekeeperRepository {
   abstract delete(StorekeeperId: string): Promise<void>;
   abstract save(torekeeper: Storekeeper): Promise<void>;
   abstract findById(storekeeperId: string): Promise<Storekeeper | null>;
-  abstract findByIdWithBase(storekeeperId: string): Promise<StorekeeperWithBase | null>;
+  abstract findByIdWithBase(
+    storekeeperId: string
+  ): Promise<StorekeeperWithBase | null>;
   abstract findByIds(storekeeperIds: string[]): Promise<Storekeeper[]>;
   abstract findByEmail(email: string): Promise<Storekeeper | null>;
+  abstract findByEmailOrCpf(
+    email: string,
+    cpf: string
+  ): Promise<Storekeeper | null>;
   abstract findMany(
     params: PaginationParams,
     baseId?: string
