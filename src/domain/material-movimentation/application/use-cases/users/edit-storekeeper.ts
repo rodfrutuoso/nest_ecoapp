@@ -7,6 +7,7 @@ import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 import { HashGenerator } from "../../cryptography/hash-generator";
 import { BaseRepository } from "../../repositories/base-repository";
 import { UserType } from "src/core/types/user-type";
+import { Base } from "src/domain/material-movimentation/enterprise/entities/base";
 
 interface EditStorekeeperUseCaseRequest {
   storekeeperId: string;
@@ -43,7 +44,8 @@ export class EditStorekeeperUseCase {
     if (!author)
       return left(new ResourceNotFoundError("authorId não encontrado"));
 
-    if (author.type != "Administrador") return left(new NotAllowedError());
+    if (author.type != "Administrador" && authorId !== storekeeperId)
+      return left(new NotAllowedError());
 
     const storekeeper = await this.storekeeperRepository.findById(
       storekeeperId
@@ -54,8 +56,9 @@ export class EditStorekeeperUseCase {
         new ResourceNotFoundError("id do usuário editado não encontrado")
       );
 
+    let base: Base | null = null;
     if (baseId) {
-      const base = await this.baseRepository.findById(baseId);
+      base = await this.baseRepository.findById(baseId);
       if (!base)
         return left(new ResourceNotFoundError("baseId não encontrado"));
     }
@@ -68,6 +71,8 @@ export class EditStorekeeperUseCase {
       password === undefined
         ? storekeeper.password
         : await this.hashGenerator.hash(password);
+    storekeeper.contractId =
+      base === null ? storekeeper.contractId : base.contractId;
 
     await this.storekeeperRepository.save(storekeeper);
 

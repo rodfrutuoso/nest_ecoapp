@@ -74,4 +74,10 @@ export class InMemoryEstimatorRepository implements EstimatorRepository {
 
     return estimator;
   }
+
+  async save(estimator: Estimator) {
+    const itemIndex = this.items.findIndex((item) => item.id == estimator.id);
+
+    this.items[itemIndex] = estimator;
+  }
 }

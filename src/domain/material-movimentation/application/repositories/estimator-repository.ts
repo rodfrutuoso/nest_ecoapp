@@ -3,14 +3,15 @@ import { EstimatorWithContract } from "../../enterprise/entities/value-objects/e
 
 export abstract class EstimatorRepository {
   abstract create(estimator: Estimator): Promise<void>;
-  abstract findById(storekeeperId: string): Promise<Estimator | null>;
+  abstract findById(estimatorId: string): Promise<Estimator | null>;
   abstract findByIdWithContract(
-    storekeeperId: string
+    estimatorId: string
   ): Promise<EstimatorWithContract | null>;
-  abstract findByIds(storekeeperIds: string[]): Promise<Estimator[]>;
+  abstract findByIds(estimatorIds: string[]): Promise<Estimator[]>;
   abstract findByEmail(email: string): Promise<Estimator | null>;
   abstract findByEmailOrCpf(
     email: string,
     cpf: string
   ): Promise<Estimator | null>;
+  abstract save(estimator: Estimator): Promise<void>;
 }

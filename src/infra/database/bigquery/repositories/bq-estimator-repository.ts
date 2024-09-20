@@ -80,4 +80,11 @@ export class BqEstimatorRepository implements EstimatorRepository {
 
     return result instanceof Estimator ? result : null;
   }
+
+  async save(estimator: Estimator): Promise<void> {
+    await this.bigquery.user.update({
+      data: BqUserMapper.toBigquery(estimator),
+      where: { id: estimator.id.toString() },
+    });
+  }
 }
