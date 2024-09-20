@@ -33,7 +33,7 @@ export class BqEstimatorRepository implements EstimatorRepository {
       include: {
         contract: {
           join: { table: "contract", on: "user.contractId = contract.id" },
-          relationType: "one-to-one",
+          relationType: "many-to-one",
         },
       },
     });

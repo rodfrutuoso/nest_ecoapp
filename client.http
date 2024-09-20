@@ -52,7 +52,7 @@ Authorization: Bearer {{authToken}}
 ###
 
 # @name get_user_by_id
-GET {{baseURL}}/accounts/627a842b-eeee-42f2-b8aa-9a9fbdee0b83
+GET {{baseURL}}/accounts/612d36fb-3cde-42de-bae0-ef8e547a9807
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 

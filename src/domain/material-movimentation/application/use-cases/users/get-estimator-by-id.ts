@@ -26,7 +26,7 @@ export class GetEstimatorByIdUseCase {
     );
 
     if (!estimator)
-      return left(new ResourceNotFoundError("Id do almoxarife não encontrado"));
+      return left(new ResourceNotFoundError("Id de usuário não encontrado"));
 
     return right({ estimator });
   }

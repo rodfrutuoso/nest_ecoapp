@@ -4,27 +4,31 @@ import { BqUserProps } from "../schemas/user";
 import { StorekeeperWithBase } from "src/domain/material-movimentation/enterprise/entities/value-objects/storekeeper-with-base";
 import { BqBaseProps } from "../schemas/base";
 import { Base } from "src/domain/material-movimentation/enterprise/entities/base";
+import { EstimatorWithContract } from "src/domain/material-movimentation/enterprise/entities/value-objects/estimator-with-contract";
+import { Contract } from "src/domain/material-movimentation/enterprise/entities/contract";
 
 type BqUserWithBaseContract = BqUserProps & {
   base?: BqBaseProps;
 };
 
 export class BqUserWithBaseContractMapper {
-  static toDomin(raw: BqUserWithBaseContract): StorekeeperWithBase | Estimator {
+  static toDomin(
+    raw: BqUserWithBaseContract
+  ): StorekeeperWithBase | EstimatorWithContract {
     if (raw.type === "Orçamentista") {
-      return Estimator.create(
-        {
-          contractId: new UniqueEntityID(raw.contractId),
-          baseId: new UniqueEntityID(raw.baseId),
-          cpf: raw.cpf,
-          email: raw.email,
-          name: raw.name,
-          password: raw.password,
-          type: raw.type,
-          status: raw.status,
-        },
-        new UniqueEntityID(raw.id)
-      );
+      return EstimatorWithContract.create({
+        contract: Contract.create(
+          { contractName: raw.contract?.contractName ?? "" },
+          new UniqueEntityID(raw.contract?.id)
+        ),
+        estimatorId: new UniqueEntityID(raw.id),
+        cpf: raw.cpf,
+        email: raw.email,
+        name: raw.name,
+        password: raw.password,
+        type: raw.type,
+        status: raw.status,
+      });
     } else {
       return StorekeeperWithBase.create({
         base: Base.create(
