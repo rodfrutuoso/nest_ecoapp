@@ -23,7 +23,7 @@ export class GetStorekeeperByIdUseCase {
   }: GetStorekeeperByIdUseCaseRequest): Promise<GetStorekeeperByIdUseCaseResponse> {
     const storekeeper = await this.storekeeperRepository.findByIdWithBase(storekeeperId);
 
-    if (!storekeeper) return left(new ResourceNotFoundError());
+    if (!storekeeper) return left(new ResourceNotFoundError("Id do almoxarife não encontrado"));
 
     return right({ storekeeper });
   }
