@@ -51,6 +51,7 @@ import { GetProjectByProjectNumberUseCase } from "src/domain/material-movimentat
 import { RegisterBudgetController } from "./controllers/material-movimentation/project-movimentation-budget/register-budget.controller";
 import { RegisterBudgetUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/register-budget";
 import { RegisterEstimatorUseCase } from "src/domain/material-movimentation/application/use-cases/users/register-estimator";
+import { VerifyUserInformationsUseCase } from "src/domain/material-movimentation/application/use-cases/users/verify-user-informations";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, DtoModule],
@@ -106,6 +107,7 @@ import { RegisterEstimatorUseCase } from "src/domain/material-movimentation/appl
     FetchBudgetByProjectNameUseCase,
     GetProjectByProjectNumberUseCase,
     RegisterBudgetUseCase,
+    VerifyUserInformationsUseCase,
   ],
 })
 export class HttpModule {}

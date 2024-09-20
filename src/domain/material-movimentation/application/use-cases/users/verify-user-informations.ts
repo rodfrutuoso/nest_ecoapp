@@ -27,7 +27,7 @@ export class VerifyUserInformationsUseCase {
   }: VerifyUserInformationsUseCaseRequest): Promise<VerifyUserInformationsResponse> {
     const user = await this.SearchEmailCpfOnAllEntities(email, cpf);
 
-    if (user) return left(new ResourceAlreadyRegisteredError());
+    if (user) return left(new ResourceAlreadyRegisteredError("Email ou CPF já cadastrado"));
 
     return right(true);
   }

@@ -44,4 +44,19 @@ export class BqEstimatorRepository implements EstimatorRepository {
 
     return result instanceof Estimator ? result : null;
   }
+
+  async findByEmailOrCpf(
+    email: string,
+    cpf: string
+  ): Promise<Estimator | null> {
+    const [estimator] = await this.bigquery.user.select({
+      where: { OR: [{ email }, { cpf }] },
+    });
+
+    if (!estimator) return null;
+
+    const result = BqUserMapper.toDomin(estimator);
+
+    return result instanceof Estimator ? result : null;
+  }
 }

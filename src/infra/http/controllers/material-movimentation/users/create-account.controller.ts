@@ -16,6 +16,7 @@ import { CreateAccountDecorator } from "src/infra/http/swagger dto and decorator
 import { CreateAccountBodyDto } from "src/infra/http/swagger dto and decorators/material-movimentation/users/dto classes/create-account.dto";
 import { WrongTypeError } from "src/domain/material-movimentation/application/use-cases/errors/wrong-type";
 import { RegisterEstimatorUseCase } from "src/domain/material-movimentation/application/use-cases/users/register-estimator";
+import { VerifyUserInformationsUseCase } from "src/domain/material-movimentation/application/use-cases/users/verify-user-informations";
 
 const createAccountBodyDto = z.object({
   name: z.string(),
@@ -32,7 +33,8 @@ const createAccountBodyDto = z.object({
 export class CreateAccountController {
   constructor(
     private registerStorekeeper: RegisterStorekeeperUseCase,
-    private registerEstimatorUseCase: RegisterEstimatorUseCase
+    private registerEstimatorUseCase: RegisterEstimatorUseCase,
+    private verifyUserInformationsUseCase: VerifyUserInformationsUseCase
   ) {}
 
   @Post()
@@ -41,7 +43,14 @@ export class CreateAccountController {
   @CreateAccountDecorator()
   async handle(@Body() body: CreateAccountBodyDto) {
     const { name, email, password, cpf, type, baseId, contractId } = body;
-    let result
+
+    const verifyUserInformations =
+      await this.verifyUserInformationsUseCase.execute({ email, cpf });
+
+    if (verifyUserInformations.isLeft())
+      throw new ConflictException(verifyUserInformations.value.message);
+
+    let result;
 
     if (type === "Orçamentista") {
       result = await this.registerEstimatorUseCase.execute({
@@ -67,8 +76,6 @@ export class CreateAccountController {
       const error = result.value;
 
       switch (error.constructor) {
-        case ResourceAlreadyRegisteredError:
-          throw new ConflictException(error.message);
         case ResourceNotFoundError:
           throw new NotFoundException(error.message);
         case WrongTypeError:

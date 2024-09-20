@@ -78,6 +78,21 @@ export class BqStorekeeperRepository implements StorekeeperRepository {
     return result instanceof Storekeeper ? result : null;
   }
 
+  async findByEmailOrCpf(
+    email: string,
+    cpf: string
+  ): Promise<Storekeeper | null> {
+    const [storekeeper] = await this.bigquery.user.select({
+      where: { OR: [{ email }, { cpf }] },
+    });
+
+    if (!storekeeper) return null;
+
+    const result = BqUserMapper.toDomin(storekeeper);
+
+    return result instanceof Storekeeper ? result : null;
+  }
+
   async findMany(
     { page }: PaginationParams,
     baseId?: string
