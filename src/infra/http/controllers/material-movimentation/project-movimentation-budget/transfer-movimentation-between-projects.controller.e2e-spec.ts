@@ -48,8 +48,10 @@ describe("Transfer Movimentation Between Projects (E2E)", () => {
   });
 
   test("[POST] /transfer-movimentation", async () => {
+    const base = await baseFactory.makeBqBase();
     const user = await storekeeperFactory.makeBqStorekeeper({
       type: "Administrador",
+      baseId: base.id,
     });
     const accessToken = jwt.sign({
       sub: user.id.toString(),
@@ -60,7 +62,6 @@ describe("Transfer Movimentation Between Projects (E2E)", () => {
 
     const projectOut = await projectFactory.makeBqProject();
     const projectIn = await projectFactory.makeBqProject();
-    const base = await baseFactory.makeBqBase();
     const material1 = await materialFactory.makeBqMaterial();
     const material2 = await materialFactory.makeBqMaterial();
     const material3 = await materialFactory.makeBqMaterial();

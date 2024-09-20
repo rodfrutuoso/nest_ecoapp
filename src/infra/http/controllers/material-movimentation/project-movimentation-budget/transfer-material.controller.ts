@@ -16,7 +16,6 @@ const transferMaterialBodySchema = z.array(
       materialId: z.string().uuid(),
       projectId: z.string().uuid(),
       observation: z.string(),
-      baseId: z.string().uuid(),
       value: z.number(),
     })
     .required()
@@ -48,7 +47,7 @@ export class TransferMaterialController {
           materialId: item.materialId,
           projectId: item.projectId,
           observation: item.observation,
-          baseId: item.baseId,
+          baseId: user.baseId,
           value: item.value,
         };
       })

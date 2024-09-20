@@ -40,7 +40,7 @@ export class FetchBudgetMovimentationByProjectController {
 
     const result = await this.fetchBudgetMovimentationByProjectUseCase.execute({
       project_number,
-      baseId: user.baseId ?? "",
+      baseId: user.baseId,
     });
 
     if (result.isLeft()) {

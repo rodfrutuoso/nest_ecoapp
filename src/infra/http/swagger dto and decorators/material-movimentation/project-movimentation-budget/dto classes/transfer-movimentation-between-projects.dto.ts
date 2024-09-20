@@ -24,11 +24,6 @@ export class TransferMovimentationBetweenProjectsBodyDto {
   })
   observation!: string;
   @ApiProperty({
-    example: "base-id",
-    description: "base's ID of the storekeeper",
-  })
-  baseId!: string;
-  @ApiProperty({
     example: 3,
     description: "value to be transfer",
   })

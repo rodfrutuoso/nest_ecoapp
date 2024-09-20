@@ -17,7 +17,6 @@ const transferMovimentationBetweenProjectsBodySchema = z.array(
       projectIdOut: z.string().uuid(),
       projectIdIn: z.string().uuid(),
       observation: z.string(),
-      baseId: z.string().uuid(),
       value: z.number(),
     })
     .required()
@@ -53,7 +52,7 @@ export class TransferMovimentationBetweenProjectsController {
           projectIdOut: item.projectIdOut,
           projectIdIn: item.projectIdIn,
           observation: item.observation,
-          baseId: item.baseId,
+          baseId: user.baseId,
           value: item.value,
         };
       })

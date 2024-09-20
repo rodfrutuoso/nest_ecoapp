@@ -41,7 +41,7 @@ export class FetchBudgetByProjectNameController {
 
     const result = await this.fetchBudgetByProjectNameUseCase.execute({
       project_number,
-      baseId: user.baseId ?? "",
+      baseId: user.baseId,
     });
 
     if (result.isLeft()) {

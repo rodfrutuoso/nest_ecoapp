@@ -43,7 +43,10 @@ describe("Transfer Material (E2E)", () => {
   });
 
   test("[POST] /movimentation", async () => {
-    const user = await storekeeperFactory.makeBqStorekeeper({});
+    const base = await baseFactory.makeBqBase();
+    const user = await storekeeperFactory.makeBqStorekeeper({
+      baseId: base.id,
+    });
 
     const accessToken = jwt.sign({
       sub: user.id.toString(),
@@ -53,7 +56,6 @@ describe("Transfer Material (E2E)", () => {
     });
 
     const project = await projectFactory.makeBqProject();
-    const base = await baseFactory.makeBqBase();
     const material = await materialFactory.makeBqMaterial();
 
     const response = await request(app.getHttpServer())
@@ -64,21 +66,18 @@ describe("Transfer Material (E2E)", () => {
           materialId: material.id.toString(),
           projectId: project.id.toString(),
           observation: "observação 1",
-          baseId: base.id.toString(),
           value: 5,
         },
         {
           materialId: material.id.toString(),
           projectId: project.id.toString(),
           observation: "observação 2",
-          baseId: base.id.toString(),
           value: 2,
         },
         {
           materialId: material.id.toString(),
           projectId: project.id.toString(),
           observation: "observação 3",
-          baseId: base.id.toString(),
           value: -1,
         },
       ]);
