@@ -7,14 +7,24 @@ import { UniqueEntityID } from "src/core/entities/unique-entity-id";
 import { makePhysicalDocument } from "test/factories/make-physical-document";
 import { ResourceAlreadyRegisteredError } from "../errors/resource-already-registered-error";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
+import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
+import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
 
+let inMemoryContractRepository: InMemoryContractRepository;
+let inMemoryBaseRepository: InMemoryBaseRepository;
 let inMemoryProjectRepository: InMemoryProjectRepository;
 let inMemoryPhysicalDocumentRepository: InMemoryPhysicalDocumentRepository;
 let sut: IdentifierAttributionUseCase;
 
 describe("attribute a identifier to a physical document", () => {
   beforeEach(() => {
-    inMemoryProjectRepository = new InMemoryProjectRepository();
+    inMemoryContractRepository = new InMemoryContractRepository();
+    inMemoryBaseRepository = new InMemoryBaseRepository(
+      inMemoryContractRepository
+    );
+    inMemoryProjectRepository = new InMemoryProjectRepository(
+      inMemoryBaseRepository
+    );
     inMemoryPhysicalDocumentRepository = new InMemoryPhysicalDocumentRepository(
       inMemoryProjectRepository
     );

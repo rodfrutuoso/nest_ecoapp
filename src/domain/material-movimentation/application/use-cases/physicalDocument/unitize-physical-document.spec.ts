@@ -3,14 +3,24 @@ import { UnitizePhysicalDocumentUseCase } from "./unitize-physical-document";
 import { InMemoryPhysicalDocumentRepository } from "../../../../../../test/repositories/in-memory-physical-document-repository";
 import { makePhysicalDocument } from "../../../../../../test/factories/make-physical-document";
 import { InMemoryProjectRepository } from "test/repositories/in-memory-project-repository";
+import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
+import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
 
+let inMemoryContractRepository: InMemoryContractRepository;
+let inMemoryBaseRepository: InMemoryBaseRepository;
 let inMemoryProjectRepository: InMemoryProjectRepository;
 let inMemoryPhysicalDocumentRepository: InMemoryPhysicalDocumentRepository;
 let sut: UnitizePhysicalDocumentUseCase;
 
 describe("Unitize PhysicalDocument", () => {
   beforeEach(() => {
-    inMemoryProjectRepository = new InMemoryProjectRepository();
+    inMemoryContractRepository = new InMemoryContractRepository();
+    inMemoryBaseRepository = new InMemoryBaseRepository(
+      inMemoryContractRepository
+    );
+    inMemoryProjectRepository = new InMemoryProjectRepository(
+      inMemoryBaseRepository
+    );
     inMemoryPhysicalDocumentRepository = new InMemoryPhysicalDocumentRepository(
       inMemoryProjectRepository
     );

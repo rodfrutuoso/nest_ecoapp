@@ -25,7 +25,9 @@ describe("Verify User Informations", () => {
     inMemoryBaseRepository = new InMemoryBaseRepository(
       inMemoryContractRepository
     );
-    inMemoryEstimatorRepository = new InMemoryEstimatorRepository();
+    inMemoryEstimatorRepository = new InMemoryEstimatorRepository(
+      inMemoryContractRepository
+    );
     inMemoryStorekeeperRepository = new InMemoryStorekeeperRepository(
       inMemoryBaseRepository
     );

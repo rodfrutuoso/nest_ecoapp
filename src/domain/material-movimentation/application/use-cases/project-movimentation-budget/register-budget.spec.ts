@@ -32,7 +32,9 @@ describe("Register Budget", () => {
       inMemoryBaseRepository
     );
     inMemoryMaterialRepository = new InMemoryMaterialRepository();
-    inMemoryEstimatorRepository = new InMemoryEstimatorRepository();
+    inMemoryEstimatorRepository = new InMemoryEstimatorRepository(
+      inMemoryContractRepository
+    );
     inMemoryBudgetRepository = new InMemoryBudgetRepository(
       inMemoryEstimatorRepository,
       inMemoryMaterialRepository,

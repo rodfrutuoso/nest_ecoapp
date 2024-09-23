@@ -4,14 +4,24 @@ import { InMemoryPhysicalDocumentRepository } from "../../../../../../test/repos
 import { makePhysicalDocument } from "../../../../../../test/factories/make-physical-document";
 import { InMemoryProjectRepository } from "test/repositories/in-memory-project-repository";
 import { makeProject } from "test/factories/make-project";
+import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
+import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
 
+let inMemoryContractRepository: InMemoryContractRepository;
+let inMemoryBaseRepository: InMemoryBaseRepository;
 let inMemoryProjectRepository: InMemoryProjectRepository;
 let inMemoryPhysicalDocumentRepository: InMemoryPhysicalDocumentRepository;
 let sut: FetchPhysicalDocumentUseCase;
 
 describe("Fetch PhysicalDocuments History", () => {
   beforeEach(() => {
-    inMemoryProjectRepository = new InMemoryProjectRepository();
+    inMemoryContractRepository = new InMemoryContractRepository();
+    inMemoryBaseRepository = new InMemoryBaseRepository(
+      inMemoryContractRepository
+    );
+    inMemoryProjectRepository = new InMemoryProjectRepository(
+      inMemoryBaseRepository
+    );
     inMemoryPhysicalDocumentRepository = new InMemoryPhysicalDocumentRepository(
       inMemoryProjectRepository
     );

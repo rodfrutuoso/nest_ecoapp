@@ -25,7 +25,9 @@ let sut: FetchBudgetByProjectNameUseCase;
 describe("Get Budget by project", () => {
   beforeEach(() => {
     inMemoryMaterialRepository = new InMemoryMaterialRepository();
-    inMemoryEstimatorRepository = new InMemoryEstimatorRepository();
+    inMemoryEstimatorRepository = new InMemoryEstimatorRepository(
+      inMemoryContractRepository
+    );
     inMemoryContractRepository = new InMemoryContractRepository();
     inMemoryBaseRepository = new InMemoryBaseRepository(
       inMemoryContractRepository

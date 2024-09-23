@@ -19,7 +19,9 @@ describe("Create project", () => {
     inMemoryBaseRepository = new InMemoryBaseRepository(
       inMemoryContractRepository
     );
-    inMemoryProjectRepository = new InMemoryProjectRepository();
+    inMemoryProjectRepository = new InMemoryProjectRepository(
+      inMemoryBaseRepository
+    );
     sut = new RegisterProjectUseCase(
       inMemoryProjectRepository,
       inMemoryBaseRepository

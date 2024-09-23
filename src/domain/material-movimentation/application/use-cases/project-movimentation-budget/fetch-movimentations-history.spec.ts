@@ -29,7 +29,9 @@ describe("Fetch Movimentations History", () => {
       inMemoryContractRepository
     );
     inMemoryMaterialRepository = new InMemoryMaterialRepository();
-    inMemoryProjectRepository = new InMemoryProjectRepository();
+    inMemoryProjectRepository = new InMemoryProjectRepository(
+      inMemoryBaseRepository
+    );
     inMemoryStorekeeperRepository = new InMemoryStorekeeperRepository(
       inMemoryBaseRepository
     );

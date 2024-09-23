@@ -28,7 +28,9 @@ describe("Transfer Material between projects", () => {
     inMemoryBaseRepository = new InMemoryBaseRepository(
       inMemoryContractRepository
     );
-    inMemoryProjectRepository = new InMemoryProjectRepository();
+    inMemoryProjectRepository = new InMemoryProjectRepository(
+      inMemoryBaseRepository
+    );
     inMemoryMaterialRepository = new InMemoryMaterialRepository();
     inMemoryStorekeeperRepository = new InMemoryStorekeeperRepository(
       inMemoryBaseRepository

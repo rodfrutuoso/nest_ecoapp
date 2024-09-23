@@ -38,7 +38,9 @@ describe("Fetch budgets and Movimentations by project", () => {
     inMemoryStorekeeperRepository = new InMemoryStorekeeperRepository(
       inMemoryBaseRepository
     );
-    inMemoryEstimatorRepository = new InMemoryEstimatorRepository();
+    inMemoryEstimatorRepository = new InMemoryEstimatorRepository(
+      inMemoryContractRepository
+    );
     inMemoryProjectRepository = new InMemoryProjectRepository(
       inMemoryBaseRepository
     );

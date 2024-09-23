@@ -20,7 +20,9 @@ let sut: AuthenticateUserUseCase;
 
 describe("authenticate storekeeper", () => {
   beforeEach(() => {
-    inMemoryEstimatorRepository = new InMemoryEstimatorRepository();
+    inMemoryEstimatorRepository = new InMemoryEstimatorRepository(
+      inMemoryContractRepository
+    );
     inMemoryContractRepository = new InMemoryContractRepository();
     inMemoryBaseRepository = new InMemoryBaseRepository(
       inMemoryContractRepository

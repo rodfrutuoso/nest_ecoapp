@@ -4,14 +4,24 @@ import { InMemoryPhysicalDocumentRepository } from "../../../../../../test/repos
 import { makePhysicalDocument } from "../../../../../../test/factories/make-physical-document";
 import { NotAllowedError } from "../errors/not-allowed-error";
 import { InMemoryProjectRepository } from "test/repositories/in-memory-project-repository";
+import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
+import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
 
+let inMemoryContractRepository: InMemoryContractRepository;
+let inMemoryBaseRepository: InMemoryBaseRepository;
 let inMemoryProjectRepository: InMemoryProjectRepository;
 let inMemoryPhysicalDocumentRepository: InMemoryPhysicalDocumentRepository;
 let sut: DeletePhysicalDocumentUseCase;
 
 describe("Delete PhysicalDocument", () => {
   beforeEach(() => {
-    inMemoryProjectRepository = new InMemoryProjectRepository();
+    inMemoryContractRepository = new InMemoryContractRepository();
+    inMemoryBaseRepository = new InMemoryBaseRepository(
+      inMemoryContractRepository
+    );
+    inMemoryProjectRepository = new InMemoryProjectRepository(
+      inMemoryBaseRepository
+    );
     inMemoryPhysicalDocumentRepository = new InMemoryPhysicalDocumentRepository(
       inMemoryProjectRepository
     );

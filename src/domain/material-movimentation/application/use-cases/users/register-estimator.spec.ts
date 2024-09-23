@@ -21,7 +21,9 @@ describe("Create estimator", () => {
     inMemoryBaseRepository = new InMemoryBaseRepository(
       inMemoryContractRepository
     );
-    inMemoryEstimatorRepository = new InMemoryEstimatorRepository();
+    inMemoryEstimatorRepository = new InMemoryEstimatorRepository(
+      inMemoryContractRepository
+    );
     fakeHasher = new FakeHasher();
     sut = new RegisterEstimatorUseCase(
       inMemoryEstimatorRepository,
