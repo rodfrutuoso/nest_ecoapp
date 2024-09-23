@@ -85,9 +85,9 @@ describe("Edit Storekeeper", () => {
   });
 
   it("sould be able to edit a storekeeper changing contractId by changing baseId", async () => {
-    const contract1 = makeContract({ contractName: "Sudoeste" });
+    const contract1 = makeContract({}, new UniqueEntityID("Sudoeste"));
     await inMemoryContractRepository.create(contract1);
-    const contract2 = makeContract({contractName: "Pernambuco"});
+    const contract2 = makeContract({}, new UniqueEntityID("Pernambuco"));
     await inMemoryContractRepository.create(contract2);
 
     const base1 = makeBase(
@@ -114,10 +114,10 @@ describe("Edit Storekeeper", () => {
     });
 
     expect(inMemoryStorekeeperRepository.items[1]).toMatchObject({
-      props: {
+      props: expect.objectContaining({
         baseId: new UniqueEntityID("Petrolina"),
-        contracitId: new UniqueEntityID("Pernumabuco"),
-      },
+        contractId: new UniqueEntityID("Pernambuco"),
+      }),
     });
   });
 });
