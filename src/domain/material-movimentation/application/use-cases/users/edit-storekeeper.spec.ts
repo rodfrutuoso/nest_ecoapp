@@ -44,7 +44,8 @@ describe("Edit Storekeeper", () => {
 
     await sut.execute({
       authorId: author.id.toString(),
-      storekeeperId: storekeeper.id.toString(),
+      storekeeper: storekeeper,
+      authorType: author.type,
       baseId: "Vitória da Conquista",
       password: "123456",
     });
@@ -74,7 +75,8 @@ describe("Edit Storekeeper", () => {
 
     const result = await sut.execute({
       authorId: author.id.toString(),
-      storekeeperId: storekeeper.id.toString(),
+      storekeeper: storekeeper,
+      authorType: author.type,
       baseId: "Vitória da Conquista",
     });
 
@@ -109,7 +111,8 @@ describe("Edit Storekeeper", () => {
 
     await sut.execute({
       authorId: author.id.toString(),
-      storekeeperId: storekeeper.id.toString(),
+      storekeeper: storekeeper,
+      authorType: author.type,
       baseId: "Petrolina",
     });
 

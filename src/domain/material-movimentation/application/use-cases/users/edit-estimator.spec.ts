@@ -6,7 +6,6 @@ import { UniqueEntityID } from "src/core/entities/unique-entity-id";
 import { FakeHasher } from "test/cryptography/fake-hasher";
 import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
 import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
-import { makeBase } from "test/factories/make-base";
 import { makeContract } from "test/factories/make-contract";
 import { NotAllowedError } from "../errors/not-allowed-error";
 
@@ -33,7 +32,7 @@ describe("Edit Estimator", () => {
     );
   });
 
-  it("sould be able to edit a estimator", async () => {
+  it("Should be able to edit a estimator", async () => {
     const contract = makeContract(
       {},
       new UniqueEntityID("Vitória da Conquista")
@@ -45,7 +44,8 @@ describe("Edit Estimator", () => {
 
     await sut.execute({
       authorId: estimator.id.toString(),
-      estimatorId: estimator.id.toString(),
+      estimator: estimator,
+      authorType: estimator.type,
       contractId: "Vitória da Conquista",
       password: "123456",
     });
@@ -63,7 +63,7 @@ describe("Edit Estimator", () => {
     ).toBe(true);
   });
 
-  it("sould not be able to edit a estimator if the author is not 'Administrador' or itself", async () => {
+  it("Should not be able to edit a estimator if the author is not 'Administrador' or itself", async () => {
     const contract = makeContract(
       {},
       new UniqueEntityID("Vitória da Conquista")
@@ -79,8 +79,9 @@ describe("Edit Estimator", () => {
     await inMemoryEstimatorRepository.create(estimator);
 
     const result = await sut.execute({
+      estimator: estimator,
       authorId: author.id.toString(),
-      estimatorId: estimator.id.toString(),
+      authorType: author.type,
       contractId: "Vitória da Conquista",
     });
 

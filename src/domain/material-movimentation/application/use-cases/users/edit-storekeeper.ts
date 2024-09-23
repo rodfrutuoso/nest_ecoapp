@@ -8,10 +8,12 @@ import { HashGenerator } from "../../cryptography/hash-generator";
 import { BaseRepository } from "../../repositories/base-repository";
 import { UserType } from "src/core/types/user-type";
 import { Base } from "src/domain/material-movimentation/enterprise/entities/base";
+import { Storekeeper } from "src/domain/material-movimentation/enterprise/entities/storekeeper";
 
 interface EditStorekeeperUseCaseRequest {
-  storekeeperId: string;
+  storekeeper: Storekeeper;
   authorId: string;
+  authorType: string;
   type?: string;
   baseId?: string;
   status?: string;
@@ -32,29 +34,16 @@ export class EditStorekeeperUseCase {
   ) {}
 
   async execute({
-    storekeeperId,
+    storekeeper,
     authorId,
+    authorType,
     type,
     baseId,
     status,
     password,
   }: EditStorekeeperUseCaseRequest): Promise<EditStorekeeperResponse> {
-    const author = await this.storekeeperRepository.findById(authorId);
-
-    if (!author)
-      return left(new ResourceNotFoundError("authorId não encontrado"));
-
-    if (author.type != "Administrador" && authorId !== storekeeperId)
+    if (authorType != "Administrador" && authorId !== storekeeper.id.toString())
       return left(new NotAllowedError());
-
-    const storekeeper = await this.storekeeperRepository.findById(
-      storekeeperId
-    );
-
-    if (!storekeeper)
-      return left(
-        new ResourceNotFoundError("id do usuário editado não encontrado")
-      );
 
     let base: Base | null = null;
     if (baseId) {

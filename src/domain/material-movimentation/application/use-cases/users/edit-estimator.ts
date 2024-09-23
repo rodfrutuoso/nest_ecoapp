@@ -7,10 +7,12 @@ import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 import { HashGenerator } from "../../cryptography/hash-generator";
 import { ContractRepository } from "../../repositories/contract-repository";
 import { UserType } from "src/core/types/user-type";
+import { Estimator } from "src/domain/material-movimentation/enterprise/entities/estimator";
 
 interface EditEstimatorUseCaseRequest {
-  estimatorId: string;
+  estimator: Estimator;
   authorId: string;
+  authorType: string;
   type?: string;
   contractId?: string;
   status?: string;
@@ -31,27 +33,16 @@ export class EditEstimatorUseCase {
   ) {}
 
   async execute({
-    estimatorId,
+    estimator,
     authorId,
+    authorType,
     type,
     contractId,
     status,
     password,
   }: EditEstimatorUseCaseRequest): Promise<EditEstimatorResponse> {
-    const author = await this.estimatorRepository.findById(authorId);
-
-    if (!author)
-      return left(new ResourceNotFoundError("authorId não encontrado"));
-
-    if (author.type !== "Administrador" && authorId !== estimatorId)
+    if (authorType !== "Administrador" && authorId !== estimator.id.toString())
       return left(new NotAllowedError());
-
-    const estimator = await this.estimatorRepository.findById(estimatorId);
-
-    if (!estimator)
-      return left(
-        new ResourceNotFoundError("id do usuário editado não encontrado")
-      );
 
     if (contractId) {
       const contract = await this.contractRepository.findById(contractId);

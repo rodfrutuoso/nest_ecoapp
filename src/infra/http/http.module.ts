@@ -53,6 +53,8 @@ import { RegisterBudgetUseCase } from "src/domain/material-movimentation/applica
 import { RegisterEstimatorUseCase } from "src/domain/material-movimentation/application/use-cases/users/register-estimator";
 import { VerifyUserInformationsUseCase } from "src/domain/material-movimentation/application/use-cases/users/verify-user-informations";
 import { GetEstimatorByIdUseCase } from "src/domain/material-movimentation/application/use-cases/users/get-estimator-by-id";
+import { EditEstimatorUseCase } from "src/domain/material-movimentation/application/use-cases/users/edit-estimator";
+import { VerifyAuthorTypeUseCase } from "src/domain/material-movimentation/application/use-cases/users/verify-author-type";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, DtoModule],
@@ -92,6 +94,8 @@ import { GetEstimatorByIdUseCase } from "src/domain/material-movimentation/appli
     GetStorekeeperByIdUseCase,
     GetEstimatorByIdUseCase,
     EditStorekeeperUseCase,
+    EditEstimatorUseCase,
+    VerifyAuthorTypeUseCase,
     DeleteStorekeeperUseCase,
     FetchStorekeeperUseCase,
     RegisterContractUseCase,

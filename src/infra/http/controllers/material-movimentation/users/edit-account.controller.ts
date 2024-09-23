@@ -16,6 +16,9 @@ import { ResourceNotFoundError } from "src/domain/material-movimentation/applica
 import { ApiTags } from "@nestjs/swagger";
 import { EditAccountDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/users/response decorators/edit-account.decorator";
 import { EditAccountBodyDto } from "src/infra/http/swagger dto and decorators/material-movimentation/users/dto classes/edit-account.dto";
+import { EditEstimatorUseCase } from "src/domain/material-movimentation/application/use-cases/users/edit-estimator";
+import { VerifyAuthorTypeUseCase } from "src/domain/material-movimentation/application/use-cases/users/verify-author-type";
+import { Storekeeper } from "src/domain/material-movimentation/enterprise/entities/storekeeper";
 
 const editAccountBodyDto = z.object({
   status: z.string().optional(),
@@ -28,7 +31,11 @@ const editAccountBodyDto = z.object({
 @ApiTags("user")
 @Controller("/accounts/:id")
 export class EditAccountController {
-  constructor(private editStorekeeper: EditStorekeeperUseCase) {}
+  constructor(
+    private editStorekeeper: EditStorekeeperUseCase,
+    private editEstimator: EditEstimatorUseCase,
+    private verifyAuthorType: VerifyAuthorTypeUseCase
+  ) {}
 
   @Put()
   @HttpCode(201)
@@ -40,15 +47,44 @@ export class EditAccountController {
     @Param("id") userId: string
   ) {
     const { password, status, type, baseId, contractId } = body;
+    let result;
 
-    const result = await this.editStorekeeper.execute({
-      storekeeperId: userId,
+    const resultVerify = await this.verifyAuthorType.execute({
       authorId: user.sub,
-      type,
-      baseId,
-      status,
-      password,
+      userId,
     });
+
+    if (resultVerify.isLeft()) {
+      const error = resultVerify.value;
+
+      switch (error.constructor) {
+        case ResourceNotFoundError:
+          throw new NotFoundException();
+        default:
+          throw new BadRequestException();
+      }
+    }
+
+    if (resultVerify.value.user instanceof Storekeeper)
+      result = await this.editStorekeeper.execute({
+        storekeeper: resultVerify.value.user,
+        authorId: resultVerify.value.author.id.toString(),
+        authorType: resultVerify.value.author.type,
+        type,
+        baseId,
+        status,
+        password,
+      });
+    else
+      result = await this.editEstimator.execute({
+        estimator: resultVerify.value.user,
+        authorId: resultVerify.value.author.id.toString(),
+        authorType: resultVerify.value.author.type,
+        type,
+        contractId,
+        status,
+        password,
+      });
 
     if (result.isLeft()) {
       const error = result.value;
