@@ -80,4 +80,12 @@ export class InMemoryEstimatorRepository implements EstimatorRepository {
 
     this.items[itemIndex] = estimator;
   }
+
+  async delete(estimatorId: string) {
+    const itemIndex = this.items.findIndex(
+      (item) => item.id.toString() == estimatorId
+    );
+
+    this.items.splice(itemIndex, 1);
+  }
 }

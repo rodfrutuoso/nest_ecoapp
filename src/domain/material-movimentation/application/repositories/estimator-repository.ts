@@ -14,4 +14,5 @@ export abstract class EstimatorRepository {
     cpf: string
   ): Promise<Estimator | null>;
   abstract save(estimator: Estimator): Promise<void>;
+  abstract delete(estimatorId: string): Promise<void>;
 }

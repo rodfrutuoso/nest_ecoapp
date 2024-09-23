@@ -87,4 +87,8 @@ export class BqEstimatorRepository implements EstimatorRepository {
       where: { id: estimator.id.toString() },
     });
   }
+
+  async delete(estimatorId: string): Promise<void> {
+    await this.bigquery.user.delete({ id: estimatorId });
+  }
 }
