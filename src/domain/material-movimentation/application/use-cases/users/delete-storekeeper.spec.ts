@@ -31,11 +31,11 @@ describe("Delete Storekeeper", () => {
     await inMemoryStorekeeperRepository.create(storekeeper);
 
     const result = await sut.execute({
-      authorId: author.id.toString(),
+      authorType: author.type,
       storekeeperId: storekeeper.id.toString(),
     });
 
-    expect(result.isRight()).toBeTruthy()
+    expect(result.isRight()).toBeTruthy();
     expect(inMemoryStorekeeperRepository.items).toHaveLength(1); // there'll be only the author
   });
 
@@ -47,7 +47,7 @@ describe("Delete Storekeeper", () => {
     await inMemoryStorekeeperRepository.create(storekeeper);
 
     const result = await sut.execute({
-      authorId: author.id.toString(),
+      authorType: author.type,
       storekeeperId: storekeeper.id.toString(),
     });
 

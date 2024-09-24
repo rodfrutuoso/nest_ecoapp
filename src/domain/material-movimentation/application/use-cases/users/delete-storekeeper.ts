@@ -6,7 +6,7 @@ import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 
 interface DeleteStorekeeperUseCaseRequest {
   storekeeperId: string;
-  authorId: string;
+  authorType: string;
 }
 
 type DeleteStorekeeperResponse = Eihter<
@@ -20,19 +20,9 @@ export class DeleteStorekeeperUseCase {
 
   async execute({
     storekeeperId,
-    authorId,
+    authorType,
   }: DeleteStorekeeperUseCaseRequest): Promise<DeleteStorekeeperResponse> {
-    const author = await this.storekeeperRepository.findById(authorId);
-
-    if (!author) return left(new ResourceNotFoundError()); //throw new Error("usuário não encontrado");
-
-    if (author.type != "Administrador") return left(new NotAllowedError());
-
-    const storekeeper = await this.storekeeperRepository.findById(
-      storekeeperId
-    );
-
-    if (!storekeeper) return left(new ResourceNotFoundError());
+    if (authorType != "Administrador") return left(new NotAllowedError());
 
     await this.storekeeperRepository.delete(storekeeperId);
 
