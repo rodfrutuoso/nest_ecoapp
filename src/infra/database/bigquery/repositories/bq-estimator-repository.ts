@@ -5,6 +5,7 @@ import { BqUserMapper } from "../mappers/bq-user-mapper";
 import { BigQueryService } from "../bigquery.service";
 import { EstimatorWithContract } from "src/domain/material-movimentation/enterprise/entities/value-objects/estimator-with-contract";
 import { BqUserWithBaseContractMapper } from "../mappers/bq-user-with-base-contract-mapper";
+import { PaginationParams } from "src/core/repositories/pagination-params";
 
 @Injectable()
 export class BqEstimatorRepository implements EstimatorRepository {
@@ -90,5 +91,36 @@ export class BqEstimatorRepository implements EstimatorRepository {
 
   async delete(estimatorId: string): Promise<void> {
     await this.bigquery.user.delete({ id: estimatorId });
+  }
+
+  async findManyWithContract(
+    { page }: PaginationParams,
+    contractId?: string,
+    name?: string
+  ): Promise<EstimatorWithContract[]> {
+    const pageCount = 40;
+
+    const storekeepers = await this.bigquery.user.select({
+      where: { contractId },
+      like: { name },
+      limit: pageCount,
+      offset: pageCount * (page - 1),
+      orderBy: { column: "cpf", direction: "ASC" },
+      include: {
+        contract: {
+          join: { table: "contract", on: "user.contractId = contract.id" },
+          relationType: "one-to-one",
+        },
+      },
+    });
+
+    const storekeepersDomain = storekeepers.map(
+      BqUserWithBaseContractMapper.toDomin
+    );
+    const result = storekeepersDomain.filter(
+      (storekeeper) => storekeeper instanceof EstimatorWithContract
+    );
+
+    return result;
   }
 }

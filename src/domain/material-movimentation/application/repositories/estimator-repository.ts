@@ -1,3 +1,4 @@
+import { PaginationParams } from "src/core/repositories/pagination-params";
 import { Estimator } from "../../enterprise/entities/estimator";
 import { EstimatorWithContract } from "../../enterprise/entities/value-objects/estimator-with-contract";
 
@@ -15,4 +16,9 @@ export abstract class EstimatorRepository {
   ): Promise<Estimator | null>;
   abstract save(estimator: Estimator): Promise<void>;
   abstract delete(estimatorId: string): Promise<void>;
+  abstract findManyWithContract(
+    params: PaginationParams,
+    contractId?: string,
+    name?: string
+  ): Promise<EstimatorWithContract[]>;
 }

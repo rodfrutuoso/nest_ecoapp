@@ -17,7 +17,7 @@
 - create fetch budgets (by list of projects and returning just found projects) []
 - create register estimator [x]
 - create update estimator [x]
-- create delete estimator []
+- create delete estimator [x]
 - create fetch estimators []
 - ajust user controllers to chose use case by type []
 - create regex to register project []

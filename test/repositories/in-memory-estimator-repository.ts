@@ -2,6 +2,7 @@ import { EstimatorWithContract } from "src/domain/material-movimentation/enterpr
 import { EstimatorRepository } from "../../src/domain/material-movimentation/application/repositories/estimator-repository";
 import { Estimator } from "../../src/domain/material-movimentation/enterprise/entities/estimator";
 import { InMemoryContractRepository } from "./in-memory-contract-repository";
+import { PaginationParams } from "src/core/repositories/pagination-params";
 
 export class InMemoryEstimatorRepository implements EstimatorRepository {
   public items: Estimator[] = [];
@@ -87,5 +88,42 @@ export class InMemoryEstimatorRepository implements EstimatorRepository {
     );
 
     this.items.splice(itemIndex, 1);
+  }
+
+  async findManyWithContract(
+    { page }: PaginationParams,
+    contractId?: string,
+    name?: string
+  ): Promise<EstimatorWithContract[]> {
+    const estimators = this.items
+      .filter(
+        (estimator) =>
+          !contractId || estimator.contractId.toString() === contractId
+      )
+      .filter((estimator) => !name || estimator.name.includes(name))
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .slice((page - 1) * 40, page * 40)
+      .map((estimator) => {
+        const contract = this.contractRepository.items.find(
+          (contract) => contract.id === estimator.contractId
+        );
+
+        if (!contract) {
+          throw new Error(`contract ${estimator.contractId} does not exist.`);
+        }
+
+        return EstimatorWithContract.create({
+          estimatorId: estimator.id,
+          name: estimator.name,
+          email: estimator.email,
+          cpf: estimator.cpf,
+          type: estimator.type,
+          contract: contract,
+          status: estimator.status,
+          password: estimator.password,
+        });
+      });
+
+    return estimators;
   }
 }
