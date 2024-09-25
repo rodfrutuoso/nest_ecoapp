@@ -90,4 +90,8 @@ export class BqUserRepository implements UserRepository {
 
     return BqUserMapper.toDomain(user);
   }
+
+  async delete(userId: string): Promise<void> {
+    await this.bigquery.user.delete({ id: userId });
+  }
 }
