@@ -142,6 +142,8 @@ Authorization: Bearer {{authToken}}
 
 # @name fetch_physical_documents
 GET {{baseURL}}/physical-documents
+?identifier=3
+&projectId=44e9fa57-e4fd-4c41-a7d6-c456cc75ea98
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 

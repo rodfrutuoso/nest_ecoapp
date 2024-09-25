@@ -40,7 +40,7 @@ describe("authenticate storekeeper", () => {
     );
   });
 
-  it("Sould be able to authenticate a storekeeper", async () => {
+  it("should be able to authenticate a storekeeper", async () => {
     const storekeeper = makeStorekeeper({
       email: "rodrigo@ecoeletrica.com",
       password: await fakeHasher.hash("123456"),
@@ -59,7 +59,7 @@ describe("authenticate storekeeper", () => {
     });
   });
 
-  it("Sould be able to authenticate a estimator", async () => {
+  it("should be able to authenticate a estimator", async () => {
     const estimator = makeEstimator({
       email: "rodrigo@ecoeletrica.com",
       password: await fakeHasher.hash("123456"),
@@ -78,7 +78,7 @@ describe("authenticate storekeeper", () => {
     });
   });
 
-  it("Sould not be able to authenticate a storekeeper with wrong password", async () => {
+  it("should not be able to authenticate a storekeeper with wrong password", async () => {
     const storekeeper = makeStorekeeper({
       email: "rodrigo@ecoeletrica.com",
       password: await fakeHasher.hash("123456"),

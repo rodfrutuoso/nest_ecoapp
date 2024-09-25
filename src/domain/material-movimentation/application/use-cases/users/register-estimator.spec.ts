@@ -32,7 +32,7 @@ describe("Create estimator", () => {
     );
   });
 
-  it("Sould be able to register a estimator", async () => {
+  it("should be able to register a estimator", async () => {
     const contract = makeContract();
     await inMemoryContractRepository.create(contract);
 
@@ -58,7 +58,7 @@ describe("Create estimator", () => {
     expect(inMemoryEstimatorRepository.items[0].id).toBeTruthy();
   });
 
-  it("Sould not be able to register a estimator if contractId does not exist", async () => {
+  it("should not be able to register a estimator if contractId does not exist", async () => {
     const result = await sut.execute({
       name: "Rodrigo",
       email: "rodrigo@ecoeletrica.com.br",
@@ -72,7 +72,7 @@ describe("Create estimator", () => {
     expect(result.value).toBeInstanceOf(ResourceNotFoundError);
   });
 
-  it("Sould not be able to register a estimator if type is not valid", async () => {
+  it("should not be able to register a estimator if type is not valid", async () => {
     const contract = makeContract();
     await inMemoryContractRepository.create(contract);
 

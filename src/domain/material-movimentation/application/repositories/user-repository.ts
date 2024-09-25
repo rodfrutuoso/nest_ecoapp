@@ -14,4 +14,8 @@ export abstract class UserRepository {
     contractId?: string,
     name?: string
   ): Promise<UserWithBaseContract[]>;
+  abstract findByIds(
+    userIds: string[]
+  ): Promise<Array<Storekeeper | Estimator>>;
+  abstract save(user: Storekeeper | Estimator): Promise<void>;
 }

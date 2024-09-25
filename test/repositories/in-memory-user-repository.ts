@@ -99,4 +99,16 @@ export class InMemoryUserRepository implements UserRepository {
 
     return users;
   }
+
+  async findByIds(ids: string[]): Promise<Array<Estimator | Storekeeper>> {
+    const user = this.items.filter((item) => ids.includes(item.id.toString()));
+
+    return user;
+  }
+
+  async save(user: Storekeeper | Estimator) {
+    const itemIndex = this.items.findIndex((item) => item.id == user.id);
+
+    this.items[itemIndex] = user;
+  }
 }

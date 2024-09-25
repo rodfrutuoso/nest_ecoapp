@@ -23,7 +23,7 @@ describe("Delete Estimator", () => {
     sut = new DeleteEstimatorUseCase(inMemoryEstimatorRepository);
   });
 
-  it("sould be able to delete a estimator", async () => {
+  it("should be able to delete a estimator", async () => {
     const estimator = makeEstimator();
     await inMemoryEstimatorRepository.create(estimator);
 
@@ -36,7 +36,7 @@ describe("Delete Estimator", () => {
     expect(inMemoryEstimatorRepository.items).toHaveLength(0); // there'll be only the author
   });
 
-  it("sould not be able to delete a estimator if the author is not 'Administrador'", async () => {
+  it("should not be able to delete a estimator if the author is not 'Administrador'", async () => {
     const estimator = makeEstimator();
     await inMemoryEstimatorRepository.create(estimator);
 

@@ -32,7 +32,7 @@ describe("Edit Storekeeper", () => {
     );
   });
 
-  it("sould be able to edit a storekeeper", async () => {
+  it("should be able to edit a storekeeper", async () => {
     const base = makeBase({}, new UniqueEntityID("Vitória da Conquista"));
     await inMemoryBaseRepository.create(base);
 
@@ -63,7 +63,7 @@ describe("Edit Storekeeper", () => {
     ).toBe(true);
   });
 
-  it("sould not be able to edit a storekeeper if the author is not 'Administrador'", async () => {
+  it("should not be able to edit a storekeeper if the author is not 'Administrador'", async () => {
     const base = makeBase({}, new UniqueEntityID("Vitória da Conquista"));
     await inMemoryBaseRepository.create(base);
 
@@ -86,7 +86,7 @@ describe("Edit Storekeeper", () => {
     );
   });
 
-  it("sould be able to edit a storekeeper changing contractId by changing baseId", async () => {
+  it("should be able to edit a storekeeper changing contractId by changing baseId", async () => {
     const contract1 = makeContract({}, new UniqueEntityID("Sudoeste"));
     await inMemoryContractRepository.create(contract1);
     const contract2 = makeContract({}, new UniqueEntityID("Pernambuco"));

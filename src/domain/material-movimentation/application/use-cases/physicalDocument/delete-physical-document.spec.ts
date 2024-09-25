@@ -28,7 +28,7 @@ describe("Delete PhysicalDocument", () => {
     sut = new DeletePhysicalDocumentUseCase(inMemoryPhysicalDocumentRepository);
   });
 
-  it("sould be able to delete a physicaldocument", async () => {
+  it("should be able to delete a physicaldocument", async () => {
     const physicaldocument = makePhysicalDocument();
 
     await inMemoryPhysicalDocumentRepository.create(physicaldocument);

@@ -28,7 +28,7 @@ describe("Create project", () => {
     );
   });
 
-  it("Sould be able to create a project", async () => {
+  it("should be able to create a project", async () => {
     const base = makeBase();
     await inMemoryBaseRepository.create(base);
 
@@ -48,7 +48,7 @@ describe("Create project", () => {
     expect(inMemoryProjectRepository.items[0].id).toBeTruthy();
   });
 
-  it("Sould not be able to create a project if project_number is already registered", async () => {
+  it("should not be able to create a project if project_number is already registered", async () => {
     const base = makeBase();
     await inMemoryBaseRepository.create(base);
 
@@ -70,7 +70,7 @@ describe("Create project", () => {
     expect(result.value).toBeInstanceOf(ResourceAlreadyRegisteredError);
   });
 
-  it("Sould not be able to create a project if baseId is not found", async () => {
+  it("should not be able to create a project if baseId is not found", async () => {
     const result = await sut.execute({
       project_number: "B-10101010",
       description: "fazenda-num-sei-das-quantas-POV-onde-judas-perdeu-as-botas",

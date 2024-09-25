@@ -5,7 +5,7 @@ import { StorekeeperWithBase } from "../../enterprise/entities/value-objects/sto
 export abstract class StorekeeperRepository {
   abstract create(Storekeeper: Storekeeper): Promise<void>;
   abstract delete(StorekeeperId: string): Promise<void>;
-  abstract save(torekeeper: Storekeeper): Promise<void>;
+  abstract save(storekeeper: Storekeeper): Promise<void>;
   abstract findById(storekeeperId: string): Promise<Storekeeper | null>;
   abstract findByIdWithBase(
     storekeeperId: string

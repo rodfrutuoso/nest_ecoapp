@@ -24,7 +24,7 @@ Para configurar o ambiente para esses testes, todos os arquivos `spec` contém u
 Além disso, quando necessário criar entidades de suporte para testar um caso de uso utilizamos um script de criação aleatória com as funções que começam com _make_. Segue exemplo abaixo:
 
 ```typescript
-it("Sould be able to authenticate a storekeeper", async () => {
+it("should be able to authenticate a storekeeper", async () => {
   const storekeeper = makeStorekeeper({
     email: "rodrigo@ecoeletrica.com",
     password: await fakeHasher.hash("123456"),

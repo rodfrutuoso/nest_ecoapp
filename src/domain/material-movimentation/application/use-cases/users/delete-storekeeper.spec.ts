@@ -23,7 +23,7 @@ describe("Delete Storekeeper", () => {
     sut = new DeleteStorekeeperUseCase(inMemoryStorekeeperRepository);
   });
 
-  it("sould be able to delete a storekeeper", async () => {
+  it("should be able to delete a storekeeper", async () => {
     const storekeeper = makeStorekeeper();
     const author = makeStorekeeper({ type: "Administrador" });
 
@@ -39,7 +39,7 @@ describe("Delete Storekeeper", () => {
     expect(inMemoryStorekeeperRepository.items).toHaveLength(1); // there'll be only the author
   });
 
-  it("sould not be able to delete a storekeeper if the author is not 'Administrador'", async () => {
+  it("should not be able to delete a storekeeper if the author is not 'Administrador'", async () => {
     const storekeeper = makeStorekeeper();
     const author = makeStorekeeper({ type: "Almoxarife" });
 

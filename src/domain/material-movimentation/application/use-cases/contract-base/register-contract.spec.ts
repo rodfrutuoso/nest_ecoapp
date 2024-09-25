@@ -12,7 +12,7 @@ describe("Register Contract", () => {
     sut = new RegisterContractUseCase(inMemoryContractRepository);
   });
 
-  it("sould be able to register a contract", async () => {
+  it("should be able to register a contract", async () => {
     const result = await sut.execute({
       contractName: "Celpe",
     });
@@ -21,7 +21,7 @@ describe("Register Contract", () => {
     expect(inMemoryContractRepository.items[0].contractName).toEqual("Celpe");
   });
 
-  it("Sould not be able to register a contract if contractName is already registered", async () => {
+  it("should not be able to register a contract if contractName is already registered", async () => {
     await sut.execute({
       contractName: "Celpe",
     });

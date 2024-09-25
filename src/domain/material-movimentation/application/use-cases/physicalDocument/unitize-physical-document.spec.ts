@@ -29,7 +29,7 @@ describe("Unitize PhysicalDocument", () => {
     );
   });
 
-  it("sould be able to unitize a physicaldocument", async () => {
+  it("should be able to unitize a physicaldocument", async () => {
     const physicaldocument = makePhysicalDocument({ unitized: false });
 
     await inMemoryPhysicalDocumentRepository.create(physicaldocument);

@@ -24,7 +24,7 @@ describe("Create Base", () => {
     );
   });
 
-  it("sould be able to create a base", async () => {
+  it("should be able to create a base", async () => {
     const contract = makeContract();
     await inMemoryContractRepository.create(contract);
 
@@ -42,7 +42,7 @@ describe("Create Base", () => {
     );
   });
 
-  it("Sould not be able to register a base if baseName is already registered", async () => {
+  it("should not be able to register a base if baseName is already registered", async () => {
     const contract = makeContract();
     await inMemoryContractRepository.create(contract);
 
@@ -58,7 +58,7 @@ describe("Create Base", () => {
     expect(result.value).toBeInstanceOf(ResourceAlreadyRegisteredError);
   });
 
-  it("Sould not be able to register a base if contract is not found", async () => {
+  it("should not be able to register a base if contract is not found", async () => {
     const contract = makeContract();
     await inMemoryContractRepository.create(contract);
 

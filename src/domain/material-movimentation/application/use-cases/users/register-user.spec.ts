@@ -35,7 +35,7 @@ describe("Create user", () => {
     );
   });
 
-  it("Sould be able to register a storekeeper", async () => {
+  it("should be able to register a storekeeper", async () => {
     const contract = makeContract();
     await inMemoryContractRepository.create(contract);
 
@@ -62,7 +62,7 @@ describe("Create user", () => {
     expect(inMemoryUserRepository.items[0].id).toBeTruthy();
   });
 
-  it("Sould be able to register a estimator", async () => {
+  it("should be able to register a estimator", async () => {
     const contract = makeContract();
     await inMemoryContractRepository.create(contract);
 
@@ -89,7 +89,7 @@ describe("Create user", () => {
     expect(inMemoryUserRepository.items[0].id).toBeTruthy();
   });
 
-  it("Sould not be able to register a user if baseId does not exist", async () => {
+  it("should not be able to register a user if baseId does not exist", async () => {
     const result = await sut.execute({
       name: "Rodrigo",
       email: "rodrigo@ecoeletrica.com.br",
@@ -104,7 +104,7 @@ describe("Create user", () => {
     expect(result.value).toBeInstanceOf(ResourceNotFoundError);
   });
 
-  it("Sould not be able to register a user if type is not valid", async () => {
+  it("should not be able to register a user if type is not valid", async () => {
     const contract = makeContract();
     await inMemoryContractRepository.create(contract);
 
@@ -125,7 +125,7 @@ describe("Create user", () => {
     expect(result.value).toBeInstanceOf(WrongTypeError);
   });
 
-  it("Sould not be able to register a user if contractId is not equal to contractId of informed base", async () => {
+  it("should not be able to register a user if contractId is not equal to contractId of informed base", async () => {
     const contract = makeContract();
     await inMemoryContractRepository.create(contract);
 

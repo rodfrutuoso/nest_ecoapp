@@ -31,7 +31,7 @@ describe("Create storekeeper", () => {
     );
   });
 
-  it("Sould be able to register a storekeeper", async () => {
+  it("should be able to register a storekeeper", async () => {
     const base = makeBase();
     await inMemoryBaseRepository.create(base);
 
@@ -55,7 +55,7 @@ describe("Create storekeeper", () => {
   });
 
   
-  it("Sould not be able to register a storekeeper if baseId does not exist", async () => {
+  it("should not be able to register a storekeeper if baseId does not exist", async () => {
     const result = await sut.execute({
       name: "Rodrigo",
       email: "rodrigo@ecoeletrica.com.br",
@@ -69,7 +69,7 @@ describe("Create storekeeper", () => {
     expect(result.value).toBeInstanceOf(ResourceNotFoundError);
   });
 
-  it("Sould not be able to register a storekeeper if type is not valid", async () => {
+  it("should not be able to register a storekeeper if type is not valid", async () => {
     const base = makeBase();
     await inMemoryBaseRepository.create(base);
 
