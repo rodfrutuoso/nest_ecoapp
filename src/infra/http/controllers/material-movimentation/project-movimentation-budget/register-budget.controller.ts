@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException } from "@nestjs/common";
+import { BadRequestException, NotFoundException } from "@nestjs/common";
 import { Body, Controller, HttpCode, Post } from "@nestjs/common";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
@@ -15,7 +15,6 @@ const registerBudgetBodySchema = z.array(
     .object({
       materialId: z.string().uuid(),
       projectId: z.string().uuid(),
-      contractId: z.string().uuid(),
       value: z.number(),
     })
     .required()
@@ -46,7 +45,7 @@ export class RegisterBudgetController {
           estimatorId: user.sub,
           materialId: item.materialId,
           projectId: item.projectId,
-          contractId: item.contractId,
+          contractId: user.contractId,
           value: item.value,
         };
       })
@@ -57,7 +56,7 @@ export class RegisterBudgetController {
 
       switch (error.constructor) {
         case ResourceNotFoundError:
-          throw new ConflictException(error.message);
+          throw new NotFoundException(error.message);
         default:
           throw new BadRequestException();
       }

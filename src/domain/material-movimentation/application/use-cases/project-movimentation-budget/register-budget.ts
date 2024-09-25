@@ -3,15 +3,16 @@ import { Eihter, left, right } from "../../../../../core/either";
 import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
 import { Budget } from "../../../enterprise/entities/budget";
 import { BudgetRepository } from "../../repositories/budget-repository";
-import { EstimatorRepository } from "../../repositories/estimator-repository";
+import { UserRepository } from "../../repositories/user-repository";
 import { MaterialRepository } from "../../repositories/material-repository";
 import { ProjectRepository } from "../../repositories/project-repository";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
-import { Estimator } from "src/domain/material-movimentation/enterprise/entities/estimator";
 import { Material } from "src/domain/material-movimentation/enterprise/entities/material";
 import { Project } from "src/domain/material-movimentation/enterprise/entities/project";
 import { ContractRepository } from "../../repositories/contract-repository";
 import { Contract } from "src/domain/material-movimentation/enterprise/entities/contract";
+import { Estimator } from "src/domain/material-movimentation/enterprise/entities/estimator";
+import { Storekeeper } from "src/domain/material-movimentation/enterprise/entities/storekeeper";
 
 interface RegisterBudgetUseCaseRequest {
   estimatorId: string;
@@ -32,7 +33,7 @@ type RegisterBudgetResponse = Eihter<
 export class RegisterBudgetUseCase {
   constructor(
     private budgetRepository: BudgetRepository,
-    private estimatorRepository: EstimatorRepository,
+    private userRepository: UserRepository,
     private materialRepository: MaterialRepository,
     private projectRepository: ProjectRepository,
     private contractRepository: ContractRepository
@@ -75,7 +76,7 @@ export class RegisterBudgetUseCase {
       ))
     ) {
       containsIdError = true;
-      message = "pelo menos um dos estimatorIds não encontrado";
+      message = "pelo menos um dos userIds não encontrado";
     }
 
     if (
@@ -111,11 +112,15 @@ export class RegisterBudgetUseCase {
       key
     );
 
-    let result: Estimator[] | Material[] | Project[] | Contract[] = [];
+    let result:
+      | Array<Estimator | Storekeeper>
+      | Material[]
+      | Project[]
+      | Contract[] = [];
 
     switch (key) {
       case "estimatorId":
-        result = await this.estimatorRepository.findByIds(uniqueValuesArray);
+        result = await this.userRepository.findByIds(uniqueValuesArray);
         break;
       case "materialId":
         result = await this.materialRepository.findByIds(uniqueValuesArray);

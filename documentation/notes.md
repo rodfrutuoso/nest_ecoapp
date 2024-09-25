@@ -1,6 +1,6 @@
 # Technical debt
 
-- Create a away to migrate the schemas of "/src/infra/database/bigquery/schemas" from files to tables on bigquery
+- Create a away to migrate the schemas of "/src/infra/database/bigquery/schemas" from files to tables on bigquery []
 - Verify if DDD errors are communicating to nest exception errors [x]
 - budget fetch use cases needs contractId on search [X]
 - transfer-material needs verification if parameters exists [x]
@@ -11,7 +11,7 @@
 - in fetch materials extract contractId by the accessToken [x]
 - create 'edited by' and 'edited at' fields on budget entity [x]
 - create get project by project_number [x]
-- create register budgets []
+- create register budgets [x]
 - create get budgets by project_number []
 - create update budget (this use case will create lines new budgets for that project) []
 - create fetch budgets (by list of projects and returning just found projects) []
@@ -23,7 +23,7 @@
 - create regex to register project []
 - adjust create estimator/storekeeper to insert contractId and baseId correctly [x]
 - exclude baseId from transfer Material and contract Id from Register Budget [x]
-- change physical document fetch by project_number instead of projectId
+- change physical document fetch by project_number instead of projectId []
 
 # Test 1 file
 

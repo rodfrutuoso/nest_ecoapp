@@ -1,13 +1,13 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { InMemoryBudgetRepository } from "../../../../../../test/repositories/in-memory-budget-repository";
-import { InMemoryEstimatorRepository } from "test/repositories/in-memory-estimator-repository";
+import { InMemoryUserRepository } from "test/repositories/in-memory-user-repository";
 import { InMemoryMaterialRepository } from "test/repositories/in-memory-material-repository";
 import { InMemoryProjectRepository } from "test/repositories/in-memory-project-repository";
 import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
 import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
 import { makeProject } from "test/factories/make-project";
 import { UniqueEntityID } from "src/core/entities/unique-entity-id";
-import { makeEstimator } from "test/factories/make-estimator";
+import { makeUser } from "test/factories/make-user";
 import { makeMaterial } from "test/factories/make-material";
 import { makeBase } from "test/factories/make-base";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
@@ -16,7 +16,7 @@ import { makeContract } from "test/factories/make-contract";
 
 let inMemoryContractRepository: InMemoryContractRepository;
 let inMemoryBaseRepository: InMemoryBaseRepository;
-let inMemoryEstimatorRepository: InMemoryEstimatorRepository;
+let inMemoryUserRepository: InMemoryUserRepository;
 let inMemoryMaterialRepository: InMemoryMaterialRepository;
 let inMemoryProjectRepository: InMemoryProjectRepository;
 let inMemoryBudgetRepository: InMemoryBudgetRepository;
@@ -32,11 +32,12 @@ describe("Register Budget", () => {
       inMemoryBaseRepository
     );
     inMemoryMaterialRepository = new InMemoryMaterialRepository();
-    inMemoryEstimatorRepository = new InMemoryEstimatorRepository(
+    inMemoryUserRepository = new InMemoryUserRepository(
+      inMemoryBaseRepository,
       inMemoryContractRepository
     );
     inMemoryBudgetRepository = new InMemoryBudgetRepository(
-      inMemoryEstimatorRepository,
+      inMemoryUserRepository,
       inMemoryMaterialRepository,
       inMemoryProjectRepository,
       inMemoryContractRepository,
@@ -44,7 +45,7 @@ describe("Register Budget", () => {
     );
     sut = new RegisterBudgetUseCase(
       inMemoryBudgetRepository,
-      inMemoryEstimatorRepository,
+      inMemoryUserRepository,
       inMemoryMaterialRepository,
       inMemoryProjectRepository,
       inMemoryContractRepository
@@ -70,11 +71,8 @@ describe("Register Budget", () => {
     );
     await inMemoryMaterialRepository.create(material);
 
-    const estimator = makeEstimator(
-      { contractId: contract.id },
-      new UniqueEntityID("5")
-    );
-    await inMemoryEstimatorRepository.create(estimator);
+    const user = makeUser({ contractId: contract.id }, new UniqueEntityID("5"));
+    await inMemoryUserRepository.create(user);
 
     const result = await sut.execute([
       {
@@ -94,7 +92,7 @@ describe("Register Budget", () => {
     expect(inMemoryBudgetRepository.items[0].id).toBeTruthy();
   });
 
-  it("should not be able to transfer a material if informed Ids are not found", async () => {
+  it("should not be able to register budgets if informed Ids are not found", async () => {
     const result = await sut.execute([
       {
         projectId: "1",
