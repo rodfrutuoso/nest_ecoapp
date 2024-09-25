@@ -18,4 +18,5 @@ export abstract class UserRepository {
     userIds: string[]
   ): Promise<Array<Storekeeper | Estimator>>;
   abstract save(user: Storekeeper | Estimator): Promise<void>;
+  abstract findByEmail(email: string): Promise<Storekeeper | Estimator | null>;
 }

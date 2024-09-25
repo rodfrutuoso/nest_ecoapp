@@ -1,52 +1,47 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { InMemoryStorekeeperRepository } from "../../../../../../test/repositories/in-memory-storekeeper-repository";
+import { InMemoryUserRepository } from "../../../../../../test/repositories/in-memory-user-repository";
 import { FakeHasher } from "test/cryptography/fake-hasher";
 import { FakeEncrypter } from "test/cryptography/fake-encrypter";
 import { AuthenticateUserUseCase } from "./authenticate-user";
-import { makeStorekeeper } from "test/factories/make-storekeeper";
 import { WrogCredentialsError } from "../errors/wrong-credentials";
 import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
 import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
-import { InMemoryEstimatorRepository } from "test/repositories/in-memory-estimator-repository";
-import { makeEstimator } from "test/factories/make-estimator";
+import { makeUser } from "test/factories/make-user";
 
-let inMemoryEstimatorRepository: InMemoryEstimatorRepository;
+let inMemoryUserRepository: InMemoryUserRepository;
 let inMemoryContractRepository: InMemoryContractRepository;
 let inMemoryBaseRepository: InMemoryBaseRepository;
-let inMemoryStorekeeperRepository: InMemoryStorekeeperRepository;
 let fakeHasher: FakeHasher;
 let fakeEncrypter: FakeEncrypter;
 let sut: AuthenticateUserUseCase;
 
 describe("authenticate storekeeper", () => {
   beforeEach(() => {
-    inMemoryEstimatorRepository = new InMemoryEstimatorRepository(
-      inMemoryContractRepository
-    );
     inMemoryContractRepository = new InMemoryContractRepository();
     inMemoryBaseRepository = new InMemoryBaseRepository(
       inMemoryContractRepository
     );
-    inMemoryStorekeeperRepository = new InMemoryStorekeeperRepository(
-      inMemoryBaseRepository
+    inMemoryUserRepository = new InMemoryUserRepository(
+      inMemoryBaseRepository,
+      inMemoryContractRepository
     );
     fakeHasher = new FakeHasher();
     fakeEncrypter = new FakeEncrypter();
     sut = new AuthenticateUserUseCase(
-      inMemoryStorekeeperRepository,
-      inMemoryEstimatorRepository,
+      inMemoryUserRepository,
       fakeHasher,
       fakeEncrypter
     );
   });
 
   it("should be able to authenticate a storekeeper", async () => {
-    const storekeeper = makeStorekeeper({
+    const user = makeUser({
       email: "rodrigo@ecoeletrica.com",
       password: await fakeHasher.hash("123456"),
+      type: "Almoxarife",
     });
 
-    await inMemoryStorekeeperRepository.create(storekeeper);
+    await inMemoryUserRepository.create(user);
 
     const result = await sut.execute({
       email: "rodrigo@ecoeletrica.com",
@@ -60,12 +55,13 @@ describe("authenticate storekeeper", () => {
   });
 
   it("should be able to authenticate a estimator", async () => {
-    const estimator = makeEstimator({
+    const user = makeUser({
       email: "rodrigo@ecoeletrica.com",
       password: await fakeHasher.hash("123456"),
+      type: "Orçamentista",
     });
 
-    await inMemoryEstimatorRepository.create(estimator);
+    await inMemoryUserRepository.create(user);
 
     const result = await sut.execute({
       email: "rodrigo@ecoeletrica.com",
@@ -79,12 +75,12 @@ describe("authenticate storekeeper", () => {
   });
 
   it("should not be able to authenticate a storekeeper with wrong password", async () => {
-    const storekeeper = makeStorekeeper({
+    const user = makeUser({
       email: "rodrigo@ecoeletrica.com",
       password: await fakeHasher.hash("123456"),
     });
 
-    await inMemoryStorekeeperRepository.create(storekeeper);
+    await inMemoryUserRepository.create(user);
 
     const result = await sut.execute({
       email: "rodrigo@ecoeletrica.com",

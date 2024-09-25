@@ -6,7 +6,9 @@ import { Storekeeper } from "src/domain/material-movimentation/enterprise/entiti
 import { UserWithBaseContract } from "src/domain/material-movimentation/enterprise/entities/value-objects/user-with-base-contract";
 import { BqUserMapper } from "../mappers/bq-user-mapper";
 import { BqUserWithBaseContractMapper } from "../mappers/bq-user-with-base-contract-mapper";
+import { Injectable } from "@nestjs/common";
 
+@Injectable()
 export class BqUserRepository implements UserRepository {
   constructor(private bigquery: BigQueryService) {}
   async create(user: Storekeeper | Estimator): Promise<void> {
@@ -77,5 +79,15 @@ export class BqUserRepository implements UserRepository {
       data: BqUserMapper.toBigquery(user),
       where: { id: user.id.toString() },
     });
+  }
+
+  async findByEmail(email: string): Promise<Storekeeper | Estimator | null> {
+    const [user] = await this.bigquery.user.select({
+      where: { email },
+    });
+
+    if (!user) return null;
+
+    return BqUserMapper.toDomain(user);
   }
 }

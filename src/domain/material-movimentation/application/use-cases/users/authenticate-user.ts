@@ -2,9 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { Eihter, left, right } from "../../../../../core/either";
 import { Encrypter } from "../../cryptography/encrypter";
 import { HashComparer } from "../../cryptography/hash-comperer";
-import { StorekeeperRepository } from "../../repositories/storekeeper-repository";
 import { WrogCredentialsError } from "../errors/wrong-credentials";
-import { EstimatorRepository } from "../../repositories/estimator-repository";
+import { UserRepository } from "../../repositories/user-repository";
 
 interface AuthenticateUserUseCaseRequest {
   email: string;
@@ -21,8 +20,7 @@ type AuthenticateUserResponse = Eihter<
 @Injectable()
 export class AuthenticateUserUseCase {
   constructor(
-    private storekeeperRepository: StorekeeperRepository,
-    private estimatorRepository: EstimatorRepository,
+    private userRepository: UserRepository,
     private hashComprarer: HashComparer,
     private encrypter: Encrypter
   ) {}
@@ -31,7 +29,7 @@ export class AuthenticateUserUseCase {
     email,
     password,
   }: AuthenticateUserUseCaseRequest): Promise<AuthenticateUserResponse> {
-    const user = await this.SearchOnAllEntities(email);
+    const user = await this.userRepository.findByEmail(email);
 
     if (!user) return left(new WrogCredentialsError());
 
@@ -50,15 +48,5 @@ export class AuthenticateUserUseCase {
     });
 
     return right({ accessToken });
-  }
-
-  private async SearchOnAllEntities(email) {
-    const storekeeper = await this.storekeeperRepository.findByEmail(email);
-    if (storekeeper) return storekeeper;
-
-    const estimator = await this.estimatorRepository.findByEmail(email);
-    if (estimator) return estimator;
-
-    return null;
   }
 }

@@ -18,11 +18,14 @@ import { PhysicalDocumentRepository } from "src/domain/material-movimentation/ap
 import { ProjectRepository } from "src/domain/material-movimentation/application/repositories/project-repository";
 import { EstimatorRepository } from "src/domain/material-movimentation/application/repositories/estimator-repository";
 import { BqEstimatorRepository } from "./bigquery/repositories/bq-estimator-repository";
+import { UserRepository } from "src/domain/material-movimentation/application/repositories/user-repository";
+import { BqUserRepository } from "./bigquery/repositories/bq-user-repository";
 
 @Module({
   imports: [BigQueryModule],
   exports: [
     BigQueryModule,
+    { provide: UserRepository, useClass: BqUserRepository },
     { provide: StorekeeperRepository, useClass: BqStorekeeperRepository },
     { provide: EstimatorRepository, useClass: BqEstimatorRepository },
     { provide: MaterialRepository, useClass: BqMaterialRepository },
@@ -37,6 +40,7 @@ import { BqEstimatorRepository } from "./bigquery/repositories/bq-estimator-repo
     { provide: ProjectRepository, useClass: BqProjectRepository },
   ],
   providers: [
+    { provide: UserRepository, useClass: BqUserRepository },
     { provide: StorekeeperRepository, useClass: BqStorekeeperRepository },
     { provide: EstimatorRepository, useClass: BqEstimatorRepository },
     { provide: MaterialRepository, useClass: BqMaterialRepository },

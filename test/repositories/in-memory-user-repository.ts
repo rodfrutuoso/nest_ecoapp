@@ -111,4 +111,12 @@ export class InMemoryUserRepository implements UserRepository {
 
     this.items[itemIndex] = user;
   }
+
+  async findByEmail(email: string): Promise<Storekeeper | Estimator | null> {
+    const user = this.items.find((item) => item.email.toString() === email);
+
+    if (!user) return null;
+
+    return user;
+  }
 }
