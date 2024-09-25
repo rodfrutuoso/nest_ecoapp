@@ -9,15 +9,10 @@ import { FetchMaterialController } from "./controllers/material-movimentation/ma
 import { CreateMaterialUseCase } from "src/domain/material-movimentation/application/use-cases/material/create-material";
 import { FetchMaterialUseCase } from "src/domain/material-movimentation/application/use-cases/material/fetch-material";
 import { AuthenticateUserUseCase } from "src/domain/material-movimentation/application/use-cases/users/authenticate-user";
-import { RegisterStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/register-storekeeper";
 import { GetAccountByidController } from "./controllers/material-movimentation/users/get-account-by-id.controller";
-import { GetAccountByidUseCase } from "src/domain/material-movimentation/application/use-cases/users/get-storekeeper-by-id";
 import { EditAccountController } from "./controllers/material-movimentation/users/edit-account.controller";
-import { EditStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/edit-storekeeper";
-import { DeleteStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/delete-storekeeper";
 import { DeleteAccountController } from "./controllers/material-movimentation/users/delete-account.controller";
 import { FetchAccountsController } from "./controllers/material-movimentation/users/fetch-accounts.controller";
-import { FetchStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/fetch-storekeeper";
 import { RegisterContractController } from "./controllers/material-movimentation/contract-base/register-contract.controller";
 import { RegisterContractUseCase } from "src/domain/material-movimentation/application/use-cases/contract-base/register-contract";
 import { FetchContractController } from "./controllers/material-movimentation/contract-base/fetch-contracts.controller";
@@ -50,12 +45,6 @@ import { GetProjectByProjectNumberController } from "./controllers/material-movi
 import { GetProjectByProjectNumberUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/get-project-by-project_number";
 import { RegisterBudgetController } from "./controllers/material-movimentation/project-movimentation-budget/register-budget.controller";
 import { RegisterBudgetUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/register-budget";
-import { RegisterEstimatorUseCase } from "src/domain/material-movimentation/application/use-cases/users/register-estimator";
-import { VerifyUserInformationsUseCase } from "src/domain/material-movimentation/application/use-cases/users/verify-user-informations";
-import { GetEstimatorByIdUseCase } from "src/domain/material-movimentation/application/use-cases/users/get-estimator-by-id";
-import { EditEstimatorUseCase } from "src/domain/material-movimentation/application/use-cases/users/edit-estimator";
-import { VerifyAuthorTypeUseCase } from "src/domain/material-movimentation/application/use-cases/users/verify-author-type";
-import { DeleteEstimatorUseCase } from "src/domain/material-movimentation/application/use-cases/users/delete-estimator";
 import { GetUserByIdUseCase } from "src/domain/material-movimentation/application/use-cases/users/get-user-by-id";
 import { FetchUserUseCase } from "src/domain/material-movimentation/application/use-cases/users/fetch-user";
 import { EditUserUseCase } from "src/domain/material-movimentation/application/use-cases/users/edit-user";
@@ -94,11 +83,9 @@ import { RegisterUserUseCase } from "src/domain/material-movimentation/applicati
     CreateMaterialUseCase,
     FetchMaterialUseCase,
     AuthenticateUserUseCase,
-    VerifyUserInformationsUseCase,
     RegisterUserUseCase,
     GetUserByIdUseCase,
     EditUserUseCase,
-    VerifyAuthorTypeUseCase,
     DeleteUserUseCase,
     FetchUserUseCase,
     RegisterContractUseCase,
