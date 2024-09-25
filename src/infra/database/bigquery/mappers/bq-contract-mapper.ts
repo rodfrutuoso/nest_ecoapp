@@ -3,7 +3,7 @@ import { BqContractProps } from "../schemas/contract";
 import { UniqueEntityID } from "src/core/entities/unique-entity-id";
 
 export class BqContractMapper {
-  static toDomin(raw: BqContractProps): Contract {
+  static toDomain(raw: BqContractProps): Contract {
     return Contract.create(
       {
         contractName: raw.contractName,

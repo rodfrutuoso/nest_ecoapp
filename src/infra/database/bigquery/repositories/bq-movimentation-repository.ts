@@ -20,7 +20,7 @@ export class BqMovimentationRepository implements MovimentationRepository {
     });
 
     const movimentationsMapped = movimentations.map(
-      BqMovimentationMapper.toDomin
+      BqMovimentationMapper.toDomain
     );
 
     return movimentationsMapped;
@@ -66,7 +66,7 @@ export class BqMovimentationRepository implements MovimentationRepository {
     });
 
     const movimentationsMapped = movimentations.map(
-      BqMovimentationWithDetailsMapper.toDomin
+      BqMovimentationWithDetailsMapper.toDomain
     );
 
     return movimentationsMapped;
@@ -92,7 +92,7 @@ export class BqMovimentationRepository implements MovimentationRepository {
       orderBy: { column: "materialId", direction: "ASC" },
     });
 
-    return movimentations.map(BqMovimentationMapper.toDomin);
+    return movimentations.map(BqMovimentationMapper.toDomain);
   }
 
   async findManyHistoryWithDetails(
@@ -145,7 +145,7 @@ export class BqMovimentationRepository implements MovimentationRepository {
       },
     });
 
-    return movimentations.map(BqMovimentationWithDetailsMapper.toDomin);
+    return movimentations.map(BqMovimentationWithDetailsMapper.toDomain);
   }
 
   async create(movimentations: Movimentation[]): Promise<void> {

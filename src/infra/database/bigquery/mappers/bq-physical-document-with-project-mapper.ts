@@ -4,7 +4,7 @@ import { BqPhysicalDocumentProps } from "../schemas/physical-document";
 import { Project } from "src/domain/material-movimentation/enterprise/entities/project";
 
 export class BqPhysicalDocumentWithProjectMapper {
-  static toDomin(raw: BqPhysicalDocumentProps): PhysicalDocumentWithProject {
+  static toDomain(raw: BqPhysicalDocumentProps): PhysicalDocumentWithProject {
     return PhysicalDocumentWithProject.create({
       physicalDocumentId: new UniqueEntityID(raw.id),
       identifier: raw.identifier,

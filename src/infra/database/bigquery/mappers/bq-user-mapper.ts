@@ -5,7 +5,7 @@ import { BqUserProps } from "../schemas/user";
 import { UserType } from "src/core/types/user-type";
 
 export class BqUserMapper {
-  static toDomin(raw: BqUserProps): Storekeeper | Estimator {
+  static toDomain(raw: BqUserProps): Storekeeper | Estimator {
     if (raw.type === "Orçamentista") {
       return Estimator.create(
         {

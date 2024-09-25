@@ -3,7 +3,7 @@ import { BqMovimentationProps } from "../schemas/movimentation";
 import { UniqueEntityID } from "src/core/entities/unique-entity-id";
 
 export class BqMovimentationMapper {
-  static toDomin(raw: BqMovimentationProps): Movimentation {
+  static toDomain(raw: BqMovimentationProps): Movimentation {
     return Movimentation.create(
       {
         projectId: new UniqueEntityID(raw.projectId),

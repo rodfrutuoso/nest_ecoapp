@@ -3,7 +3,7 @@ import { BqProjectProps } from "../schemas/project";
 import { UniqueEntityID } from "src/core/entities/unique-entity-id";
 
 export class BqProjectMapper {
-  static toDomin(raw: BqProjectProps): Project {
+  static toDomain(raw: BqProjectProps): Project {
     return Project.create(
       {
         baseId: new UniqueEntityID(raw.baseId),

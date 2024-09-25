@@ -8,7 +8,7 @@ import { Contract } from "src/domain/material-movimentation/enterprise/entities/
 import { UserType } from "src/core/types/user-type";
 
 export class BqBudgetWithDetailsMapper {
-  static toDomin(raw: BqBudgetProps): BudgetWithDetails {
+  static toDomain(raw: BqBudgetProps): BudgetWithDetails {
     let userType: UserType = "Orçamentista";
     if (raw.user?.type && BqBudgetWithDetailsMapper.isUserType(raw.user.type)) {
       userType = raw.user.type;

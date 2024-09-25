@@ -161,7 +161,7 @@ Essa [classe](../bigquery/bigqueryMethods.ts) reúne todas as operações entre 
       },
     });
 
-    return movimentations.map(BqMovimentationWithDetailsMapper.toDomin);
+    return movimentations.map(BqMovimentationWithDetailsMapper.toDomain);
   }
   ```
 

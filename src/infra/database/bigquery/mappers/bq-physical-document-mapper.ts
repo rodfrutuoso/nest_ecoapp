@@ -3,7 +3,7 @@ import { BqPhysicalDocumentProps } from "../schemas/physical-document";
 import { UniqueEntityID } from "src/core/entities/unique-entity-id";
 
 export class BqPhysicalDocumentMapper {
-  static toDomin(raw: BqPhysicalDocumentProps): PhysicalDocument {
+  static toDomain(raw: BqPhysicalDocumentProps): PhysicalDocument {
     return PhysicalDocument.create(
       {
         projectId: new UniqueEntityID(raw.projectId),

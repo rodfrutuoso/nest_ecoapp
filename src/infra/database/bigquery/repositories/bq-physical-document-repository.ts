@@ -26,7 +26,7 @@ export class BqPhysicalDocumentRepository
 
     if (!physicalDocument) return null;
 
-    return BqPhysicalDocumentMapper.toDomin(physicalDocument);
+    return BqPhysicalDocumentMapper.toDomain(physicalDocument);
   }
 
   async findByID(id: string): Promise<PhysicalDocument | null> {
@@ -36,7 +36,7 @@ export class BqPhysicalDocumentRepository
 
     if (!physicalDocument) return null;
 
-    return BqPhysicalDocumentMapper.toDomin(physicalDocument);
+    return BqPhysicalDocumentMapper.toDomain(physicalDocument);
   }
 
   async save(physicalDocument: PhysicalDocument): Promise<void> {
@@ -60,7 +60,7 @@ export class BqPhysicalDocumentRepository
       orderBy: { column: "identifier", direction: "ASC" },
     });
 
-    return physicalDocuments.map(BqPhysicalDocumentMapper.toDomin);
+    return physicalDocuments.map(BqPhysicalDocumentMapper.toDomain);
   }
 
   async findManyWithProject(
@@ -86,7 +86,7 @@ export class BqPhysicalDocumentRepository
       },
     });
 
-    return physicalDocuments.map(BqPhysicalDocumentWithProjectMapper.toDomin);
+    return physicalDocuments.map(BqPhysicalDocumentWithProjectMapper.toDomain);
   }
 
   async delete(physicalDocumentId: string): Promise<void> {

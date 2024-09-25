@@ -3,7 +3,7 @@ import { BqBaseProps } from "../schemas/base";
 import { UniqueEntityID } from "src/core/entities/unique-entity-id";
 
 export class BqBaseMapper {
-  static toDomin(raw: BqBaseProps): Base {
+  static toDomain(raw: BqBaseProps): Base {
     return Base.create(
       {
         baseName: raw.baseName,

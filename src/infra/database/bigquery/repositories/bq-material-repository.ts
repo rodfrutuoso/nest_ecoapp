@@ -22,7 +22,7 @@ export class BqMaterialRepository implements MaterialRepository {
 
     if (!material) return null;
 
-    return BqMaterialMapper.toDomin(material);
+    return BqMaterialMapper.toDomain(material);
   }
 
   async findByCodeWithoutContract(code: number): Promise<Material | null> {
@@ -32,7 +32,7 @@ export class BqMaterialRepository implements MaterialRepository {
 
     if (!material) return null;
 
-    return BqMaterialMapper.toDomin(material);
+    return BqMaterialMapper.toDomain(material);
   }
 
   async findByIds(ids: string[]): Promise<Material[]> {
@@ -40,7 +40,7 @@ export class BqMaterialRepository implements MaterialRepository {
       whereIn: { id: ids },
     });
 
-    return materials.map(BqMaterialMapper.toDomin);
+    return materials.map(BqMaterialMapper.toDomain);
   }
 
   async findMany(
@@ -60,6 +60,6 @@ export class BqMaterialRepository implements MaterialRepository {
       orderBy: { column: "code", direction: "ASC" },
     });
 
-    return materials.map(BqMaterialMapper.toDomin);
+    return materials.map(BqMaterialMapper.toDomain);
   }
 }

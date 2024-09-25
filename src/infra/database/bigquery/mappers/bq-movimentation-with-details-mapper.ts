@@ -8,7 +8,7 @@ import { Base } from "src/domain/material-movimentation/enterprise/entities/base
 import { UserType } from "src/core/types/user-type";
 
 export class BqMovimentationWithDetailsMapper {
-  static toDomin(raw: BqMovimentationProps): MovimentationWithDetails {
+  static toDomain(raw: BqMovimentationProps): MovimentationWithDetails {
     let userType: UserType = "Almoxarife";
     if (
       raw.user?.type &&

@@ -19,7 +19,7 @@ export class BqProjectRepository implements ProjectRepository {
 
     if (!project) return null;
 
-    return BqProjectMapper.toDomin(project);
+    return BqProjectMapper.toDomain(project);
   }
 
   async findByProjectNumberAndContractId(
@@ -37,7 +37,7 @@ export class BqProjectRepository implements ProjectRepository {
 
     if (!project) return null;
 
-    return BqProjectMapper.toDomin(project);
+    return BqProjectMapper.toDomain(project);
   }
 
   async findByProjectNumberWithoutBase(
@@ -49,7 +49,7 @@ export class BqProjectRepository implements ProjectRepository {
 
     if (!project) return null;
 
-    return BqProjectMapper.toDomin(project);
+    return BqProjectMapper.toDomain(project);
   }
 
   async findByID(id: string): Promise<Project | null> {
@@ -59,7 +59,7 @@ export class BqProjectRepository implements ProjectRepository {
 
     if (!project) return null;
 
-    return BqProjectMapper.toDomin(project);
+    return BqProjectMapper.toDomain(project);
   }
 
   async findByIds(ids: string[]): Promise<Project[]> {
@@ -67,7 +67,7 @@ export class BqProjectRepository implements ProjectRepository {
       whereIn: { id: ids },
     });
 
-    return projects.map(BqProjectMapper.toDomin);
+    return projects.map(BqProjectMapper.toDomain);
   }
 
   async create(project: Project): Promise<void> {

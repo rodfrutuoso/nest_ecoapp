@@ -11,8 +11,8 @@ import { BqUserWithBaseContractMapper } from "../mappers/bq-user-with-base-contr
 export class BqStorekeeperRepository implements StorekeeperRepository {
   constructor(private bigquery: BigQueryService) {}
 
-  async create(Storekeeper: Storekeeper): Promise<void> {
-    await this.bigquery.user.create([BqUserMapper.toBigquery(Storekeeper)]);
+  async create(storekeeper: Storekeeper): Promise<void> {
+    await this.bigquery.user.create([BqUserMapper.toBigquery(storekeeper)]);
   }
 
   async delete(StorekeeperId: string): Promise<void> {
@@ -33,7 +33,7 @@ export class BqStorekeeperRepository implements StorekeeperRepository {
 
     if (!storekeeper) return null;
 
-    const result = BqUserMapper.toDomin(storekeeper);
+    const result = BqUserMapper.toDomain(storekeeper);
     return result instanceof Storekeeper ? result : null;
   }
 
@@ -52,7 +52,7 @@ export class BqStorekeeperRepository implements StorekeeperRepository {
 
     if (!storekeeper) return null;
 
-    const result = BqUserWithBaseContractMapper.toDomin(storekeeper);
+    const result = BqUserWithBaseContractMapper.toDomain(storekeeper);
     return result instanceof StorekeeperWithBase ? result : null;
   }
 
@@ -62,7 +62,7 @@ export class BqStorekeeperRepository implements StorekeeperRepository {
     });
 
     return storekeepers
-      .map(BqUserMapper.toDomin)
+      .map(BqUserMapper.toDomain)
       .filter((storekeeper) => storekeeper instanceof Storekeeper);
   }
 
@@ -73,7 +73,7 @@ export class BqStorekeeperRepository implements StorekeeperRepository {
 
     if (!storekeeper) return null;
 
-    const result = BqUserMapper.toDomin(storekeeper);
+    const result = BqUserMapper.toDomain(storekeeper);
 
     return result instanceof Storekeeper ? result : null;
   }
@@ -88,7 +88,7 @@ export class BqStorekeeperRepository implements StorekeeperRepository {
 
     if (!storekeeper) return null;
 
-    const result = BqUserMapper.toDomin(storekeeper);
+    const result = BqUserMapper.toDomain(storekeeper);
 
     return result instanceof Storekeeper ? result : null;
   }
@@ -106,7 +106,7 @@ export class BqStorekeeperRepository implements StorekeeperRepository {
       orderBy: { column: "cpf", direction: "ASC" },
     });
 
-    const storekeepersDomain = storekeepers.map(BqUserMapper.toDomin);
+    const storekeepersDomain = storekeepers.map(BqUserMapper.toDomain);
     const result = storekeepersDomain.filter(
       (storekeeper) => storekeeper instanceof Storekeeper
     );
@@ -136,7 +136,7 @@ export class BqStorekeeperRepository implements StorekeeperRepository {
     });
 
     const storekeepersDomain = storekeepers.map(
-      BqUserWithBaseContractMapper.toDomin
+      BqUserWithBaseContractMapper.toDomain
     );
     const result = storekeepersDomain.filter(
       (storekeeper) => storekeeper instanceof StorekeeperWithBase

@@ -22,7 +22,7 @@ export class BqEstimatorRepository implements EstimatorRepository {
 
     if (!estimator) return null;
 
-    const result = BqUserMapper.toDomin(estimator);
+    const result = BqUserMapper.toDomain(estimator);
     return result instanceof Estimator ? result : null;
   }
 
@@ -41,7 +41,7 @@ export class BqEstimatorRepository implements EstimatorRepository {
 
     if (!estimator) return null;
 
-    const result = BqUserWithBaseContractMapper.toDomin(estimator);
+    const result = BqUserWithBaseContractMapper.toDomain(estimator);
     return result instanceof EstimatorWithContract ? result : null;
   }
 
@@ -51,7 +51,7 @@ export class BqEstimatorRepository implements EstimatorRepository {
     });
 
     return estimators
-      .map(BqUserMapper.toDomin)
+      .map(BqUserMapper.toDomain)
       .filter((estimator) => estimator instanceof Estimator);
   }
 
@@ -62,7 +62,7 @@ export class BqEstimatorRepository implements EstimatorRepository {
 
     if (!estimator) return null;
 
-    const result = BqUserMapper.toDomin(estimator);
+    const result = BqUserMapper.toDomain(estimator);
 
     return result instanceof Estimator ? result : null;
   }
@@ -77,7 +77,7 @@ export class BqEstimatorRepository implements EstimatorRepository {
 
     if (!estimator) return null;
 
-    const result = BqUserMapper.toDomin(estimator);
+    const result = BqUserMapper.toDomain(estimator);
 
     return result instanceof Estimator ? result : null;
   }
@@ -115,7 +115,7 @@ export class BqEstimatorRepository implements EstimatorRepository {
     });
 
     const storekeepersDomain = storekeepers.map(
-      BqUserWithBaseContractMapper.toDomin
+      BqUserWithBaseContractMapper.toDomain
     );
     const result = storekeepersDomain.filter(
       (storekeeper) => storekeeper instanceof EstimatorWithContract

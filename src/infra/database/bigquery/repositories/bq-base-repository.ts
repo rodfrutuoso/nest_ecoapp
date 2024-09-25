@@ -24,7 +24,7 @@ export class BqBaseRepository implements BaseRepository {
 
     if (!base) return null;
 
-    return BqBaseMapper.toDomin(base);
+    return BqBaseMapper.toDomain(base);
   }
 
   async findManyByContractId(contractId: string): Promise<Base[]> {
@@ -32,7 +32,7 @@ export class BqBaseRepository implements BaseRepository {
       where: { contractId },
     });
 
-    return bases.map(BqBaseMapper.toDomin);
+    return bases.map(BqBaseMapper.toDomain);
   }
 
   async findById(baseId: string): Promise<Base | null> {
@@ -42,7 +42,7 @@ export class BqBaseRepository implements BaseRepository {
 
     if (!base) return null;
 
-    return BqBaseMapper.toDomin(base);
+    return BqBaseMapper.toDomain(base);
   }
 
   async findByIds(baseIds: string[]): Promise<Base[]> {
@@ -50,7 +50,7 @@ export class BqBaseRepository implements BaseRepository {
       whereIn: { id: baseIds },
     });
 
-    return bases.map(BqBaseMapper.toDomin);
+    return bases.map(BqBaseMapper.toDomain);
   }
 
   async findMany({ page }: PaginationParams): Promise<Base[]> {
@@ -62,7 +62,7 @@ export class BqBaseRepository implements BaseRepository {
       orderBy: { column: "baseName", direction: "ASC" },
     });
 
-    return bases.map(BqBaseMapper.toDomin);
+    return bases.map(BqBaseMapper.toDomain);
   }
 
   async findManyWithContract({
@@ -82,6 +82,6 @@ export class BqBaseRepository implements BaseRepository {
       },
     });
 
-    return bases.map(BqBaseWithContractMapper.toDomin);
+    return bases.map(BqBaseWithContractMapper.toDomain);
   }
 }

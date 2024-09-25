@@ -3,7 +3,7 @@ import { BqBudgetProps } from "../schemas/budget";
 import { UniqueEntityID } from "src/core/entities/unique-entity-id";
 
 export class BqBudgetMapper {
-  static toDomin(raw: BqBudgetProps): Budget {
+  static toDomain(raw: BqBudgetProps): Budget {
     return Budget.create(
       {
         projectId: new UniqueEntityID(raw.projectId),

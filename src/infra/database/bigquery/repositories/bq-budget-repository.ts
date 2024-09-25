@@ -15,7 +15,7 @@ export class BqBudgetRepository implements BudgetRepository {
       where: { projectId },
     });
 
-    const budgetsMapped = budgets.map(BqBudgetMapper.toDomin);
+    const budgetsMapped = budgets.map(BqBudgetMapper.toDomain);
 
     return budgetsMapped;
   }
@@ -60,7 +60,7 @@ export class BqBudgetRepository implements BudgetRepository {
       },
     });
 
-    const budgetsMapped = budgets.map(BqBudgetWithDetailsMapper.toDomin);
+    const budgetsMapped = budgets.map(BqBudgetWithDetailsMapper.toDomain);
 
     return budgetsMapped;
   }

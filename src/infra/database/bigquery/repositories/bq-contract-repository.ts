@@ -22,7 +22,7 @@ export class BqContractRepository implements ContractRepository {
 
     if (!contract) return null;
 
-    return BqContractMapper.toDomin(contract);
+    return BqContractMapper.toDomain(contract);
   }
 
   async findById(contractId: string): Promise<Contract | null> {
@@ -32,7 +32,7 @@ export class BqContractRepository implements ContractRepository {
 
     if (!contract) return null;
 
-    return BqContractMapper.toDomin(contract);
+    return BqContractMapper.toDomain(contract);
   }
 
   async findByIds(contractIds: string[]): Promise<Contract[]> {
@@ -40,7 +40,7 @@ export class BqContractRepository implements ContractRepository {
       whereIn: { id: contractIds },
     });
 
-    return contracts.map(BqContractMapper.toDomin);
+    return contracts.map(BqContractMapper.toDomain);
   }
 
   async findMany({ page }: PaginationParams): Promise<Contract[]> {
@@ -52,6 +52,6 @@ export class BqContractRepository implements ContractRepository {
       orderBy: { column: "contractName", direction: "ASC" },
     });
 
-    return contracts.map(BqContractMapper.toDomin);
+    return contracts.map(BqContractMapper.toDomain);
   }
 }

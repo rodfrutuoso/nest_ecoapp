@@ -3,7 +3,7 @@ import { BqMaterialProps } from "../schemas/materials";
 import { UniqueEntityID } from "src/core/entities/unique-entity-id";
 
 export class BqMaterialMapper {
-  static toDomin(raw: BqMaterialProps): Material {
+  static toDomain(raw: BqMaterialProps): Material {
     return Material.create(
       {
         code: raw.code,
