@@ -83,7 +83,9 @@ export class EditUserUseCase {
     user.baseId =
       baseId === undefined ? user.baseId : new UniqueEntityID(baseId);
     user.contractId =
-      contractId === undefined ? user.contractId : new UniqueEntityID(baseId);
+      contractId === undefined
+        ? user.contractId
+        : new UniqueEntityID(contractId);
     user.status = status ?? user.status;
     user.password =
       password === undefined

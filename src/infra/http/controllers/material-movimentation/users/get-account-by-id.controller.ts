@@ -5,53 +5,38 @@ import {
   Param,
 } from "@nestjs/common";
 import { Controller, HttpCode } from "@nestjs/common";
-import { GetStorekeeperByIdUseCase } from "src/domain/material-movimentation/application/use-cases/users/get-storekeeper-by-id";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { ApiTags } from "@nestjs/swagger";
 import { GetStorekeeperByidDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/users/response decorators/get-account-by-id.decorator";
 import { UserWithBaseContractPresenter } from "src/infra/http/presenters/user-with-base-contract-presenter";
-import { GetEstimatorByIdUseCase } from "src/domain/material-movimentation/application/use-cases/users/get-estimator-by-id";
+import { GetUserByIdUseCase } from "src/domain/material-movimentation/application/use-cases/users/get-user-by-id";
 
 @ApiTags("user")
 @Controller("/accounts/:id")
 export class GetStorekeeperByidController {
-  constructor(
-    private getStorekeeperByidUseCase: GetStorekeeperByIdUseCase,
-    private getEstimatorByidUseCase: GetEstimatorByIdUseCase
-  ) {}
+  constructor(private getUserByIdUseCase: GetUserByIdUseCase) {}
 
   @Get()
   @HttpCode(200)
   @GetStorekeeperByidDecorator()
   async handle(@Param("id") id: string) {
-    const resultStorekeeper = await this.getStorekeeperByidUseCase.execute({
-      storekeeperId: id,
+    const result = await this.getUserByIdUseCase.execute({
+      userId: id,
     });
 
-    let resultEstimator;
+    if (result.isLeft()) {
+      const error = result.value;
 
-    if (resultStorekeeper.isLeft()) {
-      resultEstimator = await this.getEstimatorByidUseCase.execute({
-        estimatorId: id,
-      });
-
-      if (resultEstimator.isLeft()) {
-        const error = resultEstimator.value;
-
-        switch (error.constructor) {
-          case ResourceNotFoundError:
-            throw new NotFoundException(error.message);
-          default:
-            throw new BadRequestException();
-        }
+      switch (error.constructor) {
+        case ResourceNotFoundError:
+          throw new NotFoundException(error.message);
+        default:
+          throw new BadRequestException();
       }
     }
 
-    const user =
-      resultStorekeeper.value instanceof ResourceNotFoundError
-        ? resultEstimator.value.estimator
-        : resultStorekeeper.value.storekeeper;
-
-    return { user: UserWithBaseContractPresenter.toHTTP(user) };
+    return {
+      user: UserWithBaseContractPresenter.toHTTPUser(result.value.user),
+    };
   }
 }

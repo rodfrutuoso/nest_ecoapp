@@ -8,11 +8,11 @@ import { Controller, HttpCode } from "@nestjs/common";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
-import { FetchStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/fetch-storekeeper";
 import { UserWithBaseContractPresenter } from "src/infra/http/presenters/user-with-base-contract-presenter";
 import { ApiTags } from "@nestjs/swagger";
 import { FetchAccountsQueryDto } from "src/infra/http/swagger dto and decorators/material-movimentation/users/dto classes/fetch-accounts.dto";
 import { FetchAccountsDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/users/response decorators/fetch-accounts.decorator";
+import { FetchUserUseCase } from "src/domain/material-movimentation/application/use-cases/users/fetch-user";
 
 const fetchAccountsBodySchema = z.object({
   page: z
@@ -22,13 +22,14 @@ const fetchAccountsBodySchema = z.object({
     .transform(Number)
     .pipe(z.number().min(1)),
   baseId: z.string().uuid().optional(),
+  contractId: z.string().uuid().optional(),
   name: z.string().optional(),
 });
 
 @ApiTags("user")
 @Controller("/accounts")
 export class FetchAccountsController {
-  constructor(private FetchStorekeeper: FetchStorekeeperUseCase) {}
+  constructor(private fetchUserUseCase: FetchUserUseCase) {}
 
   @Get()
   @HttpCode(200)
@@ -37,11 +38,12 @@ export class FetchAccountsController {
     @Query(new ZodValidationPipe(fetchAccountsBodySchema))
     query: FetchAccountsQueryDto
   ) {
-    const { page, baseId, name } = query;
+    const { page, baseId, contractId, name } = query;
 
-    const result = await this.FetchStorekeeper.execute({
+    const result = await this.fetchUserUseCase.execute({
       page,
       baseId,
+      contractId,
       name,
     });
 
@@ -56,8 +58,8 @@ export class FetchAccountsController {
       }
     }
 
-    const users = result.value.storekeepers;
+    const users = result.value.users;
 
-    return { users: users.map(UserWithBaseContractPresenter.toHTTP) };
+    return { users: users.map(UserWithBaseContractPresenter.toHTTPUser) };
   }
 }

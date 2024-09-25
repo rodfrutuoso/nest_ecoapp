@@ -14,6 +14,7 @@ type GetUserByIdUseCaseResponse = Eihter<
     user: UserWithBaseContract;
   }
 >;
+
 @Injectable()
 export class GetUserByIdUseCase {
   constructor(private userRepository: UserRepository) {}

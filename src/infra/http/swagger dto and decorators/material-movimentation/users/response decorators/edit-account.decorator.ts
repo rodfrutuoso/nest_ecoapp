@@ -32,6 +32,17 @@ export const EditAccountDecorator = () => {
       },
     }),
     ApiResponse({
+      status: 409,
+      description: "Conflict Exception",
+      schema: {
+        example: {
+          message: "A base informada não pertence ao contrato informado!",
+          error: "Conflict",
+          statusCode: 409,
+        },
+      },
+    }),
+    ApiResponse({
       status: 400,
       description: "Bad request",
       schema: {

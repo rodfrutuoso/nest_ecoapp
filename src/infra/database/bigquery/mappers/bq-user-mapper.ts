@@ -70,6 +70,20 @@ export class BqUserMapper {
     }
   }
 
+  static toBigqueryUser(user: Storekeeper | Estimator): BqUserProps {
+    return {
+      id: user.id.toString(),
+      cpf: user.cpf,
+      email: user.email,
+      name: user.name,
+      password: user.password,
+      status: user.status,
+      type: user.type,
+      baseId: user.baseId.toString(),
+      contractId: user.contractId.toString(),
+    };
+  }
+
   private static isUserType(
     type: string
   ): type is "Administrador" | "Almoxarife" {

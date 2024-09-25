@@ -76,7 +76,7 @@ export class BqUserRepository implements UserRepository {
 
   async save(user: Storekeeper | Estimator): Promise<void> {
     await this.bigquery.user.update({
-      data: BqUserMapper.toBigquery(user),
+      data: BqUserMapper.toBigqueryUser(user),
       where: { id: user.id.toString() },
     });
   }

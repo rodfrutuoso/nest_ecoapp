@@ -56,6 +56,9 @@ import { GetEstimatorByIdUseCase } from "src/domain/material-movimentation/appli
 import { EditEstimatorUseCase } from "src/domain/material-movimentation/application/use-cases/users/edit-estimator";
 import { VerifyAuthorTypeUseCase } from "src/domain/material-movimentation/application/use-cases/users/verify-author-type";
 import { DeleteEstimatorUseCase } from "src/domain/material-movimentation/application/use-cases/users/delete-estimator";
+import { GetUserByIdUseCase } from "src/domain/material-movimentation/application/use-cases/users/get-user-by-id";
+import { FetchUserUseCase } from "src/domain/material-movimentation/application/use-cases/users/fetch-user";
+import { EditUserUseCase } from "src/domain/material-movimentation/application/use-cases/users/edit-user";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, DtoModule],
@@ -92,14 +95,12 @@ import { DeleteEstimatorUseCase } from "src/domain/material-movimentation/applic
     VerifyUserInformationsUseCase,
     RegisterStorekeeperUseCase,
     RegisterEstimatorUseCase,
-    GetStorekeeperByIdUseCase,
-    GetEstimatorByIdUseCase,
-    EditStorekeeperUseCase,
-    EditEstimatorUseCase,
+    GetUserByIdUseCase,
+    EditUserUseCase,
     VerifyAuthorTypeUseCase,
     DeleteStorekeeperUseCase,
     DeleteEstimatorUseCase,
-    FetchStorekeeperUseCase,
+    FetchUserUseCase,
     RegisterContractUseCase,
     FetchContractUseCase,
     RegisterBaseUseCase,

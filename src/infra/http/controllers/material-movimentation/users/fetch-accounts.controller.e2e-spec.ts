@@ -5,7 +5,7 @@ import request from "supertest";
 import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { JwtService } from "@nestjs/jwt";
 import { randomUUID } from "crypto";
-import { StorekeeperFactory } from "test/factories/make-storekeeper";
+import { UserFactory } from "test/factories/make-user";
 import { DatabaseModule } from "src/infra/database/database.module";
 import { makeBase } from "test/factories/make-base";
 
@@ -13,19 +13,19 @@ describe("Fetch Accounts (E2E)", () => {
   let app: INestApplication;
   let bigquery: BigQueryService;
   let jwt: JwtService;
-  let storekeeperFactory: StorekeeperFactory;
+  let userFactory: UserFactory;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StorekeeperFactory],
+      providers: [UserFactory],
     }).compile();
 
     app = moduleRef.createNestApplication();
 
     bigquery = moduleRef.get(BigQueryService);
     jwt = moduleRef.get(JwtService);
-    storekeeperFactory = moduleRef.get(StorekeeperFactory);
+    userFactory = moduleRef.get(UserFactory);
 
     await app.init();
   });
@@ -33,15 +33,15 @@ describe("Fetch Accounts (E2E)", () => {
   test("[GET] /accounts", async () => {
     const base = makeBase();
 
-    const user = await storekeeperFactory.makeBqStorekeeper({
+    const user = await userFactory.makeBqUser({
       name: "rodrigo",
       baseId: base.id,
     });
-    await storekeeperFactory.makeBqStorekeeper({
+    await userFactory.makeBqUser({
       name: "max",
       baseId: base.id,
     });
-    await storekeeperFactory.makeBqStorekeeper({
+    await userFactory.makeBqUser({
       name: "rafael",
       baseId: base.id,
     });

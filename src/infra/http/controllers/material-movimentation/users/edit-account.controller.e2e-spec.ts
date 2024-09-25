@@ -4,47 +4,43 @@ import { Test } from "@nestjs/testing";
 import request from "supertest";
 import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { JwtService } from "@nestjs/jwt";
-import { StorekeeperFactory } from "test/factories/make-storekeeper";
+import { UserFactory } from "test/factories/make-user";
 import { DatabaseModule } from "src/infra/database/database.module";
 import { BaseFactory } from "test/factories/make-base";
 import { ContractFactory } from "test/factories/make-contract";
-import { EstimatorFactory } from "test/factories/make-estimator";
 
 describe("Edit account (E2E)", () => {
   let app: INestApplication;
   let bigquery: BigQueryService;
   let jwt: JwtService;
-  let storekeeperFactory: StorekeeperFactory;
-  let estimatorFactory: EstimatorFactory;
+  let userFactory: UserFactory;
   let baseFactory: BaseFactory;
   let contractFactory: ContractFactory;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [
-        StorekeeperFactory,
-        BaseFactory,
-        ContractFactory,
-        EstimatorFactory,
-      ],
+      providers: [BaseFactory, ContractFactory, UserFactory],
     }).compile();
 
     app = moduleRef.createNestApplication();
 
     bigquery = moduleRef.get(BigQueryService);
     jwt = moduleRef.get(JwtService);
-    storekeeperFactory = moduleRef.get(StorekeeperFactory);
+    userFactory = moduleRef.get(UserFactory);
     baseFactory = moduleRef.get(BaseFactory);
     contractFactory = moduleRef.get(ContractFactory);
-    estimatorFactory = moduleRef.get(EstimatorFactory);
 
     await app.init();
   });
 
   test("[PUT] /accounts:id - storekeeper", async () => {
-    const user = await storekeeperFactory.makeBqStorekeeper({
+    const contract = await contractFactory.makeBqContract();
+    const base = await baseFactory.makeBqBase({ contractId: contract.id });
+    const user = await userFactory.makeBqUser({
       type: "Administrador",
+      baseId: base.id,
+      contractId: contract.id,
     });
 
     const accessToken = jwt.sign({
@@ -53,7 +49,6 @@ describe("Edit account (E2E)", () => {
       baseId: user.baseId.toString(),
       contractId: user.contractId.toString(),
     });
-    const base = await baseFactory.makeBqBase();
 
     const response = await request(app.getHttpServer())
       .put(`/accounts/${user.id.toString()}`)
@@ -73,8 +68,12 @@ describe("Edit account (E2E)", () => {
   });
 
   test("[PUT] /accounts:id - estimator", async () => {
-    const user = await estimatorFactory.makeBqEstimator({
+    const contract = await contractFactory.makeBqContract();
+    const base = await baseFactory.makeBqBase({ contractId: contract.id });
+    const user = await userFactory.makeBqUser({
       type: "Orçamentista",
+      baseId: base.id,
+      contractId: contract.id,
     });
 
     const accessToken = jwt.sign({
@@ -83,7 +82,6 @@ describe("Edit account (E2E)", () => {
       baseId: user.baseId.toString(),
       contractId: user.contractId.toString(),
     });
-    const contract = await contractFactory.makeBqContract();
 
     const response = await request(app.getHttpServer())
       .put(`/accounts/${user.id.toString()}`)
@@ -96,6 +94,9 @@ describe("Edit account (E2E)", () => {
     const [userDataBase] = await bigquery.user.select({
       where: { email: user.email },
     });
+
+    console.log(user);
+    console.log(userDataBase);
 
     expect(response.statusCode).toBe(201);
     expect(userDataBase.contractId).toEqual(contract.id.toString());
