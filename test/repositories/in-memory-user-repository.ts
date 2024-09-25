@@ -4,6 +4,7 @@ import { Storekeeper } from "src/domain/material-movimentation/enterprise/entiti
 import { InMemoryBaseRepository } from "./in-memory-base-repository";
 import { InMemoryContractRepository } from "./in-memory-contract-repository";
 import { UserWithBaseContract } from "src/domain/material-movimentation/enterprise/entities/value-objects/user-with-base-contract";
+import { PaginationParams } from "src/core/repositories/pagination-params";
 
 export class InMemoryUserRepository implements UserRepository {
   public items: Array<Estimator | Storekeeper> = [];
@@ -50,5 +51,52 @@ export class InMemoryUserRepository implements UserRepository {
       status: user.status,
       password: user.password,
     });
+  }
+
+  async findManyWithBaseContract(
+    { page }: PaginationParams,
+    baseId?: string,
+    contractId?: string,
+    name?: string
+  ): Promise<UserWithBaseContract[]> {
+    const users = this.items
+      .filter((user) => !baseId || user.baseId.toString() === baseId)
+      .filter(
+        (user) => !contractId || user.contractId.toString() === contractId
+      )
+      .filter((user) => !name || user.name.includes(name))
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .slice((page - 1) * 40, page * 40)
+      .map((user) => {
+        const base = this.baseRepository.items.find(
+          (base) => base.id === user.baseId
+        );
+
+        if (!base) {
+          throw new Error(`base ${user.baseId} does not exist.`);
+        }
+
+        const contract = this.contractRepository.items.find(
+          (contract) => contract.id === user.contractId
+        );
+
+        if (!contract) {
+          throw new Error(`contract ${user.contractId} does not exist.`);
+        }
+
+        return UserWithBaseContract.create({
+          userId: user.id,
+          name: user.name,
+          email: user.email,
+          cpf: user.cpf,
+          type: user.type,
+          base,
+          contract,
+          status: user.status,
+          password: user.password,
+        });
+      });
+
+    return users;
   }
 }

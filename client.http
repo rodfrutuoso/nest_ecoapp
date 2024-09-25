@@ -22,8 +22,8 @@ POST {{baseURL}}/sessions
 Content-Type: application/json
 
 {
-    "email": "rodrigo@ecoeletrica.com.br",
-    "password": "ECO@2012" 
+    "email": "rodrigo1@ecoeletrica.com.br",
+    "password": "123456" 
 }
 
 ###
@@ -142,9 +142,6 @@ Authorization: Bearer {{authToken}}
 
 # @name fetch_physical_documents
 GET {{baseURL}}/physical-documents
-?page=1
-&projectId=30d2f9c4-decc-418a-bc5d-0fb16db7af57
-&identifier=1
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
