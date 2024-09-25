@@ -8,15 +8,13 @@ import {
 import { Body, Controller, HttpCode, Post } from "@nestjs/common";
 import { z } from "zod";
 import { ZodValidationPipe } from "src/infra/http/pipes/zod-validation.pipe";
-import { RegisterStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/register-storekeeper";
 import { ResourceAlreadyRegisteredError } from "src/domain/material-movimentation/application/use-cases/errors/resource-already-registered-error";
 import { ApiTags } from "@nestjs/swagger";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { CreateAccountDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/users/response decorators/create-account.decorator";
 import { CreateAccountBodyDto } from "src/infra/http/swagger dto and decorators/material-movimentation/users/dto classes/create-account.dto";
 import { WrongTypeError } from "src/domain/material-movimentation/application/use-cases/errors/wrong-type";
-import { RegisterEstimatorUseCase } from "src/domain/material-movimentation/application/use-cases/users/register-estimator";
-import { VerifyUserInformationsUseCase } from "src/domain/material-movimentation/application/use-cases/users/verify-user-informations";
+import { RegisterUserUseCase } from "src/domain/material-movimentation/application/use-cases/users/register-user";
 
 const createAccountBodyDto = z.object({
   name: z.string(),
@@ -31,11 +29,7 @@ const createAccountBodyDto = z.object({
 @ApiTags("user")
 @Controller("/accounts")
 export class CreateAccountController {
-  constructor(
-    private registerStorekeeper: RegisterStorekeeperUseCase,
-    private registerEstimatorUseCase: RegisterEstimatorUseCase,
-    private verifyUserInformationsUseCase: VerifyUserInformationsUseCase
-  ) {}
+  constructor(private registerUserUseCase: RegisterUserUseCase) {}
 
   @Post()
   @HttpCode(201)
@@ -44,38 +38,22 @@ export class CreateAccountController {
   async handle(@Body() body: CreateAccountBodyDto) {
     const { name, email, password, cpf, type, baseId, contractId } = body;
 
-    const verifyUserInformations =
-      await this.verifyUserInformationsUseCase.execute({ email, cpf });
-
-    if (verifyUserInformations.isLeft())
-      throw new ConflictException(verifyUserInformations.value.message);
-
-    let result;
-
-    if (type === "Orçamentista") {
-      result = await this.registerEstimatorUseCase.execute({
-        name,
-        email,
-        password,
-        cpf,
-        type,
-        contractId,
-      });
-    } else {
-      result = await this.registerStorekeeper.execute({
-        name,
-        email,
-        password,
-        cpf,
-        type,
-        baseId,
-      });
-    }
+    const result = await this.registerUserUseCase.execute({
+      name,
+      email,
+      password,
+      cpf,
+      type,
+      baseId,
+      contractId,
+    });
 
     if (result.isLeft()) {
       const error = result.value;
 
       switch (error.constructor) {
+        case ResourceAlreadyRegisteredError:
+          throw new ConflictException(error.message);
         case ResourceNotFoundError:
           throw new NotFoundException(error.message);
         case WrongTypeError:

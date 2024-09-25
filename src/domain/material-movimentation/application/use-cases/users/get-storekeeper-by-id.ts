@@ -4,23 +4,23 @@ import { StorekeeperRepository } from "../../repositories/storekeeper-repository
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 import { StorekeeperWithBase } from "src/domain/material-movimentation/enterprise/entities/value-objects/storekeeper-with-base";
 
-interface GetStorekeeperByIdUseCaseRequest {
+interface GetAccountByidUseCaseRequest {
   storekeeperId: string;
 }
 
-type GetStorekeeperByIdUseCaseResponse = Eihter<
+type GetAccountByidUseCaseResponse = Eihter<
   ResourceNotFoundError,
   {
     storekeeper: StorekeeperWithBase;
   }
 >;
 @Injectable()
-export class GetStorekeeperByIdUseCase {
+export class GetAccountByidUseCase {
   constructor(private storekeeperRepository: StorekeeperRepository) {}
 
   async execute({
     storekeeperId,
-  }: GetStorekeeperByIdUseCaseRequest): Promise<GetStorekeeperByIdUseCaseResponse> {
+  }: GetAccountByidUseCaseRequest): Promise<GetAccountByidUseCaseResponse> {
     const storekeeper = await this.storekeeperRepository.findByIdWithBase(storekeeperId);
 
     if (!storekeeper) return left(new ResourceNotFoundError("Id do almoxarife não encontrado"));

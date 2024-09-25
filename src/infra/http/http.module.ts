@@ -10,8 +10,8 @@ import { CreateMaterialUseCase } from "src/domain/material-movimentation/applica
 import { FetchMaterialUseCase } from "src/domain/material-movimentation/application/use-cases/material/fetch-material";
 import { AuthenticateUserUseCase } from "src/domain/material-movimentation/application/use-cases/users/authenticate-user";
 import { RegisterStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/register-storekeeper";
-import { GetStorekeeperByidController } from "./controllers/material-movimentation/users/get-account-by-id.controller";
-import { GetStorekeeperByIdUseCase } from "src/domain/material-movimentation/application/use-cases/users/get-storekeeper-by-id";
+import { GetAccountByidController } from "./controllers/material-movimentation/users/get-account-by-id.controller";
+import { GetAccountByidUseCase } from "src/domain/material-movimentation/application/use-cases/users/get-storekeeper-by-id";
 import { EditAccountController } from "./controllers/material-movimentation/users/edit-account.controller";
 import { EditStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/edit-storekeeper";
 import { DeleteStorekeeperUseCase } from "src/domain/material-movimentation/application/use-cases/users/delete-storekeeper";
@@ -59,6 +59,8 @@ import { DeleteEstimatorUseCase } from "src/domain/material-movimentation/applic
 import { GetUserByIdUseCase } from "src/domain/material-movimentation/application/use-cases/users/get-user-by-id";
 import { FetchUserUseCase } from "src/domain/material-movimentation/application/use-cases/users/fetch-user";
 import { EditUserUseCase } from "src/domain/material-movimentation/application/use-cases/users/edit-user";
+import { DeleteUserUseCase } from "src/domain/material-movimentation/application/use-cases/users/delete-user";
+import { RegisterUserUseCase } from "src/domain/material-movimentation/application/use-cases/users/register-user";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, DtoModule],
@@ -67,7 +69,7 @@ import { EditUserUseCase } from "src/domain/material-movimentation/application/u
     AuthenticateController,
     CreateMaterialController,
     FetchMaterialController,
-    GetStorekeeperByidController,
+    GetAccountByidController,
     EditAccountController,
     DeleteAccountController,
     FetchAccountsController,
@@ -93,13 +95,11 @@ import { EditUserUseCase } from "src/domain/material-movimentation/application/u
     FetchMaterialUseCase,
     AuthenticateUserUseCase,
     VerifyUserInformationsUseCase,
-    RegisterStorekeeperUseCase,
-    RegisterEstimatorUseCase,
+    RegisterUserUseCase,
     GetUserByIdUseCase,
     EditUserUseCase,
     VerifyAuthorTypeUseCase,
-    DeleteStorekeeperUseCase,
-    DeleteEstimatorUseCase,
+    DeleteUserUseCase,
     FetchUserUseCase,
     RegisterContractUseCase,
     FetchContractUseCase,

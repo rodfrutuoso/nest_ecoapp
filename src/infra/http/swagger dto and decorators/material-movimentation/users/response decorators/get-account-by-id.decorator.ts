@@ -1,7 +1,7 @@
 import { applyDecorators } from "@nestjs/common";
 import { ApiResponse } from "@nestjs/swagger";
 
-export const GetStorekeeperByidDecorator = () => {
+export const GetAccountByidDecorator = () => {
   return applyDecorators(
     ApiResponse({
       status: 200,

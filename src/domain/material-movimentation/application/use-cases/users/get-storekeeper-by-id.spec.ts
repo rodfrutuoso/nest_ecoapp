@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { GetStorekeeperByIdUseCase } from "./get-storekeeper-by-id";
+import { GetAccountByidUseCase } from "./get-storekeeper-by-id";
 import { InMemoryStorekeeperRepository } from "../../../../../../test/repositories/in-memory-storekeeper-repository";
 import { makeStorekeeper } from "../../../../../../test/factories/make-storekeeper";
 import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
@@ -9,7 +9,7 @@ import { makeBase } from "test/factories/make-base";
 let inMemoryContractRepository: InMemoryContractRepository;
 let inMemoryBaseRepository: InMemoryBaseRepository;
 let inMemoryStorekeeperRepository: InMemoryStorekeeperRepository;
-let sut: GetStorekeeperByIdUseCase;
+let sut: GetAccountByidUseCase;
 
 describe("Fetch Storekeepers History", () => {
   beforeEach(() => {
@@ -20,7 +20,7 @@ describe("Fetch Storekeepers History", () => {
     inMemoryStorekeeperRepository = new InMemoryStorekeeperRepository(
       inMemoryBaseRepository
     );
-    sut = new GetStorekeeperByIdUseCase(inMemoryStorekeeperRepository);
+    sut = new GetAccountByidUseCase(inMemoryStorekeeperRepository);
   });
 
   it("should be able to fetch physical documents history sorting by name", async () => {

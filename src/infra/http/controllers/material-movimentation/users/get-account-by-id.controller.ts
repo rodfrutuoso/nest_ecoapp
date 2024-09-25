@@ -7,18 +7,18 @@ import {
 import { Controller, HttpCode } from "@nestjs/common";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { ApiTags } from "@nestjs/swagger";
-import { GetStorekeeperByidDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/users/response decorators/get-account-by-id.decorator";
+import { GetAccountByidDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/users/response decorators/get-account-by-id.decorator";
 import { UserWithBaseContractPresenter } from "src/infra/http/presenters/user-with-base-contract-presenter";
 import { GetUserByIdUseCase } from "src/domain/material-movimentation/application/use-cases/users/get-user-by-id";
 
 @ApiTags("user")
 @Controller("/accounts/:id")
-export class GetStorekeeperByidController {
+export class GetAccountByidController {
   constructor(private getUserByIdUseCase: GetUserByIdUseCase) {}
 
   @Get()
   @HttpCode(200)
-  @GetStorekeeperByidDecorator()
+  @GetAccountByidDecorator()
   async handle(@Param("id") id: string) {
     const result = await this.getUserByIdUseCase.execute({
       userId: id,
