@@ -7,7 +7,6 @@ import {
 import { faker } from "@faker-js/faker";
 import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { BqUserMapper } from "src/infra/database/bigquery/mappers/bq-user-mapper";
-import { UserType } from "src/core/types/user-type";
 
 export function makeStorekeeper(
   override: Partial<StorekeeperProps> = {},
@@ -20,7 +19,7 @@ export function makeStorekeeper(
       baseId: new UniqueEntityID(),
       email: faker.internet.email({ provider: "ecoeletrica.com.br" }),
       status: faker.helpers.arrayElement(status),
-      type: faker.helpers.arrayElement(types) as UserType,
+      type: faker.helpers.arrayElement(types) as "Almoxarife" | "Administrador",
       password: faker.internet.password(),
       contractId: new UniqueEntityID(),
       ...override,

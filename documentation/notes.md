@@ -1,28 +1,29 @@
 # Technical debt
 
-- Create a away to migrate the scheamas of "/src/infra/database/bigquery/schemas" from files to tables on bigquery
-- Verify if DDD errors are comunicating to nest excepetion errors [x]
+- Create a away to migrate the schemas of "/src/infra/database/bigquery/schemas" from files to tables on bigquery
+- Verify if DDD errors are communicating to nest exception errors [x]
 - budget fetch use cases needs contractId on search [X]
 - transfer-material needs verification if parameters exists [x]
-- ajust history movimentation fetch [x]
-- ajust user fetch [x]
+- adjust history movimentation fetch [x]
+- adjust user fetch [x]
 - put controller classes on another archive [x]
 - refact storekeeper and estimator use cases to include mother class user and auth by it [x]
-- in fecth materials extrect contractId by the accessToken [x]
+- in fetch materials extract contractId by the accessToken [x]
 - create 'edited by' and 'edited at' fields on budget entity [x]
 - create get project by project_number [x]
 - create register budgets []
 - create get budgets by project_number []
-- create update budget (this use case'll create lines new budgets for that project) []
+- create update budget (this use case will create lines new budgets for that project) []
 - create fetch budgets (by list of projects and returning just found projects) []
 - create register estimator [x]
 - create update estimator [x]
 - create delete estimator [x]
 - create fetch estimators []
-- ajust user controllers to chose use case by type []
+- adjust user controllers to chose use case by type []
 - create regex to register project []
-- ajust create estimator/storekeeper to insert contractId and baseId correctly [x]
+- adjust create estimator/storekeeper to insert contractId and baseId correctly [x]
 - exclude baseId from transfer Material and contract Id from Register Budget [x]
+- change physical document fetch by project_number instead of projectId
 
 # Test 1 file
 

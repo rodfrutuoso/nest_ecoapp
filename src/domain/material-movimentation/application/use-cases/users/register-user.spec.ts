@@ -53,7 +53,6 @@ describe("Create user", () => {
     });
 
     const hashedPassword = await fakeHasher.hash("123456");
-    console.log(result);
 
     expect(result.isRight()).toBeTruthy();
     if (result.isRight()) {
@@ -81,7 +80,6 @@ describe("Create user", () => {
     });
 
     const hashedPassword = await fakeHasher.hash("123456");
-    console.log(result);
 
     expect(result.isRight()).toBeTruthy();
     if (result.isRight()) {
