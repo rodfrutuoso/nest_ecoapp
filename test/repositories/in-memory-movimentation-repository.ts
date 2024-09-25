@@ -2,7 +2,7 @@ import { MovimentationWithDetails } from "src/domain/material-movimentation/ente
 import { PaginationParams } from "../../src/core/repositories/pagination-params";
 import { MovimentationRepository } from "../../src/domain/material-movimentation/application/repositories/movimentation-repository";
 import { Movimentation } from "../../src/domain/material-movimentation/enterprise/entities/movimentation";
-import { InMemoryStorekeeperRepository } from "./in-memory-storekeeper-repository";
+import { InMemoryUserRepository } from "./in-memory-user-repository";
 import { InMemoryMaterialRepository } from "./in-memory-material-repository";
 import { InMemoryProjectRepository } from "./in-memory-project-repository";
 import { InMemoryBaseRepository } from "./in-memory-base-repository";
@@ -13,7 +13,7 @@ export class InMemoryMovimentationRepository
   public items: Movimentation[] = [];
 
   constructor(
-    private storekeeperRepository: InMemoryStorekeeperRepository,
+    private userRepository: InMemoryUserRepository,
     private materialRepository: InMemoryMaterialRepository,
     private projectRepository: InMemoryProjectRepository,
     private baseRepository: InMemoryBaseRepository
@@ -51,7 +51,7 @@ export class InMemoryMovimentationRepository
           !materialId || movimentation.materialId.toString() === materialId
       )
       .map((movimentation) => {
-        const storekeeper = this.storekeeperRepository.items.find(
+        const storekeeper = this.userRepository.items.find(
           (storekeeper) => storekeeper.id === movimentation.storekeeperId
         );
         if (!storekeeper) {
@@ -162,7 +162,7 @@ export class InMemoryMovimentationRepository
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
       .slice((page - 1) * 40, page * 40)
       .map((movimentation) => {
-        const storekeeper = this.storekeeperRepository.items.find(
+        const storekeeper = this.userRepository.items.find(
           (storekeeper) => storekeeper.id === movimentation.storekeeperId
         );
         if (!storekeeper) {

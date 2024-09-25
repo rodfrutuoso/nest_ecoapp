@@ -4,13 +4,14 @@ import { Storekeeper } from "../storekeeper";
 import { Material } from "../material";
 import { Project } from "../project";
 import { Base } from "../base";
+import { Estimator } from "../estimator";
 
 export interface MovimentationWithDetailsProps {
   movimentationId: UniqueEntityID;
   value: number;
   createdAt: Date;
   observation: string;
-  storekeeper: Storekeeper;
+  storekeeper: Storekeeper | Estimator;
   material: Material;
   project: Project;
   base: Base;

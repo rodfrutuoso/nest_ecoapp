@@ -4,7 +4,7 @@ import { MovimentationRepository } from "../../repositories/movimentation-reposi
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 import { MovimentationWithDetails } from "src/domain/material-movimentation/enterprise/entities/value-objects/movimentation-with-details";
 import { ProjectRepository } from "../../repositories/project-repository";
-import { StorekeeperRepository } from "../../repositories/storekeeper-repository";
+import { UserRepository } from "../../repositories/user-repository";
 import { MaterialRepository } from "../../repositories/material-repository";
 import { BaseRepository } from "../../repositories/base-repository";
 
@@ -30,7 +30,7 @@ export class FetchMovimentationHistoryUseCase {
   constructor(
     private movimentationRepository: MovimentationRepository,
     private projectRepository: ProjectRepository,
-    private storekeeperRepository: StorekeeperRepository,
+    private userRepository: UserRepository,
     private materialRepository: MaterialRepository,
     private baseRepository: BaseRepository
   ) {}
@@ -56,7 +56,7 @@ export class FetchMovimentationHistoryUseCase {
     }
 
     if (email) {
-      const storekeeper = await this.storekeeperRepository.findByEmail(email);
+      const storekeeper = await this.userRepository.findByEmail(email);
       if (!storekeeper)
         return left(new ResourceNotFoundError("email  não encontrado"));
       storekeeperId = storekeeper.id.toString();

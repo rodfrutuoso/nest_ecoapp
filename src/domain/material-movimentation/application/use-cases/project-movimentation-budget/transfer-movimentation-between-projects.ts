@@ -4,7 +4,6 @@ import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
 import { Movimentation } from "../../../enterprise/entities/movimentation";
 import { MovimentationRepository } from "../../repositories/movimentation-repository";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
-import { StorekeeperRepository } from "../../repositories/storekeeper-repository";
 import { MaterialRepository } from "../../repositories/material-repository";
 import { ProjectRepository } from "../../repositories/project-repository";
 import { BaseRepository } from "../../repositories/base-repository";
@@ -12,6 +11,8 @@ import { Storekeeper } from "src/domain/material-movimentation/enterprise/entiti
 import { Material } from "src/domain/material-movimentation/enterprise/entities/material";
 import { Project } from "src/domain/material-movimentation/enterprise/entities/project";
 import { Base } from "src/domain/material-movimentation/enterprise/entities/base";
+import { UserRepository } from "../../repositories/user-repository";
+import { Estimator } from "src/domain/material-movimentation/enterprise/entities/estimator";
 
 interface TransferMovimentationBetweenProjectsUseCaseRequest {
   storekeeperId: string;
@@ -41,7 +42,7 @@ interface createMovimentationArraysResponse {
 export class TransferMovimentationBetweenProjectsUseCase {
   constructor(
     private movimentationRepository: MovimentationRepository,
-    private storekeeperRepository: StorekeeperRepository,
+    private userRepository: UserRepository,
     private materialRepository: MaterialRepository,
     private projectRepository: ProjectRepository,
     private baseRepository: BaseRepository
@@ -56,7 +57,9 @@ export class TransferMovimentationBetweenProjectsUseCase {
 
     if (containsIdError) return left(new ResourceNotFoundError(message));
 
-    const containsQtdError = await this.verifyQtdToTransfer(transferMovimentationUseCaseRequest) 
+    const containsQtdError = await this.verifyQtdToTransfer(
+      transferMovimentationUseCaseRequest
+    );
 
     if (containsQtdError)
       return left(
@@ -212,11 +215,15 @@ export class TransferMovimentationBetweenProjectsUseCase {
       );
     }
 
-    let result: Storekeeper[] | Material[] | Project[] | Base[] = [];
+    let result:
+      | Array<Storekeeper | Estimator>
+      | Material[]
+      | Project[]
+      | Base[] = [];
 
     switch (key) {
       case "storekeeperId":
-        result = await this.storekeeperRepository.findByIds(uniqueValuesArray);
+        result = await this.userRepository.findByIds(uniqueValuesArray);
         break;
       case "materialId":
         result = await this.materialRepository.findByIds(uniqueValuesArray);

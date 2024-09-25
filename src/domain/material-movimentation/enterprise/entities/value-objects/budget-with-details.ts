@@ -4,12 +4,13 @@ import { Material } from "../material";
 import { Project } from "../project";
 import { Estimator } from "../estimator";
 import { Contract } from "../contract";
+import { Storekeeper } from "../storekeeper";
 
 export interface BudgetWithDetailsProps {
   budgetId: UniqueEntityID;
   value: number;
   createdAt: Date;
-  estimator: Estimator;
+  estimator: Estimator | Storekeeper;
   material: Material;
   project: Project;
   contract: Contract;
@@ -37,7 +38,6 @@ export class BudgetWithDetails extends ValueObject<BudgetWithDetailsProps> {
   get project() {
     return this.props.project;
   }
-
 
   static create(props: BudgetWithDetailsProps) {
     return new BudgetWithDetails(props);

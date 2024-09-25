@@ -9,9 +9,8 @@ import { makeProject } from "../../../../../../test/factories/make-project";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
 import { InMemoryMaterialRepository } from "test/repositories/in-memory-material-repository";
-import { InMemoryStorekeeperRepository } from "test/repositories/in-memory-storekeeper-repository";
+import { InMemoryUserRepository } from "test/repositories/in-memory-user-repository";
 import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
-import { InMemoryEstimatorRepository } from "test/repositories/in-memory-estimator-repository";
 import { makeContract } from "test/factories/make-contract";
 import { makeBase } from "test/factories/make-base";
 import { makeStorekeeper } from "test/factories/make-storekeeper";
@@ -23,9 +22,8 @@ let inMemoryProjectRepository: InMemoryProjectRepository;
 let inMemoryBudgetRepository: InMemoryBudgetRepository;
 let inMemoryBaseRepository: InMemoryBaseRepository;
 let inMemoryMaterialRepository: InMemoryMaterialRepository;
-let inMemoryStorekeeperRepository: InMemoryStorekeeperRepository;
+let inMemoryUserRepository: InMemoryUserRepository;
 let inMemoryContractRepository: InMemoryContractRepository;
-let inMemoryEstimatorRepository: InMemoryEstimatorRepository;
 let sut: FetchBudgetMovimentationByProjectUseCase;
 
 describe("Fetch budgets and Movimentations by project", () => {
@@ -35,23 +33,21 @@ describe("Fetch budgets and Movimentations by project", () => {
       inMemoryContractRepository
     );
     inMemoryMaterialRepository = new InMemoryMaterialRepository();
-    inMemoryStorekeeperRepository = new InMemoryStorekeeperRepository(
-      inMemoryBaseRepository
-    );
-    inMemoryEstimatorRepository = new InMemoryEstimatorRepository(
+    inMemoryUserRepository = new InMemoryUserRepository(
+      inMemoryBaseRepository,
       inMemoryContractRepository
     );
     inMemoryProjectRepository = new InMemoryProjectRepository(
       inMemoryBaseRepository
     );
     inMemoryMovimentationRepository = new InMemoryMovimentationRepository(
-      inMemoryStorekeeperRepository,
+      inMemoryUserRepository,
       inMemoryMaterialRepository,
       inMemoryProjectRepository,
       inMemoryBaseRepository
     );
     inMemoryBudgetRepository = new InMemoryBudgetRepository(
-      inMemoryEstimatorRepository,
+      inMemoryUserRepository,
       inMemoryMaterialRepository,
       inMemoryProjectRepository,
       inMemoryContractRepository,
@@ -73,10 +69,10 @@ describe("Fetch budgets and Movimentations by project", () => {
     await inMemoryBaseRepository.create(base);
 
     const storekeeper = makeStorekeeper({ baseId: base.id });
-    await inMemoryStorekeeperRepository.create(storekeeper);
+    await inMemoryUserRepository.create(storekeeper);
 
     const estimator = makeEstimator({ contractId: contract.id });
-    await inMemoryEstimatorRepository.create(estimator);
+    await inMemoryUserRepository.create(estimator);
 
     const material = makeMaterial({ contractId: contract.id });
     await inMemoryMaterialRepository.create(material);
@@ -160,10 +156,10 @@ describe("Fetch budgets and Movimentations by project", () => {
     inMemoryBaseRepository.create(base);
 
     const storekeeper = makeStorekeeper({ baseId: base.id });
-    inMemoryStorekeeperRepository.create(storekeeper);
+    inMemoryUserRepository.create(storekeeper);
 
     const estimator = makeEstimator({ contractId: contract.id });
-    inMemoryEstimatorRepository.create(estimator);
+    inMemoryUserRepository.create(estimator);
 
     const material = makeMaterial();
     inMemoryMaterialRepository.create(material);

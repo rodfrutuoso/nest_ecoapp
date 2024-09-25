@@ -6,7 +6,7 @@ import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
 import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
-import { InMemoryStorekeeperRepository } from "test/repositories/in-memory-storekeeper-repository";
+import { InMemoryUserRepository } from "test/repositories/in-memory-user-repository";
 import { InMemoryMaterialRepository } from "test/repositories/in-memory-material-repository";
 import { InMemoryProjectRepository } from "test/repositories/in-memory-project-repository";
 import { makeProject } from "test/factories/make-project";
@@ -16,7 +16,7 @@ import { makeStorekeeper } from "test/factories/make-storekeeper";
 
 let inMemoryContractRepository: InMemoryContractRepository;
 let inMemoryBaseRepository: InMemoryBaseRepository;
-let inMemoryStorekeeperRepository: InMemoryStorekeeperRepository;
+let inMemoryUserRepository: InMemoryUserRepository;
 let inMemoryMaterialRepository: InMemoryMaterialRepository;
 let inMemoryProjectRepository: InMemoryProjectRepository;
 let inMemoryMovimentationRepository: InMemoryMovimentationRepository;
@@ -32,18 +32,19 @@ describe("Transfer Material between projects", () => {
       inMemoryBaseRepository
     );
     inMemoryMaterialRepository = new InMemoryMaterialRepository();
-    inMemoryStorekeeperRepository = new InMemoryStorekeeperRepository(
-      inMemoryBaseRepository
+    inMemoryUserRepository = new InMemoryUserRepository(
+      inMemoryBaseRepository,
+      inMemoryContractRepository
     );
     inMemoryMovimentationRepository = new InMemoryMovimentationRepository(
-      inMemoryStorekeeperRepository,
+      inMemoryUserRepository,
       inMemoryMaterialRepository,
       inMemoryProjectRepository,
       inMemoryBaseRepository
     );
     sut = new TransferMovimentationBetweenProjectsUseCase(
       inMemoryMovimentationRepository,
-      inMemoryStorekeeperRepository,
+      inMemoryUserRepository,
       inMemoryMaterialRepository,
       inMemoryProjectRepository,
       inMemoryBaseRepository
@@ -67,7 +68,7 @@ describe("Transfer Material between projects", () => {
       { baseId: base.id },
       new UniqueEntityID("5")
     );
-    await inMemoryStorekeeperRepository.create(storekeeper);
+    await inMemoryUserRepository.create(storekeeper);
 
     const movimentation = makeMovimentation({
       projectId: projectOut.id,
@@ -119,7 +120,7 @@ describe("Transfer Material between projects", () => {
       { baseId: base.id },
       new UniqueEntityID("5")
     );
-    await inMemoryStorekeeperRepository.create(storekeeper);
+    await inMemoryUserRepository.create(storekeeper);
 
     const movimentation = makeMovimentation({
       projectId: projectOut.id,

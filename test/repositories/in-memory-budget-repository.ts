@@ -4,14 +4,14 @@ import { Budget } from "../../src/domain/material-movimentation/enterprise/entit
 import { InMemoryContractRepository } from "./in-memory-contract-repository";
 import { InMemoryMaterialRepository } from "./in-memory-material-repository";
 import { InMemoryProjectRepository } from "./in-memory-project-repository";
-import { InMemoryEstimatorRepository } from "./in-memory-estimator-repository";
+import { InMemoryUserRepository } from "./in-memory-user-repository";
 import { InMemoryBaseRepository } from "./in-memory-base-repository";
 
 export class InMemoryBudgetRepository implements BudgetRepository {
   public items: Budget[] = [];
 
   constructor(
-    private estimatorRepository: InMemoryEstimatorRepository,
+    private userRepository: InMemoryUserRepository,
     private materialRepository: InMemoryMaterialRepository,
     private projectRepository: InMemoryProjectRepository,
     private contractRepository: InMemoryContractRepository,
@@ -41,7 +41,7 @@ export class InMemoryBudgetRepository implements BudgetRepository {
           budget.contractId === baseForContract!.contractId
       )
       .map((budget) => {
-        const estimator = this.estimatorRepository.items.find(
+        const estimator = this.userRepository.items.find(
           (estimator) => estimator.id === budget.estimatorId
         );
         if (!estimator) {

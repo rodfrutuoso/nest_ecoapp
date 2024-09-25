@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { TransferMaterialUseCase } from "./transfer-material";
 import { InMemoryMovimentationRepository } from "../../../../../../test/repositories/in-memory-movimentation-repository";
-import { InMemoryStorekeeperRepository } from "test/repositories/in-memory-storekeeper-repository";
+import { InMemoryUserRepository } from "test/repositories/in-memory-user-repository";
 import { InMemoryMaterialRepository } from "test/repositories/in-memory-material-repository";
 import { InMemoryProjectRepository } from "test/repositories/in-memory-project-repository";
 import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
@@ -15,7 +15,7 @@ import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 
 let inMemoryContractRepository: InMemoryContractRepository;
 let inMemoryBaseRepository: InMemoryBaseRepository;
-let inMemoryStorekeeperRepository: InMemoryStorekeeperRepository;
+let inMemoryUserRepository: InMemoryUserRepository;
 let inMemoryMaterialRepository: InMemoryMaterialRepository;
 let inMemoryProjectRepository: InMemoryProjectRepository;
 let inMemoryMovimentationRepository: InMemoryMovimentationRepository;
@@ -31,18 +31,19 @@ describe("Transfer Material", () => {
       inMemoryBaseRepository
     );
     inMemoryMaterialRepository = new InMemoryMaterialRepository();
-    inMemoryStorekeeperRepository = new InMemoryStorekeeperRepository(
-      inMemoryBaseRepository
+    inMemoryUserRepository = new InMemoryUserRepository(
+      inMemoryBaseRepository,
+      inMemoryContractRepository
     );
     inMemoryMovimentationRepository = new InMemoryMovimentationRepository(
-      inMemoryStorekeeperRepository,
+      inMemoryUserRepository,
       inMemoryMaterialRepository,
       inMemoryProjectRepository,
       inMemoryBaseRepository
     );
     sut = new TransferMaterialUseCase(
       inMemoryMovimentationRepository,
-      inMemoryStorekeeperRepository,
+      inMemoryUserRepository,
       inMemoryMaterialRepository,
       inMemoryProjectRepository,
       inMemoryBaseRepository
@@ -63,7 +64,7 @@ describe("Transfer Material", () => {
       { baseId: base.id },
       new UniqueEntityID("5")
     );
-    await inMemoryStorekeeperRepository.create(storekeeper);
+    await inMemoryUserRepository.create(storekeeper);
 
     const result = await sut.execute([
       {

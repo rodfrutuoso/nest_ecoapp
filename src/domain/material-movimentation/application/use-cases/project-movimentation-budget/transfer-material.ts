@@ -3,7 +3,7 @@ import { Eihter, left, right } from "../../../../../core/either";
 import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
 import { Movimentation } from "../../../enterprise/entities/movimentation";
 import { MovimentationRepository } from "../../repositories/movimentation-repository";
-import { StorekeeperRepository } from "../../repositories/storekeeper-repository";
+import { UserRepository } from "../../repositories/user-repository";
 import { MaterialRepository } from "../../repositories/material-repository";
 import { ProjectRepository } from "../../repositories/project-repository";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
@@ -12,6 +12,7 @@ import { Material } from "src/domain/material-movimentation/enterprise/entities/
 import { Project } from "src/domain/material-movimentation/enterprise/entities/project";
 import { BaseRepository } from "../../repositories/base-repository";
 import { Base } from "src/domain/material-movimentation/enterprise/entities/base";
+import { Estimator } from "src/domain/material-movimentation/enterprise/entities/estimator";
 
 interface TransferMaterialUseCaseRequest {
   storekeeperId: string;
@@ -33,7 +34,7 @@ type TransferMaterialResponse = Eihter<
 export class TransferMaterialUseCase {
   constructor(
     private movimentationRepository: MovimentationRepository,
-    private storekeeperRepository: StorekeeperRepository,
+    private userRepository: UserRepository,
     private materialRepository: MaterialRepository,
     private projectRepository: ProjectRepository,
     private baseRepository: BaseRepository
@@ -121,11 +122,15 @@ export class TransferMaterialUseCase {
       key
     );
 
-    let result: Storekeeper[] | Material[] | Project[] | Base[] = [];
+    let result:
+      | Array<Estimator | Storekeeper>
+      | Material[]
+      | Project[]
+      | Base[] = [];
 
     switch (key) {
       case "storekeeperId":
-        result = await this.storekeeperRepository.findByIds(uniqueValuesArray);
+        result = await this.userRepository.findByIds(uniqueValuesArray);
         break;
       case "materialId":
         result = await this.materialRepository.findByIds(uniqueValuesArray);

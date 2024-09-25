@@ -5,7 +5,7 @@ import { InMemoryBudgetRepository } from "../../../../../../test/repositories/in
 import { makeBudget } from "../../../../../../test/factories/make-budget";
 import { makeProject } from "../../../../../../test/factories/make-project";
 import { InMemoryMaterialRepository } from "test/repositories/in-memory-material-repository";
-import { InMemoryEstimatorRepository } from "test/repositories/in-memory-estimator-repository";
+import { InMemoryUserRepository } from "test/repositories/in-memory-user-repository";
 import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
 import { makeContract } from "test/factories/make-contract";
 import { makeEstimator } from "test/factories/make-estimator";
@@ -16,7 +16,7 @@ import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 
 let inMemoryMaterialRepository: InMemoryMaterialRepository;
 let inMemoryProjectRepository: InMemoryProjectRepository;
-let inMemoryEstimatorRepository: InMemoryEstimatorRepository;
+let inMemoryUserRepository: InMemoryUserRepository;
 let inMemoryBaseRepository: InMemoryBaseRepository;
 let inMemoryContractRepository: InMemoryContractRepository;
 let inMemoryBudgetRepository: InMemoryBudgetRepository;
@@ -25,7 +25,8 @@ let sut: FetchBudgetByProjectNameUseCase;
 describe("Get Budget by project", () => {
   beforeEach(() => {
     inMemoryMaterialRepository = new InMemoryMaterialRepository();
-    inMemoryEstimatorRepository = new InMemoryEstimatorRepository(
+    inMemoryUserRepository = new InMemoryUserRepository(
+      inMemoryBaseRepository,
       inMemoryContractRepository
     );
     inMemoryContractRepository = new InMemoryContractRepository();
@@ -36,7 +37,7 @@ describe("Get Budget by project", () => {
       inMemoryBaseRepository
     );
     inMemoryBudgetRepository = new InMemoryBudgetRepository(
-      inMemoryEstimatorRepository,
+      inMemoryUserRepository,
       inMemoryMaterialRepository,
       inMemoryProjectRepository,
       inMemoryContractRepository,
@@ -57,7 +58,7 @@ describe("Get Budget by project", () => {
     await inMemoryBaseRepository.create(base);
 
     const estimator = makeEstimator({ contractId: contract.id });
-    await inMemoryEstimatorRepository.create(estimator);
+    await inMemoryUserRepository.create(estimator);
 
     const material = makeMaterial();
     await inMemoryMaterialRepository.create(material);
@@ -110,7 +111,7 @@ describe("Get Budget by project", () => {
     await inMemoryBaseRepository.create(base);
 
     const estimator = makeEstimator({ contractId: contract.id });
-    await inMemoryEstimatorRepository.create(estimator);
+    await inMemoryUserRepository.create(estimator);
 
     const material = makeMaterial();
     await inMemoryMaterialRepository.create(material);
@@ -161,7 +162,7 @@ describe("Get Budget by project", () => {
     await inMemoryBaseRepository.create(base);
 
     const estimator = makeEstimator({ contractId: contract.id });
-    await inMemoryEstimatorRepository.create(estimator);
+    await inMemoryUserRepository.create(estimator);
 
     const material = makeMaterial();
     await inMemoryMaterialRepository.create(material);

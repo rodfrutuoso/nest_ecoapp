@@ -6,7 +6,7 @@ import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
 import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
 import { InMemoryMaterialRepository } from "test/repositories/in-memory-material-repository";
 import { InMemoryProjectRepository } from "test/repositories/in-memory-project-repository";
-import { InMemoryStorekeeperRepository } from "test/repositories/in-memory-storekeeper-repository";
+import { InMemoryUserRepository } from "test/repositories/in-memory-user-repository";
 import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
 import { makeContract } from "test/factories/make-contract";
 import { makeBase } from "test/factories/make-base";
@@ -18,7 +18,7 @@ let inMemoryMovimentationRepository: InMemoryMovimentationRepository;
 let inMemoryBaseRepository: InMemoryBaseRepository;
 let inMemoryMaterialRepository: InMemoryMaterialRepository;
 let inMemoryProjectRepository: InMemoryProjectRepository;
-let inMemoryStorekeeperRepository: InMemoryStorekeeperRepository;
+let inMemoryUserRepository: InMemoryUserRepository;
 let inMemoryContractRepository: InMemoryContractRepository;
 let sut: FetchMovimentationHistoryUseCase;
 
@@ -32,11 +32,12 @@ describe("Fetch Movimentations History", () => {
     inMemoryProjectRepository = new InMemoryProjectRepository(
       inMemoryBaseRepository
     );
-    inMemoryStorekeeperRepository = new InMemoryStorekeeperRepository(
-      inMemoryBaseRepository
+    inMemoryUserRepository = new InMemoryUserRepository(
+      inMemoryBaseRepository,
+      inMemoryContractRepository
     );
     inMemoryMovimentationRepository = new InMemoryMovimentationRepository(
-      inMemoryStorekeeperRepository,
+      inMemoryUserRepository,
       inMemoryMaterialRepository,
       inMemoryProjectRepository,
       inMemoryBaseRepository
@@ -44,7 +45,7 @@ describe("Fetch Movimentations History", () => {
     sut = new FetchMovimentationHistoryUseCase(
       inMemoryMovimentationRepository,
       inMemoryProjectRepository,
-      inMemoryStorekeeperRepository,
+      inMemoryUserRepository,
       inMemoryMaterialRepository,
       inMemoryBaseRepository
     );
@@ -62,7 +63,7 @@ describe("Fetch Movimentations History", () => {
     inMemoryBaseRepository.create(base);
 
     const storekeeper = makeStorekeeper({ baseId: base.id });
-    inMemoryStorekeeperRepository.create(storekeeper);
+    inMemoryUserRepository.create(storekeeper);
 
     const material = makeMaterial();
     inMemoryMaterialRepository.create(material);
@@ -130,7 +131,7 @@ describe("Fetch Movimentations History", () => {
     inMemoryBaseRepository.create(base);
 
     const storekeeper = makeStorekeeper({ baseId: base.id });
-    inMemoryStorekeeperRepository.create(storekeeper);
+    inMemoryUserRepository.create(storekeeper);
 
     const material = makeMaterial();
     inMemoryMaterialRepository.create(material);
@@ -168,7 +169,7 @@ describe("Fetch Movimentations History", () => {
     inMemoryBaseRepository.create(base);
 
     const storekeeper = makeStorekeeper({ baseId: base.id });
-    inMemoryStorekeeperRepository.create(storekeeper);
+    inMemoryUserRepository.create(storekeeper);
 
     const material = makeMaterial();
     inMemoryMaterialRepository.create(material);
@@ -231,7 +232,7 @@ describe("Fetch Movimentations History", () => {
     inMemoryBaseRepository.create(base);
 
     const storekeeper = makeStorekeeper({ baseId: base.id });
-    inMemoryStorekeeperRepository.create(storekeeper);
+    inMemoryUserRepository.create(storekeeper);
 
     const material = makeMaterial({ code: 321564, contractId: contract.id });
     inMemoryMaterialRepository.create(material);
@@ -291,9 +292,9 @@ describe("Fetch Movimentations History", () => {
       baseId: base.id,
       email: "storekeeper@ecoeletrica.com.br",
     });
-    inMemoryStorekeeperRepository.create(storekeeper);
+    inMemoryUserRepository.create(storekeeper);
     const storekeeper2 = makeStorekeeper({ baseId: base.id });
-    inMemoryStorekeeperRepository.create(storekeeper2);
+    inMemoryUserRepository.create(storekeeper2);
 
     const material = makeMaterial();
     inMemoryMaterialRepository.create(material);
@@ -348,7 +349,7 @@ describe("Fetch Movimentations History", () => {
     inMemoryBaseRepository.create(base);
 
     const storekeeper = makeStorekeeper({ baseId: base.id });
-    inMemoryStorekeeperRepository.create(storekeeper);
+    inMemoryUserRepository.create(storekeeper);
 
     const material = makeMaterial();
     inMemoryMaterialRepository.create(material);
