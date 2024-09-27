@@ -22,6 +22,7 @@ export interface SelectOptions<T> {
   limit?: number;
   offset?: number;
   include?: { [K in keyof T]?: IncludeOptions<T[K]> };
+  count_results?: boolean;
 }
 
 export interface IncludeOptions<T> {
@@ -59,11 +60,27 @@ export class BigQueryMethods<T extends Record<string, any>> {
     const query = this.buildInsertQuery(data);
     return this.runQuery(query);
   }
+  //overloads
+  select(
+    options: SelectOptions<T> & { count_results: true }
+  ): Promise<{ results: T[]; total_count: number }>;
+  select(options?: SelectOptions<T>): Promise<T[]>;
 
-  async select(options: SelectOptions<T> = {}): Promise<T[]> {
+  async select(
+    options: SelectOptions<T> = {}
+  ): Promise<T[] | { results: T[]; total_count: number }> {
     const query = this.buildSelectQuery(options);
     let rows = await this.runQuery(query);
     rows = await this.processQueryResults(rows, options.include);
+
+    if (options.count_results) {
+      const totalCount = rows[0]?.total_count ?? 0;
+      const results = rows.map((row) => {
+        const { total_count, ...rest } = row;
+        return rest as T;
+      });
+      return { results, total_count: Number(totalCount) };
+    }
 
     return rows;
   }
@@ -130,10 +147,14 @@ export class BigQueryMethods<T extends Record<string, any>> {
       limit,
       offset,
       include,
+      count_results,
     } = options;
 
     const tableAlias = this.datasetId.split(".")[1];
-    const selectColumns = this.buildSelectColumns(tableAlias, columns);
+    let selectColumns = this.buildSelectColumns(tableAlias, columns);
+    if (count_results) {
+      selectColumns = `COUNT(*) OVER() AS total_count, ${selectColumns}`;
+    }
     const distinctClause = distinct ? "DISTINCT" : "";
     const whereClauses = this.buildWhereClauses(
       tableAlias,
@@ -152,14 +173,14 @@ export class BigQueryMethods<T extends Record<string, any>> {
     const offsetClause = offset ? `OFFSET ${offset}` : "";
 
     let query = `
-      SELECT ${distinctClause} ${selectColumns} FROM \`${this.datasetId}\` AS ${tableAlias}
-      ${joinClause}
-      ${whereClause}
-      ${groupByClause}
-      ${orderByClause}
-      ${limitClause}
-      ${offsetClause}
-    `;
+    SELECT ${distinctClause} ${selectColumns} FROM \`${this.datasetId}\` AS ${tableAlias}
+    ${joinClause}
+    ${whereClause}
+    ${groupByClause}
+    ${orderByClause}
+    ${limitClause}
+    ${offsetClause}
+  `;
 
     if (include) {
       query = this.buildQueryWithIncludes(

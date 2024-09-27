@@ -95,9 +95,6 @@ describe("Edit account (E2E)", () => {
       where: { email: user.email },
     });
 
-    console.log(user);
-    console.log(userDataBase);
-
     expect(response.statusCode).toBe(201);
     expect(userDataBase.contractId).toEqual(contract.id.toString());
   });

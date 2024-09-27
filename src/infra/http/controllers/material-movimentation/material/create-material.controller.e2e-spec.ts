@@ -60,6 +60,6 @@ describe("Create Material (E2E)", () => {
     });
 
     expect(response.statusCode).toBe(201);
-    expect(MaterialDataBase.description).toEqual("material de teste");
+    expect(MaterialDataBase.description).toEqual("MATERIAL DE TESTE");
   });
 });

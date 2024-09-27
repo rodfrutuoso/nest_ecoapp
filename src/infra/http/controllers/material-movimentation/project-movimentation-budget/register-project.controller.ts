@@ -15,7 +15,7 @@ import { RegisterProjectBodyDto } from "src/infra/http/swagger dto and decorator
 
 const registerProjectBodySchema = z
   .object({
-    project_number: z.string().min(6),
+    project_number: z.string().min(6).max(20).toUpperCase(),
     description: z.string(),
     type: z.string(),
     baseId: z.string().uuid(),

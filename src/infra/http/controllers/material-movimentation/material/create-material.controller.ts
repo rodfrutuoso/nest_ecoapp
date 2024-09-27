@@ -18,7 +18,7 @@ import { CreateMaterialBodyDto } from "src/infra/http/swagger dto and decorators
 const createMaterialBodySchema = z
   .object({
     code: z.number(),
-    description: z.string(),
+    description: z.string().toUpperCase(),
     type: z.string(),
     unit: z.string(),
     contractId: z.string().uuid(),

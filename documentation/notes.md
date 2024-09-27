@@ -20,7 +20,7 @@
 - create delete estimator [x]
 - create fetch estimators [x]
 - adjust user controllers to chose use case by type [x]
-- create regex to register project []
+- create regex to register project [x]
 - adjust create estimator/storekeeper to insert contractId and baseId correctly [x]
 - exclude baseId from transfer Material and contract Id from Register Budget [x]
 - change physical document fetch by project_number instead of projectId [x]
