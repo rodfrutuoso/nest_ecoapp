@@ -4,9 +4,10 @@ import { PhysicalDocumentWithProject } from "../../enterprise/entities/value-obj
 
 export abstract class PhysicalDocumentRepository {
   abstract create(physicalDocument: PhysicalDocument): Promise<void>;
-  abstract findByIdentifier(
-    identifier: number
-  ): Promise<PhysicalDocument | null>;
+  abstract findByIdentifierProjectId(
+    identifier: number,
+    projectId: string
+  ): Promise<PhysicalDocument[]>;
   abstract findByID(id: string): Promise<PhysicalDocument | null>;
   abstract save(physicalDocument: PhysicalDocument): Promise<void>;
   abstract findMany(

@@ -10,6 +10,7 @@ import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 interface IdentifierAttributionUseCaseRequest {
   projectId: string;
   identifier: number;
+  baseId: string;
 }
 
 type IdentifierAttributionResponse = Eihter<
@@ -29,16 +30,31 @@ export class IdentifierAttributionUseCase {
   async execute({
     projectId,
     identifier,
+    baseId,
   }: IdentifierAttributionUseCaseRequest): Promise<IdentifierAttributionResponse> {
     const project = await this.projectRepository.findByID(projectId);
-    if (!project)
+    if (!project || project.baseId.toString() !== baseId)
       return left(new ResourceNotFoundError("projectId não encontrado"));
 
     const physicaldocumentSearch =
-      await this.physicaldocumentRepository.findByIdentifier(identifier);
+      await this.physicaldocumentRepository.findByIdentifierProjectId(
+        identifier,
+        projectId
+      );
 
-    if (physicaldocumentSearch && physicaldocumentSearch.unitized === false)
-      return left(new ResourceAlreadyRegisteredError("ID já utilizado"));
+    const isIdentifierUsed = physicaldocumentSearch.find(
+      (item) => item.identifier === identifier && item.unitized === false
+    );
+
+    if (isIdentifierUsed)
+      return left(new ResourceAlreadyRegisteredError("O ID já utilizado"));
+
+    const isProjectIdUsed = physicaldocumentSearch.find(
+      (item) => item.projectId.toString() === projectId
+    );
+
+    if (isProjectIdUsed)
+      return left(new ResourceAlreadyRegisteredError("O Projeto já tem ID"));
 
     const physicalDocument = PhysicalDocument.create({
       projectId: new UniqueEntityID(projectId),

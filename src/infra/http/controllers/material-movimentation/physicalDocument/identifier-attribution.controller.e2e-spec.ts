@@ -40,8 +40,8 @@ describe("Identifier Attribution (E2E)", () => {
       baseId: user.baseId.toString(),
       contractId: user.contractId.toString(),
     });
-    
-    const project = await projectFactory.makeBqProject();
+
+    const project = await projectFactory.makeBqProject({ baseId: user.baseId });
 
     const response = await request(app.getHttpServer())
       .post("/physical-documents")
@@ -54,6 +54,12 @@ describe("Identifier Attribution (E2E)", () => {
     const [physicalDocumentDataBase] = await bigquery.physicalDocument.select({
       where: { identifier: 2 },
     });
+
+    // console.log(project.id.toString());
+    // console.log(response.headers);
+    // console.log(response.text);
+    // console.log(response.body.errors.details);
+    // console.log(physicalDocumentDataBase);
 
     expect(response.statusCode).toBe(201);
     expect(physicalDocumentDataBase.identifier).toEqual(2);

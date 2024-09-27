@@ -12,6 +12,8 @@ import { ResourceAlreadyRegisteredError } from "src/domain/material-movimentatio
 import { ApiTags } from "@nestjs/swagger";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { IdentifierAttributionBodyDto } from "src/infra/http/swagger dto and decorators/material-movimentation/physicalDocument/dto classes/identifier-attribution.dto";
+import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
+import { CurrentUser } from "src/infra/auth/current-user.decorator";
 
 const identifierAttributionBodySchema = z.object({
   projectId: z.string().uuid(),
@@ -25,13 +27,17 @@ export class IdentifierAttributionController {
 
   @Post()
   @HttpCode(201)
-  @UsePipes(new ZodValidationPipe(identifierAttributionBodySchema))
-  async handle(@Body() body: IdentifierAttributionBodyDto) {
+  async handle(
+    @CurrentUser() user: UserPayload,
+    @Body(new ZodValidationPipe(identifierAttributionBodySchema))
+    body: IdentifierAttributionBodyDto
+  ) {
     const { projectId, identifier } = body;
 
     const result = await this.identifierAttribution.execute({
       projectId,
       identifier,
+      baseId: user.baseId,
     });
 
     if (result.isLeft()) {

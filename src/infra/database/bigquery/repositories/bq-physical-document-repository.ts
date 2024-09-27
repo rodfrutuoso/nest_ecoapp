@@ -19,14 +19,15 @@ export class BqPhysicalDocumentRepository
     await this.bigquery.physicalDocument.create([data]);
   }
 
-  async findByIdentifier(identifier: number): Promise<PhysicalDocument | null> {
-    const [physicalDocument] = await this.bigquery.physicalDocument.select({
-      where: { identifier },
+  async findByIdentifierProjectId(
+    identifier: number,
+    projectId: string
+  ): Promise<PhysicalDocument[]> {
+    const physicalDocuments = await this.bigquery.physicalDocument.select({
+      where: { OR: [{ identifier }, { projectId }] },
     });
 
-    if (!physicalDocument) return null;
-
-    return BqPhysicalDocumentMapper.toDomain(physicalDocument);
+    return physicalDocuments.map(BqPhysicalDocumentMapper.toDomain);
   }
 
   async findByID(id: string): Promise<PhysicalDocument | null> {

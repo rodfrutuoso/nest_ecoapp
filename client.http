@@ -134,7 +134,7 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-    "projectId": "352275c2-c358-4367-8f97-b21de8a170da",
+    "projectId": "e7e7bfe3-a6af-486f-95fd-8286499523f3",
     "identifier": 3
 }
 
@@ -143,7 +143,6 @@ Authorization: Bearer {{authToken}}
 
 # @name fetch_physical_documents
 GET {{baseURL}}/physical-documents
-?project_number=B-8795427
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 

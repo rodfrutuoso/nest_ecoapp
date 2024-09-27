@@ -11,12 +11,15 @@ export class InMemoryPhysicalDocumentRepository
 
   constructor(private projectRepository: InMemoryProjectRepository) {}
 
-  async findByIdentifier(identifier: number): Promise<PhysicalDocument | null> {
-    const physicaldocument = this.items.find(
-      (item) => item.identifier === identifier
+  async findByIdentifierProjectId(
+    identifier: number,
+    projectId: string
+  ): Promise<PhysicalDocument[]> {
+    const physicaldocument = this.items.filter(
+      (item) =>
+        item.identifier === identifier ||
+        item.projectId.toString() === projectId
     );
-
-    if (!physicaldocument) return null;
 
     return physicaldocument;
   }

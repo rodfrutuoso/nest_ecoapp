@@ -9,6 +9,7 @@ import { ResourceAlreadyRegisteredError } from "../errors/resource-already-regis
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
 import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
+import { makeBase } from "test/factories/make-base";
 
 let inMemoryContractRepository: InMemoryContractRepository;
 let inMemoryBaseRepository: InMemoryBaseRepository;
@@ -41,6 +42,7 @@ describe("attribute a identifier to a physical document", () => {
     const result = await sut.execute({
       projectId: "projeto-1",
       identifier: 123456,
+      baseId: project.baseId.toString(),
     });
 
     expect(result.isRight()).toBeTruthy();
@@ -63,6 +65,7 @@ describe("attribute a identifier to a physical document", () => {
     const result = await sut.execute({
       projectId: "projeto-1",
       identifier: 123456,
+      baseId: project.baseId.toString(),
     });
 
     expect(result.isLeft()).toBeTruthy();
@@ -70,9 +73,13 @@ describe("attribute a identifier to a physical document", () => {
   });
 
   it("should not be able to attribute a identifier to a physical document if project does not exist", async () => {
+    const base = makeBase();
+    await inMemoryBaseRepository.create(base);
+
     const result = await sut.execute({
       projectId: "projeto-1-nao-criado",
       identifier: 123456,
+      baseId: base.id.toString(),
     });
 
     expect(result.isLeft()).toBeTruthy();
