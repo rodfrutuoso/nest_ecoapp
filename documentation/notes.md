@@ -24,8 +24,8 @@
 - adjust create estimator/storekeeper to insert contractId and baseId correctly [x]
 - exclude baseId from transfer Material and contract Id from Register Budget [x]
 - change physical document fetch by project_number instead of projectId [x]
-- change physical document to use user base []
-- refact all use cases to search by user repository instead of estimator or storekeeper repository []
+- change physical document to use user base [x]
+- refact all use cases to search by user repository instead of estimator or storekeeper repository [x]
 - return in pagination params max quantity of pages[]
 
 # Test 1 file

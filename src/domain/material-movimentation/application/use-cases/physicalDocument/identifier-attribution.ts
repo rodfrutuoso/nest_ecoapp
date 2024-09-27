@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { Eihter, left, right } from "../../../../../core/either";
-import { UniqueEntityID } from "../../../../../core/entities/unique-entity-id";
 import { PhysicalDocument } from "../../../enterprise/entities/physical-document";
 import { PhysicalDocumentRepository } from "../../repositories/physical-document-repository";
 import { ResourceAlreadyRegisteredError } from "../errors/resource-already-registered-error";
@@ -8,7 +7,7 @@ import { ProjectRepository } from "../../repositories/project-repository";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 
 interface IdentifierAttributionUseCaseRequest {
-  projectId: string;
+  project_number: string;
   identifier: number;
   baseId: string;
 }
@@ -28,18 +27,21 @@ export class IdentifierAttributionUseCase {
   ) {}
 
   async execute({
-    projectId,
+    project_number,
     identifier,
     baseId,
   }: IdentifierAttributionUseCaseRequest): Promise<IdentifierAttributionResponse> {
-    const project = await this.projectRepository.findByID(projectId);
-    if (!project || project.baseId.toString() !== baseId)
-      return left(new ResourceNotFoundError("projectId não encontrado"));
+    const project = await this.projectRepository.findByProjectNumber(
+      project_number,
+      baseId
+    );
+    if (!project)
+      return left(new ResourceNotFoundError("O projeto não foi encontrado"));
 
     const physicaldocumentSearch =
       await this.physicaldocumentRepository.findByIdentifierProjectId(
         identifier,
-        projectId
+        project.id.toString()
       );
 
     const isIdentifierUsed = physicaldocumentSearch.find(
@@ -50,14 +52,14 @@ export class IdentifierAttributionUseCase {
       return left(new ResourceAlreadyRegisteredError("O ID já utilizado"));
 
     const isProjectIdUsed = physicaldocumentSearch.find(
-      (item) => item.projectId.toString() === projectId
+      (item) => item.projectId.toString() === project.id.toString()
     );
 
     if (isProjectIdUsed)
       return left(new ResourceAlreadyRegisteredError("O Projeto já tem ID"));
 
     const physicalDocument = PhysicalDocument.create({
-      projectId: new UniqueEntityID(projectId),
+      projectId: project.id,
       identifier,
     });
 

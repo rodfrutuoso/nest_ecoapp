@@ -47,19 +47,13 @@ describe("Identifier Attribution (E2E)", () => {
       .post("/physical-documents")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({
-        projectId: project.id.toString(),
+        project_number: project.project_number,
         identifier: 2,
       });
 
     const [physicalDocumentDataBase] = await bigquery.physicalDocument.select({
       where: { identifier: 2 },
     });
-
-    // console.log(project.id.toString());
-    // console.log(response.headers);
-    // console.log(response.text);
-    // console.log(response.body.errors.details);
-    // console.log(physicalDocumentDataBase);
 
     expect(response.statusCode).toBe(201);
     expect(physicalDocumentDataBase.identifier).toEqual(2);

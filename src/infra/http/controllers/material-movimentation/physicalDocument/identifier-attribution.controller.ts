@@ -2,7 +2,6 @@ import {
   BadRequestException,
   ConflictException,
   NotFoundException,
-  UsePipes,
 } from "@nestjs/common";
 import { Body, Controller, HttpCode, Post } from "@nestjs/common";
 import { z } from "zod";
@@ -16,7 +15,7 @@ import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
 import { CurrentUser } from "src/infra/auth/current-user.decorator";
 
 const identifierAttributionBodySchema = z.object({
-  projectId: z.string().uuid(),
+  project_number: z.string(),
   identifier: z.number().min(1).max(1000),
 });
 
@@ -32,10 +31,10 @@ export class IdentifierAttributionController {
     @Body(new ZodValidationPipe(identifierAttributionBodySchema))
     body: IdentifierAttributionBodyDto
   ) {
-    const { projectId, identifier } = body;
+    const { project_number, identifier } = body;
 
     const result = await this.identifierAttribution.execute({
-      projectId,
+      project_number,
       identifier,
       baseId: user.baseId,
     });

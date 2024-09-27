@@ -134,7 +134,7 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-    "projectId": "e7e7bfe3-a6af-486f-95fd-8286499523f3",
+    "project_number": "B-123456789",
     "identifier": 3
 }
 

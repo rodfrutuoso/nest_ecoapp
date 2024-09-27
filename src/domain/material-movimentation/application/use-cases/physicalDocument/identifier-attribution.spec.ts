@@ -36,11 +36,11 @@ describe("attribute a identifier to a physical document", () => {
   });
 
   it("should be able to attribute a identifier to a physical document", async () => {
-    const project = makeProject({}, new UniqueEntityID("projeto-1"));
+    const project = makeProject({ project_number: "projeto-1" });
     await inMemoryProjectRepository.create(project);
 
     const result = await sut.execute({
-      projectId: "projeto-1",
+      project_number: "projeto-1",
       identifier: 123456,
       baseId: project.baseId.toString(),
     });
@@ -53,7 +53,7 @@ describe("attribute a identifier to a physical document", () => {
   });
 
   it("should not be able to attribute a identifier to a physical document if identification is already in use", async () => {
-    const project = makeProject({}, new UniqueEntityID("projeto-1"));
+    const project = makeProject({ project_number: "projeto-1" });
     await inMemoryProjectRepository.create(project);
 
     const physicalDocument = makePhysicalDocument({
@@ -63,7 +63,7 @@ describe("attribute a identifier to a physical document", () => {
     await inMemoryPhysicalDocumentRepository.create(physicalDocument);
 
     const result = await sut.execute({
-      projectId: "projeto-1",
+      project_number: "projeto-1",
       identifier: 123456,
       baseId: project.baseId.toString(),
     });
@@ -77,7 +77,7 @@ describe("attribute a identifier to a physical document", () => {
     await inMemoryBaseRepository.create(base);
 
     const result = await sut.execute({
-      projectId: "projeto-1-nao-criado",
+      project_number: "projeto-1-nao-criado",
       identifier: 123456,
       baseId: base.id.toString(),
     });
