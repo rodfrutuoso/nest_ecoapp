@@ -4,7 +4,7 @@ import { Test } from "@nestjs/testing";
 import request from "supertest";
 import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { JwtService } from "@nestjs/jwt";
-import { StorekeeperFactory } from "test/factories/make-storekeeper";
+import { UserFactory } from "test/factories/make-user";
 import { DatabaseModule } from "src/infra/database/database.module";
 import { ProjectFactory } from "test/factories/make-project";
 import { BudgetFactory } from "test/factories/make-budget";
@@ -16,7 +16,7 @@ describe("Fetch and Budget By Project Name (E2E)", () => {
   let app: INestApplication;
   let bigquery: BigQueryService;
   let jwt: JwtService;
-  let storekeeperFactory: StorekeeperFactory;
+  let userFactory: UserFactory;
   let projectFactory: ProjectFactory;
   let budgetFactory: BudgetFactory;
   let contractFactory: ContractFactory;
@@ -27,7 +27,7 @@ describe("Fetch and Budget By Project Name (E2E)", () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
       providers: [
-        StorekeeperFactory,
+        UserFactory,
         BudgetFactory,
         ProjectFactory,
         BaseFactory,
@@ -40,7 +40,7 @@ describe("Fetch and Budget By Project Name (E2E)", () => {
 
     bigquery = moduleRef.get(BigQueryService);
     jwt = moduleRef.get(JwtService);
-    storekeeperFactory = moduleRef.get(StorekeeperFactory);
+    userFactory = moduleRef.get(UserFactory);
     budgetFactory = moduleRef.get(BudgetFactory);
     projectFactory = moduleRef.get(ProjectFactory);
     baseFactory = moduleRef.get(BaseFactory);
@@ -54,7 +54,7 @@ describe("Fetch and Budget By Project Name (E2E)", () => {
     const contract = await contractFactory.makeBqContract({});
     const base = await baseFactory.makeBqBase({ contractId: contract.id });
 
-    const user = await storekeeperFactory.makeBqStorekeeper({
+    const user = await userFactory.makeBqUser({
       baseId: base.id,
     });
 

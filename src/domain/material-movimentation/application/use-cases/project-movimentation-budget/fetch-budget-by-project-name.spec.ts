@@ -8,7 +8,7 @@ import { InMemoryMaterialRepository } from "test/repositories/in-memory-material
 import { InMemoryUserRepository } from "test/repositories/in-memory-user-repository";
 import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
 import { makeContract } from "test/factories/make-contract";
-import { makeEstimator } from "test/factories/make-estimator";
+import { makeUser } from "test/factories/make-user";
 import { makeMaterial } from "test/factories/make-material";
 import { InMemoryBaseRepository } from "test/repositories/in-memory-base-repository";
 import { makeBase } from "test/factories/make-base";
@@ -57,7 +57,7 @@ describe("Get Budget by project", () => {
     const base = makeBase({ contractId: contract.id });
     await inMemoryBaseRepository.create(base);
 
-    const estimator = makeEstimator({ contractId: contract.id });
+    const estimator = makeUser({ contractId: contract.id });
     await inMemoryUserRepository.create(estimator);
 
     const material = makeMaterial();
@@ -110,7 +110,7 @@ describe("Get Budget by project", () => {
     const base = makeBase({ contractId: contract.id });
     await inMemoryBaseRepository.create(base);
 
-    const estimator = makeEstimator({ contractId: contract.id });
+    const estimator = makeUser({ contractId: contract.id });
     await inMemoryUserRepository.create(estimator);
 
     const material = makeMaterial();
@@ -161,7 +161,7 @@ describe("Get Budget by project", () => {
     const base = makeBase({ contractId: contract.id });
     await inMemoryBaseRepository.create(base);
 
-    const estimator = makeEstimator({ contractId: contract.id });
+    const estimator = makeUser({ contractId: contract.id });
     await inMemoryUserRepository.create(estimator);
 
     const material = makeMaterial();

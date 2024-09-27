@@ -24,7 +24,7 @@ const editAccountBodyDto = z.object({
   type: z.string().optional(),
   baseId: z.string().uuid().optional(),
   contractId: z.string().uuid().optional(),
-  password: z.string().optional(),
+  password: z.string().min(6).optional(),
 });
 
 @ApiTags("user")
@@ -58,13 +58,13 @@ export class EditAccountController {
 
       switch (error.constructor) {
         case NotValidError:
-          throw new ConflictException();
+          throw new ConflictException(error.message);
         case NotAllowedError:
-          throw new UnauthorizedException();
+          throw new UnauthorizedException(error.message);
         case ResourceNotFoundError:
-          throw new NotFoundException();
+          throw new NotFoundException(error.message);
         default:
-          throw new BadRequestException();
+          throw new BadRequestException(error.message);
       }
     }
 

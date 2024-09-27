@@ -4,7 +4,7 @@ import { Test } from "@nestjs/testing";
 import request from "supertest";
 import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { JwtService } from "@nestjs/jwt";
-import { StorekeeperFactory } from "test/factories/make-storekeeper";
+import { UserFactory } from "test/factories/make-user";
 import { MovimentationFactory } from "test/factories/make-movimentation";
 import { UniqueEntityID } from "src/core/entities/unique-entity-id";
 import { DatabaseModule } from "src/infra/database/database.module";
@@ -17,7 +17,7 @@ describe("Fetch Movimentation History (E2E)", () => {
   let app: INestApplication;
   let bigquery: BigQueryService;
   let jwt: JwtService;
-  let storekeeperFactory: StorekeeperFactory;
+  let userFactory: UserFactory;
   let movimentationFactory: MovimentationFactory;
   let materialFactory: MaterialFactory;
   let contractFactory: ContractFactory;
@@ -28,7 +28,7 @@ describe("Fetch Movimentation History (E2E)", () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
       providers: [
-        StorekeeperFactory,
+        UserFactory,
         MovimentationFactory,
         MaterialFactory,
         ContractFactory,
@@ -41,7 +41,7 @@ describe("Fetch Movimentation History (E2E)", () => {
 
     bigquery = moduleRef.get(BigQueryService);
     jwt = moduleRef.get(JwtService);
-    storekeeperFactory = moduleRef.get(StorekeeperFactory);
+    userFactory = moduleRef.get(UserFactory);
     movimentationFactory = moduleRef.get(MovimentationFactory);
     materialFactory = moduleRef.get(MaterialFactory);
     contractFactory = moduleRef.get(ContractFactory);
@@ -52,7 +52,7 @@ describe("Fetch Movimentation History (E2E)", () => {
   });
 
   test("[GET] /movimentations", async () => {
-    const user = await storekeeperFactory.makeBqStorekeeper({});
+    const user = await userFactory.makeBqUser({});
     const contract = await contractFactory.makeBqContract();
     const base = await baseFactory.makeBqBase({ contractId: contract.id });
 

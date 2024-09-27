@@ -9,6 +9,7 @@ import { DatabaseModule } from "src/infra/database/database.module";
 import { ProjectFactory } from "test/factories/make-project";
 import { BaseFactory } from "test/factories/make-base";
 import { MaterialFactory } from "test/factories/make-material";
+import { ContractFactory } from "test/factories/make-contract";
 
 describe("Transfer Material (E2E)", () => {
   let app: INestApplication;
@@ -18,11 +19,18 @@ describe("Transfer Material (E2E)", () => {
   let projectFactory: ProjectFactory;
   let baseFactory: BaseFactory;
   let materialFactory: MaterialFactory;
+  let contractFactory: ContractFactory;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [UserFactory, MaterialFactory, BaseFactory, ProjectFactory],
+      providers: [
+        UserFactory,
+        MaterialFactory,
+        BaseFactory,
+        ProjectFactory,
+        ContractFactory,
+      ],
     }).compile();
 
     app = moduleRef.createNestApplication();
@@ -33,14 +41,18 @@ describe("Transfer Material (E2E)", () => {
     materialFactory = moduleRef.get(MaterialFactory);
     baseFactory = moduleRef.get(BaseFactory);
     projectFactory = moduleRef.get(ProjectFactory);
+    contractFactory = moduleRef.get(ContractFactory);
 
     await app.init();
   });
 
   test("[POST] /budgets", async () => {
-    const base = await baseFactory.makeBqBase();
+    const contract = await contractFactory.makeBqContract();
+    const base = await baseFactory.makeBqBase({ contractId: contract.id });
     const user = await userFactory.makeBqUser({
       baseId: base.id,
+      contractId: contract.id,
+      type: "Orçamentista",
     });
 
     const accessToken = jwt.sign({
@@ -70,7 +82,7 @@ describe("Transfer Material (E2E)", () => {
         {
           materialId: material.id.toString(),
           projectId: project.id.toString(),
-          value: -1,
+          value: 8,
         },
       ]);
 

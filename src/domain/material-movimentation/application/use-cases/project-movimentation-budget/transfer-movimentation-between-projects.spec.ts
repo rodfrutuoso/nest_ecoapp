@@ -12,7 +12,7 @@ import { InMemoryProjectRepository } from "test/repositories/in-memory-project-r
 import { makeProject } from "test/factories/make-project";
 import { makeMaterial } from "test/factories/make-material";
 import { makeBase } from "test/factories/make-base";
-import { makeStorekeeper } from "test/factories/make-storekeeper";
+import { makeUser } from "test/factories/make-user";
 
 let inMemoryContractRepository: InMemoryContractRepository;
 let inMemoryBaseRepository: InMemoryBaseRepository;
@@ -64,7 +64,7 @@ describe("Transfer Material between projects", () => {
     const base = makeBase({}, new UniqueEntityID("ID-BASE-VCA"));
     await inMemoryBaseRepository.create(base);
 
-    const storekeeper = makeStorekeeper(
+    const storekeeper = makeUser(
       { baseId: base.id },
       new UniqueEntityID("5")
     );
@@ -116,7 +116,7 @@ describe("Transfer Material between projects", () => {
     const base = makeBase({}, new UniqueEntityID("ID-BASE-VCA"));
     await inMemoryBaseRepository.create(base);
 
-    const storekeeper = makeStorekeeper(
+    const storekeeper = makeUser(
       { baseId: base.id },
       new UniqueEntityID("5")
     );

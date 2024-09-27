@@ -15,6 +15,7 @@ import { CreateAccountDecorator } from "src/infra/http/swagger dto and decorator
 import { CreateAccountBodyDto } from "src/infra/http/swagger dto and decorators/material-movimentation/users/dto classes/create-account.dto";
 import { WrongTypeError } from "src/domain/material-movimentation/application/use-cases/errors/wrong-type";
 import { RegisterUserUseCase } from "src/domain/material-movimentation/application/use-cases/users/register-user";
+import { NotValidError } from "src/domain/material-movimentation/application/use-cases/errors/not-valid-error";
 
 const createAccountBodyDto = z.object({
   name: z.string(),
@@ -52,6 +53,8 @@ export class CreateAccountController {
       const error = result.value;
 
       switch (error.constructor) {
+        case NotValidError:
+          throw new ConflictException(error.message);
         case ResourceAlreadyRegisteredError:
           throw new ConflictException(error.message);
         case ResourceNotFoundError:

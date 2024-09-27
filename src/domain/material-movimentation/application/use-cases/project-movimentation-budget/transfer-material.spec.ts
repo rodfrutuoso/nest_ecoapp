@@ -8,7 +8,7 @@ import { InMemoryBaseRepository } from "test/repositories/in-memory-base-reposit
 import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
 import { makeProject } from "test/factories/make-project";
 import { UniqueEntityID } from "src/core/entities/unique-entity-id";
-import { makeStorekeeper } from "test/factories/make-storekeeper";
+import { makeUser } from "test/factories/make-user";
 import { makeMaterial } from "test/factories/make-material";
 import { makeBase } from "test/factories/make-base";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
@@ -60,7 +60,7 @@ describe("Transfer Material", () => {
     const base = makeBase({}, new UniqueEntityID("ID-BASE-VCA"));
     await inMemoryBaseRepository.create(base);
 
-    const storekeeper = makeStorekeeper(
+    const storekeeper = makeUser(
       { baseId: base.id },
       new UniqueEntityID("5")
     );

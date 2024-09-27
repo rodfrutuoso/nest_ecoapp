@@ -11,6 +11,7 @@ import { Storekeeper } from "src/domain/material-movimentation/enterprise/entiti
 import { Estimator } from "src/domain/material-movimentation/enterprise/entities/estimator";
 import { ContractRepository } from "../../repositories/contract-repository";
 import { NotValidError } from "../errors/not-valid-error";
+import { ResourceAlreadyRegisteredError } from "../errors/resource-already-registered-error";
 
 interface RegisterUserUseCaseRequest {
   name: string;
@@ -23,7 +24,10 @@ interface RegisterUserUseCaseRequest {
 }
 
 type RegisterUserResponse = Eihter<
-  ResourceNotFoundError | WrongTypeError | NotValidError,
+  | ResourceNotFoundError
+  | WrongTypeError
+  | NotValidError
+  | ResourceAlreadyRegisteredError,
   {
     user: Storekeeper | Estimator;
   }
@@ -62,6 +66,9 @@ export class RegisterUserUseCase {
       );
 
     if (!this.isUserType(type)) return left(new WrongTypeError());
+
+    const searchUser = await this.userRepository.findByEmail(email);
+    if (searchUser) return left(new ResourceAlreadyRegisteredError());
 
     if (type === "Orçamentista")
       user = Estimator.create({

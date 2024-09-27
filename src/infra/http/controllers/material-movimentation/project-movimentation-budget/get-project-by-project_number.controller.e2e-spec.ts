@@ -4,11 +4,8 @@ import { Test } from "@nestjs/testing";
 import request from "supertest";
 import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { JwtService } from "@nestjs/jwt";
-import { StorekeeperFactory } from "test/factories/make-storekeeper";
-import { MovimentationFactory } from "test/factories/make-movimentation";
-import { UniqueEntityID } from "src/core/entities/unique-entity-id";
+import { UserFactory } from "test/factories/make-user";
 import { DatabaseModule } from "src/infra/database/database.module";
-import { MaterialFactory } from "test/factories/make-material";
 import { ContractFactory } from "test/factories/make-contract";
 import { ProjectFactory } from "test/factories/make-project";
 import { BaseFactory } from "test/factories/make-base";
@@ -17,7 +14,7 @@ describe("Fetch Movimentation History (E2E)", () => {
   let app: INestApplication;
   let bigquery: BigQueryService;
   let jwt: JwtService;
-  let storekeeperFactory: StorekeeperFactory;
+  let userFactory: UserFactory;
   let contractFactory: ContractFactory;
   let projectFactory: ProjectFactory;
   let baseFactory: BaseFactory;
@@ -26,7 +23,7 @@ describe("Fetch Movimentation History (E2E)", () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
       providers: [
-        StorekeeperFactory,
+        UserFactory,
         ContractFactory,
         BaseFactory,
         ProjectFactory,
@@ -37,7 +34,7 @@ describe("Fetch Movimentation History (E2E)", () => {
 
     bigquery = moduleRef.get(BigQueryService);
     jwt = moduleRef.get(JwtService);
-    storekeeperFactory = moduleRef.get(StorekeeperFactory);
+    userFactory = moduleRef.get(UserFactory);
     contractFactory = moduleRef.get(ContractFactory);
     projectFactory = moduleRef.get(ProjectFactory);
     baseFactory = moduleRef.get(BaseFactory);
@@ -48,9 +45,10 @@ describe("Fetch Movimentation History (E2E)", () => {
   test("[GET] /projects", async () => {
     const contract = await contractFactory.makeBqContract();
     const base = await baseFactory.makeBqBase({ contractId: contract.id });
-    const user = await storekeeperFactory.makeBqStorekeeper({
+    const user = await userFactory.makeBqUser({
       contractId: contract.id,
       baseId: base.id,
+      type: "Administrador",
     });
 
     const accessToken = jwt.sign({

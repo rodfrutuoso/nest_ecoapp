@@ -4,7 +4,7 @@ import { Test } from "@nestjs/testing";
 import request from "supertest";
 import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { JwtService } from "@nestjs/jwt";
-import { StorekeeperFactory } from "test/factories/make-storekeeper";
+import { UserFactory } from "test/factories/make-user";
 import { DatabaseModule } from "src/infra/database/database.module";
 import { ContractFactory } from "test/factories/make-contract";
 
@@ -12,27 +12,27 @@ describe("Register Base (E2E)", () => {
   let app: INestApplication;
   let bigquery: BigQueryService;
   let jwt: JwtService;
-  let storekeeperFactory: StorekeeperFactory;
+  let userFactory: UserFactory;
   let contractFactory: ContractFactory;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StorekeeperFactory, ContractFactory],
+      providers: [UserFactory, ContractFactory],
     }).compile();
 
     app = moduleRef.createNestApplication();
 
     bigquery = moduleRef.get(BigQueryService);
     jwt = moduleRef.get(JwtService);
-    storekeeperFactory = moduleRef.get(StorekeeperFactory);
+    userFactory = moduleRef.get(UserFactory);
     contractFactory = moduleRef.get(ContractFactory);
 
     await app.init();
   });
 
   test("[POST] /bases", async () => {
-    const user = await storekeeperFactory.makeBqStorekeeper({});
+    const user = await userFactory.makeBqUser({});
     const contract = await contractFactory.makeBqContract({});
 
     const accessToken = jwt.sign({

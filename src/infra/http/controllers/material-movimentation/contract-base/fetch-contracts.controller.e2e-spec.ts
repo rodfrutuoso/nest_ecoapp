@@ -5,7 +5,7 @@ import request from "supertest";
 import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { JwtService } from "@nestjs/jwt";
 import { randomUUID } from "crypto";
-import { StorekeeperFactory } from "test/factories/make-storekeeper";
+import { UserFactory } from "test/factories/make-user";
 import { ContractFactory } from "test/factories/make-contract";
 import { UniqueEntityID } from "src/core/entities/unique-entity-id";
 import { DatabaseModule } from "src/infra/database/database.module";
@@ -14,27 +14,27 @@ describe("Fetch Contracts (E2E)", () => {
   let app: INestApplication;
   let bigquery: BigQueryService;
   let jwt: JwtService;
-  let storekeeperFactory: StorekeeperFactory;
+  let userFactory: UserFactory;
   let contractFactory: ContractFactory;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StorekeeperFactory, ContractFactory],
+      providers: [UserFactory, ContractFactory],
     }).compile();
 
     app = moduleRef.createNestApplication();
 
     bigquery = moduleRef.get(BigQueryService);
     jwt = moduleRef.get(JwtService);
-    storekeeperFactory = moduleRef.get(StorekeeperFactory);
+    userFactory = moduleRef.get(UserFactory);
     contractFactory = moduleRef.get(ContractFactory);
 
     await app.init();
   });
 
   test("[GET] /contracts", async () => {
-    const user = await storekeeperFactory.makeBqStorekeeper({});
+    const user = await userFactory.makeBqUser({});
 
     const accessToken = jwt.sign({
       sub: user.id.toString(),

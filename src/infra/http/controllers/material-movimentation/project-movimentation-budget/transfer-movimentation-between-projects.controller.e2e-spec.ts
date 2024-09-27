@@ -4,7 +4,7 @@ import { Test } from "@nestjs/testing";
 import request from "supertest";
 import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { JwtService } from "@nestjs/jwt";
-import { StorekeeperFactory } from "test/factories/make-storekeeper";
+import { UserFactory } from "test/factories/make-user";
 import { DatabaseModule } from "src/infra/database/database.module";
 import { MovimentationFactory } from "test/factories/make-movimentation";
 import { BqMovimentationProps } from "src/infra/database/bigquery/schemas/movimentation";
@@ -16,7 +16,7 @@ describe("Transfer Movimentation Between Projects (E2E)", () => {
   let app: INestApplication;
   let bigquery: BigQueryService;
   let jwt: JwtService;
-  let storekeeperFactory: StorekeeperFactory;
+  let userFactory: UserFactory;
   let movimentationFactory: MovimentationFactory;
   let projectFactory: ProjectFactory;
   let baseFactory: BaseFactory;
@@ -26,7 +26,7 @@ describe("Transfer Movimentation Between Projects (E2E)", () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
       providers: [
-        StorekeeperFactory,
+        UserFactory,
         MovimentationFactory,
         MaterialFactory,
         BaseFactory,
@@ -38,7 +38,7 @@ describe("Transfer Movimentation Between Projects (E2E)", () => {
 
     bigquery = moduleRef.get(BigQueryService);
     jwt = moduleRef.get(JwtService);
-    storekeeperFactory = moduleRef.get(StorekeeperFactory);
+    userFactory = moduleRef.get(UserFactory);
     movimentationFactory = moduleRef.get(MovimentationFactory);
     materialFactory = moduleRef.get(MaterialFactory);
     baseFactory = moduleRef.get(BaseFactory);
@@ -49,7 +49,7 @@ describe("Transfer Movimentation Between Projects (E2E)", () => {
 
   test("[POST] /transfer-movimentation", async () => {
     const base = await baseFactory.makeBqBase();
-    const user = await storekeeperFactory.makeBqStorekeeper({
+    const user = await userFactory.makeBqUser({
       type: "Administrador",
       baseId: base.id,
     });

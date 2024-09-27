@@ -25,7 +25,7 @@ Além disso, quando necessário criar entidades de suporte para testar um caso d
 
 ```typescript
 it("should be able to authenticate a storekeeper", async () => {
-  const storekeeper = makeStorekeeper({
+  const storekeeper = makeUser({
     email: "rodrigo@ecoeletrica.com",
     password: await fakeHasher.hash("123456"),
   });
@@ -56,13 +56,13 @@ Quanto à configuração do Nestjs, no método `beforeAll` é inicializada uma a
 beforeAll(async () => {
   const moduleRef = await Test.createTestingModule({
     imports: [AppModule, DatabaseModule],
-    providers: [StorekeeperFactory],
+    providers: [UserFactory],
   }).compile();
 
   app = moduleRef.createNestApplication();
 
   bigquery = moduleRef.get(BigQueryService);
-  storekeeperFactory = moduleRef.get(StorekeeperFactory);
+  userFactory = moduleRef.get(UserFactory);
 
   await app.init();
 });

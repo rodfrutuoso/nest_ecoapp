@@ -13,9 +13,8 @@ import { InMemoryUserRepository } from "test/repositories/in-memory-user-reposit
 import { InMemoryContractRepository } from "test/repositories/in-memory-contract-repository";
 import { makeContract } from "test/factories/make-contract";
 import { makeBase } from "test/factories/make-base";
-import { makeStorekeeper } from "test/factories/make-storekeeper";
+import { makeUser } from "test/factories/make-user";
 import { makeMaterial } from "test/factories/make-material";
-import { makeEstimator } from "test/factories/make-estimator";
 
 let inMemoryMovimentationRepository: InMemoryMovimentationRepository;
 let inMemoryProjectRepository: InMemoryProjectRepository;
@@ -68,10 +67,10 @@ describe("Fetch budgets and Movimentations by project", () => {
     const base = makeBase({ contractId: contract.id });
     await inMemoryBaseRepository.create(base);
 
-    const storekeeper = makeStorekeeper({ baseId: base.id });
+    const storekeeper = makeUser({ baseId: base.id });
     await inMemoryUserRepository.create(storekeeper);
 
-    const estimator = makeEstimator({ contractId: contract.id });
+    const estimator = makeUser({ contractId: contract.id });
     await inMemoryUserRepository.create(estimator);
 
     const material = makeMaterial({ contractId: contract.id });
@@ -155,10 +154,10 @@ describe("Fetch budgets and Movimentations by project", () => {
     const base = makeBase({ contractId: contract.id });
     inMemoryBaseRepository.create(base);
 
-    const storekeeper = makeStorekeeper({ baseId: base.id });
+    const storekeeper = makeUser({ baseId: base.id });
     inMemoryUserRepository.create(storekeeper);
 
-    const estimator = makeEstimator({ contractId: contract.id });
+    const estimator = makeUser({ contractId: contract.id });
     inMemoryUserRepository.create(estimator);
 
     const material = makeMaterial();
