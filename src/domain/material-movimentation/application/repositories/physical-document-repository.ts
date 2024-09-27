@@ -16,6 +16,7 @@ export abstract class PhysicalDocumentRepository {
   ): Promise<PhysicalDocument[]>;
   abstract findManyWithProject(
     params: PaginationParams,
+    baseId: string,
     identifier?: number,
     projectId?: string
   ): Promise<PhysicalDocumentWithProject[]>;

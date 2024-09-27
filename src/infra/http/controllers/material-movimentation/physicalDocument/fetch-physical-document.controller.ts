@@ -13,6 +13,8 @@ import { PhysicalDocumentWithProjectPresenter } from "src/infra/http/presenters/
 import { ApiProperty, ApiTags } from "@nestjs/swagger";
 import { FetchPhysicalDocumentsDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/physicalDocument/response decorators/fetch-physical-document.decorator";
 import { FetchPhysicalDocumentsQueryDto } from "src/infra/http/swagger dto and decorators/material-movimentation/physicalDocument/dto classes/fetch-physical-document.dto";
+import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
+import { CurrentUser } from "src/infra/auth/current-user.decorator";
 
 const fetchPhysicalDocumentsBodySchema = z.object({
   page: z
@@ -21,7 +23,7 @@ const fetchPhysicalDocumentsBodySchema = z.object({
     .default("1")
     .transform(Number)
     .pipe(z.number().min(1)),
-  projectId: z.string().uuid().optional(),
+  project_number: z.string().optional(),
   identifier: z
     .string()
     .transform(Number)
@@ -38,15 +40,17 @@ export class FetchPhysicalDocumentsController {
   @HttpCode(200)
   @FetchPhysicalDocumentsDecorator()
   async handle(
+    @CurrentUser() user: UserPayload,
     @Query(new ZodValidationPipe(fetchPhysicalDocumentsBodySchema))
     query: FetchPhysicalDocumentsQueryDto
   ) {
-    const { page, identifier, projectId } = query;
+    const { page, identifier, project_number } = query;
 
     const result = await this.FetchPhysicalDocument.execute({
       page,
+      baseId: user.baseId,
       identifier,
-      projectId,
+      project_number,
     });
 
     if (result.isLeft()) {

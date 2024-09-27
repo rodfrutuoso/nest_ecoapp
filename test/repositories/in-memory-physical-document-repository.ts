@@ -65,6 +65,7 @@ export class InMemoryPhysicalDocumentRepository
 
   async findManyWithProject(
     { page }: PaginationParams,
+    baseId,
     identifier?: number,
     projectId?: string
   ): Promise<PhysicalDocumentWithProject[]> {
@@ -77,8 +78,13 @@ export class InMemoryPhysicalDocumentRepository
         (physicaldocument) =>
           !projectId || physicaldocument.projectId.toString() === projectId
       )
-      .sort((a, b) => a.identifier - b.identifier)
-      .slice((page - 1) * 40, page * 40)
+      .filter((physicaldocument) => {
+        const projects = this.projectRepository.items
+          .filter((project) => project.baseId.toString() === baseId)
+          .map((project) => project.id.toString());
+
+        return projects.includes(physicaldocument.projectId.toString());
+      })
       .map((physicalDocument) => {
         const project = this.projectRepository.items.find(
           (project) => project.id === physicalDocument.projectId
@@ -95,7 +101,9 @@ export class InMemoryPhysicalDocumentRepository
           unitized: physicalDocument.unitized,
           project,
         });
-      });
+      })
+      .sort((a, b) => a.identifier - b.identifier)
+      .slice((page - 1) * 40, page * 40);
 
     return physicalDocuments;
   }

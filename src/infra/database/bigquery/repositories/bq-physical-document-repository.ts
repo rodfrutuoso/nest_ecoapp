@@ -65,6 +65,7 @@ export class BqPhysicalDocumentRepository
 
   async findManyWithProject(
     { page }: PaginationParams,
+    baseId,
     identifier?: number,
     projectId?: string
   ): Promise<PhysicalDocumentWithProject[]> {
@@ -79,7 +80,10 @@ export class BqPhysicalDocumentRepository
         project: {
           join: {
             table: "project",
-            on: "physical_document.projectId = project.id",
+            on:
+              "physical_document.projectId = project.id AND project.baseId = '" +
+              baseId +
+              "'",
           },
           relationType: "one-to-one",
         },

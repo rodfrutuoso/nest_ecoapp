@@ -12,11 +12,11 @@ export class FetchPhysicalDocumentsQueryDto {
   })
   page!: number;
   @ApiProperty({
-    example: "project-id",
-    description: "project's id of the identifier",
+    example: "B-1234567",
+    description: "project's number of the identifier",
     required: false,
   })
-  projectId!: string;
+  project_number!: string;
   @ApiProperty({
     example: 3,
     description: "ID or identifier to be found",
