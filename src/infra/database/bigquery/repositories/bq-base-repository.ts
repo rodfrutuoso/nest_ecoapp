@@ -1,5 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import { PaginationParams } from "src/core/repositories/pagination-params";
+import {
+  PaginationParams,
+  PaginationParamsResponse,
+} from "src/core/repositories/pagination-params";
 import { BaseRepository } from "src/domain/material-movimentation/application/repositories/base-repository";
 import { Base } from "src/domain/material-movimentation/enterprise/entities/base";
 import { BqBaseMapper } from "../mappers/bq-base-mapper";
@@ -65,14 +68,16 @@ export class BqBaseRepository implements BaseRepository {
     return bases.map(BqBaseMapper.toDomain);
   }
 
-  async findManyWithContract({
-    page,
-  }: PaginationParams): Promise<BaseWithContract[]> {
+  async findManyWithContract({ page }: PaginationParams): Promise<{
+    bases: BaseWithContract[];
+    pagination: PaginationParamsResponse;
+  }> {
     const pageCount = 40;
 
-    const bases = await this.bigquery.base.select({
+    const { results: bases, total_count } = await this.bigquery.base.select({
       limit: pageCount,
       offset: pageCount * (page - 1),
+      count_results: true,
       orderBy: { column: "baseName", direction: "ASC" },
       include: {
         contract: {
@@ -82,6 +87,12 @@ export class BqBaseRepository implements BaseRepository {
       },
     });
 
-    return bases.map(BqBaseWithContractMapper.toDomain);
+    const pagination: PaginationParamsResponse = {
+      page,
+      pageCount,
+      lastPage: Math.ceil(total_count / pageCount),
+    };
+
+    return { bases: bases.map(BqBaseWithContractMapper.toDomain), pagination };
   }
 }

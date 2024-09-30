@@ -62,6 +62,11 @@ export const FetchMovimentationHistoryDecorator = () => {
               },
             },
           ],
+          pagination: {
+            page: 1,
+            pageCount: 40,
+            lastPage: 1,
+          },
         },
       },
     }),

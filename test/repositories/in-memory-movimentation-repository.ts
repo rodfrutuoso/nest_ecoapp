@@ -1,5 +1,8 @@
 import { MovimentationWithDetails } from "src/domain/material-movimentation/enterprise/entities/value-objects/movimentation-with-details";
-import { PaginationParams } from "../../src/core/repositories/pagination-params";
+import {
+  PaginationParams,
+  PaginationParamsResponse,
+} from "../../src/core/repositories/pagination-params";
 import { MovimentationRepository } from "../../src/domain/material-movimentation/application/repositories/movimentation-repository";
 import { Movimentation } from "../../src/domain/material-movimentation/enterprise/entities/movimentation";
 import { InMemoryUserRepository } from "./in-memory-user-repository";
@@ -137,7 +140,12 @@ export class InMemoryMovimentationRepository
     materialId?: string,
     startDate?: Date,
     endDate?: Date
-  ): Promise<MovimentationWithDetails[]> {
+  ): Promise<{
+    movimentations: MovimentationWithDetails[];
+    pagination: PaginationParamsResponse;
+  }> {
+    const pageCount = 40;
+
     const movimentations = this.items
       .filter(
         (movimentation) => !baseId || movimentation.baseId.toString() === baseId
@@ -160,7 +168,7 @@ export class InMemoryMovimentationRepository
       )
       .filter((movimentation) => !endDate || movimentation.createdAt <= endDate)
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-      .slice((page - 1) * 40, page * 40)
+      .slice((page - 1) * pageCount, page * pageCount)
       .map((movimentation) => {
         const storekeeper = this.userRepository.items.find(
           (storekeeper) => storekeeper.id === movimentation.storekeeperId
@@ -203,7 +211,15 @@ export class InMemoryMovimentationRepository
         });
       });
 
-    return movimentations;
+    const total_count = this.items.length;
+
+    const pagination: PaginationParamsResponse = {
+      page,
+      pageCount,
+      lastPage: Math.ceil(total_count / pageCount),
+    };
+
+    return { movimentations, pagination };
   }
 
   async create(movimentations: Movimentation[]) {

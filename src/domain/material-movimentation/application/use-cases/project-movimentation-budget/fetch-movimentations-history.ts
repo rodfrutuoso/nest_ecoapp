@@ -7,6 +7,7 @@ import { ProjectRepository } from "../../repositories/project-repository";
 import { UserRepository } from "../../repositories/user-repository";
 import { MaterialRepository } from "../../repositories/material-repository";
 import { BaseRepository } from "../../repositories/base-repository";
+import { PaginationParamsResponse } from "src/core/repositories/pagination-params";
 
 interface FetchMovimentationHistoryUseCaseRequest {
   page: number;
@@ -22,6 +23,7 @@ type FetchMovimentationHistoryUseCaseResponse = Eihter<
   ResourceNotFoundError,
   {
     movimentations: MovimentationWithDetails[];
+    pagination: PaginationParamsResponse;
   }
 >;
 
@@ -81,7 +83,7 @@ export class FetchMovimentationHistoryUseCase {
       materialId = material.id.toString();
     }
 
-    const movimentations =
+    const { movimentations, pagination } =
       await this.movimentationRepository.findManyHistoryWithDetails(
         {
           page,
@@ -96,6 +98,6 @@ export class FetchMovimentationHistoryUseCase {
 
     if (!movimentations.length) return left(new ResourceNotFoundError());
 
-    return right({ movimentations });
+    return right({ movimentations, pagination });
   }
 }

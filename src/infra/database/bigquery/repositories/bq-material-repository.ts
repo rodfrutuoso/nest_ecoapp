@@ -56,15 +56,15 @@ export class BqMaterialRepository implements MaterialRepository {
     const objectSearch =
       type === undefined ? { contractId } : { contractId, type };
 
-    const { results, total_count } = await this.bigquery.material.select({
-      where: objectSearch,
-      limit: pageCount,
-      offset: pageCount * (page - 1),
-      count_results: true,
-      orderBy: { column: "code", direction: "ASC" },
-    });
+    const { results: materials, total_count } =
+      await this.bigquery.material.select({
+        where: objectSearch,
+        limit: pageCount,
+        offset: pageCount * (page - 1),
+        count_results: true,
+        orderBy: { column: "code", direction: "ASC" },
+      });
 
-    const materials = results;
     const pagination: PaginationParamsResponse = {
       page,
       pageCount,

@@ -154,7 +154,14 @@ describe("Fetch Movimentations History", () => {
       page: 2,
       baseId: "base-1",
     });
-    if (result.isRight()) expect(result.value.movimentations).toHaveLength(5);
+    if (result.isRight()) {
+      expect(result.value.movimentations).toHaveLength(5);
+      expect(result.value.pagination).toMatchObject({
+        page: 2,
+        pageCount: 40,
+        lastPage: 2,
+      });
+    }
   });
 
   it("should be able to fetch movimentations history by project_number", async () => {

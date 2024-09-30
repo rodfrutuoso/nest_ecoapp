@@ -1,4 +1,7 @@
-import { PaginationParams } from "src/core/repositories/pagination-params";
+import {
+  PaginationParams,
+  PaginationParamsResponse,
+} from "src/core/repositories/pagination-params";
 import { Estimator } from "../../enterprise/entities/estimator";
 import { Storekeeper } from "../../enterprise/entities/storekeeper";
 import { UserWithBaseContract } from "../../enterprise/entities/value-objects/user-with-base-contract";
@@ -13,7 +16,10 @@ export abstract class UserRepository {
     baseId?: string,
     contractId?: string,
     name?: string
-  ): Promise<UserWithBaseContract[]>;
+  ): Promise<{
+    users: UserWithBaseContract[];
+    pagination: PaginationParamsResponse;
+  }>;
   abstract findByIds(
     userIds: string[]
   ): Promise<Array<Storekeeper | Estimator>>;

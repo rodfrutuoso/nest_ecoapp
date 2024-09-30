@@ -3,6 +3,7 @@ import { Eihter, left, right } from "../../../../../core/either";
 import { UserRepository } from "../../repositories/user-repository";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 import { UserWithBaseContract } from "src/domain/material-movimentation/enterprise/entities/value-objects/user-with-base-contract";
+import { PaginationParamsResponse } from "src/core/repositories/pagination-params";
 
 interface FetchUserUseCaseRequest {
   page: number;
@@ -15,6 +16,7 @@ type FetchUserUseCaseResponse = Eihter<
   ResourceNotFoundError,
   {
     users: UserWithBaseContract[];
+    pagination: PaginationParamsResponse;
   }
 >;
 
@@ -28,17 +30,18 @@ export class FetchUserUseCase {
     contractId,
     name,
   }: FetchUserUseCaseRequest): Promise<FetchUserUseCaseResponse> {
-    const users = await this.userRepository.findManyWithBaseContract(
-      {
-        page,
-      },
-      baseId,
-      contractId,
-      name
-    );
+    const { users, pagination } =
+      await this.userRepository.findManyWithBaseContract(
+        {
+          page,
+        },
+        baseId,
+        contractId,
+        name
+      );
 
     if (!users.length) return left(new ResourceNotFoundError());
 
-    return right({ users });
+    return right({ users, pagination });
   }
 }

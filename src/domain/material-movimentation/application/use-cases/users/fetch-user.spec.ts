@@ -87,7 +87,14 @@ describe("Fetch Users History", () => {
     const result = await sut.execute({
       page: 2,
     });
-    if (result.isRight()) expect(result.value.users).toHaveLength(5);
+    if (result.isRight()) {
+      expect(result.value.users).toHaveLength(5);
+      expect(result.value.pagination).toMatchObject({
+        page: 2,
+        pageCount: 40,
+        lastPage: 2,
+      });
+    }
   });
 
   it("should be able to fetch users history by base", async () => {

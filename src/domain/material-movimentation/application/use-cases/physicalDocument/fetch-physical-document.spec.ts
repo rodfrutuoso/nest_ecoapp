@@ -63,7 +63,7 @@ describe("Fetch PhysicalDocuments History", () => {
 
     expect(result.isRight()).toBeTruthy();
     if (result.isRight())
-      expect(result.value.physicaldocuments).toEqual([
+      expect(result.value.physicalDocuments).toEqual([
         expect.objectContaining({
           props: expect.objectContaining({ identifier: 1 }),
         }),
@@ -76,7 +76,7 @@ describe("Fetch PhysicalDocuments History", () => {
       ]);
   });
 
-  it("should be able to fetch paginated physicaldocuments history", async () => {
+  it("should be able to fetch paginated physicalDocuments history", async () => {
     const base = makeBase();
     await inMemoryBaseRepository.create(base);
 
@@ -93,11 +93,17 @@ describe("Fetch PhysicalDocuments History", () => {
       baseId: base.id.toString(),
       page: 2,
     });
-    if (result.isRight())
-      expect(result.value.physicaldocuments).toHaveLength(5);
+    if (result.isRight()) {
+      expect(result.value.physicalDocuments).toHaveLength(5);
+      expect(result.value.pagination).toMatchObject({
+        page: 2,
+        pageCount: 40,
+        lastPage: 2,
+      });
+    }
   });
 
-  it("should be able to fetch physicaldocuments history by project", async () => {
+  it("should be able to fetch physicalDocuments history by project", async () => {
     const base = makeBase();
     await inMemoryBaseRepository.create(base);
 
@@ -132,10 +138,10 @@ describe("Fetch PhysicalDocuments History", () => {
 
     expect(result.isRight()).toBeTruthy();
     if (result.isRight())
-      expect(result.value.physicaldocuments).toHaveLength(2);
+      expect(result.value.physicalDocuments).toHaveLength(2);
   });
 
-  it("should not be able to fetch physicaldocuments history of another base", async () => {
+  it("should not be able to fetch physicalDocuments history of another base", async () => {
     const base = makeBase();
     await inMemoryBaseRepository.create(base);
 
@@ -169,10 +175,10 @@ describe("Fetch PhysicalDocuments History", () => {
 
     expect(result.isRight()).toBeTruthy();
     if (result.isRight())
-      expect(result.value.physicaldocuments).toHaveLength(2);
+      expect(result.value.physicalDocuments).toHaveLength(2);
   });
 
-  it("should be able to fetch physicaldocuments history by identifier", async () => {
+  it("should be able to fetch physicalDocuments history by identifier", async () => {
     const base = makeBase();
     await inMemoryBaseRepository.create(base);
 
@@ -207,6 +213,6 @@ describe("Fetch PhysicalDocuments History", () => {
 
     expect(result.isRight()).toBeTruthy();
     if (result.isRight())
-      expect(result.value.physicaldocuments).toHaveLength(2);
+      expect(result.value.physicalDocuments).toHaveLength(2);
   });
 });

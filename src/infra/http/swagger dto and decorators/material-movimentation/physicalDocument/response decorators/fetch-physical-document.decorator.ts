@@ -28,6 +28,11 @@ export const FetchPhysicalDocumentsDecorator = () => {
               },
             },
           ],
+          pagination: {
+            page: 1,
+            pageCount: 40,
+            lastPage: 1,
+          },
         },
       },
     }),

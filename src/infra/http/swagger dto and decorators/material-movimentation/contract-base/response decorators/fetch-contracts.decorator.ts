@@ -18,6 +18,11 @@ export const FetchContractDecorator = () => {
               contract: "Oeste Pernambuco",
             },
           ],
+          pagination: {
+            page: 1,
+            pageCount: 40,
+            lastPage: 1,
+          },
         },
       },
     }),

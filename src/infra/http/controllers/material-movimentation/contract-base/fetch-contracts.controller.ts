@@ -49,7 +49,8 @@ export class FetchContractController {
     }
 
     const contracts = result.value.contracts;
+    const pagination = result.value.pagination;
 
-    return { contracts: contracts.map(ContractPresenter.toHTTP) };
+    return { contracts: contracts.map(ContractPresenter.toHTTP), pagination };
   }
 }

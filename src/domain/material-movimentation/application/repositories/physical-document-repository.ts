@@ -1,4 +1,7 @@
-import { PaginationParams } from "../../../../core/repositories/pagination-params";
+import {
+  PaginationParams,
+  PaginationParamsResponse,
+} from "../../../../core/repositories/pagination-params";
 import { PhysicalDocument } from "../../enterprise/entities/physical-document";
 import { PhysicalDocumentWithProject } from "../../enterprise/entities/value-objects/physical-document-with-project";
 
@@ -20,6 +23,9 @@ export abstract class PhysicalDocumentRepository {
     baseId: string,
     identifier?: number,
     projectId?: string
-  ): Promise<PhysicalDocumentWithProject[]>;
+  ): Promise<{
+    physicalDocuments: PhysicalDocumentWithProject[];
+    pagination: PaginationParamsResponse;
+  }>;
   abstract delete(physicalDocumentId: string): Promise<void>;
 }

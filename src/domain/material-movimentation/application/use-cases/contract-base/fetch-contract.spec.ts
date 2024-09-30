@@ -54,6 +54,13 @@ describe("Fetch Contracts History", () => {
     const result = await sut.execute({
       page: 2,
     });
-    if (result.isRight()) expect(result.value.contracts).toHaveLength(5);
+    if (result.isRight()) {
+      expect(result.value.contracts).toHaveLength(5);
+      expect(result.value.pagination).toMatchObject({
+        page: 2,
+        pageCount: 40,
+        lastPage: 2,
+      });
+    }
   });
 });

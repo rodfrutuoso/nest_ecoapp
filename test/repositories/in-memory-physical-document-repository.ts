@@ -1,5 +1,8 @@
 import { PhysicalDocumentWithProject } from "src/domain/material-movimentation/enterprise/entities/value-objects/physical-document-with-project";
-import { PaginationParams } from "../../src/core/repositories/pagination-params";
+import {
+  PaginationParams,
+  PaginationParamsResponse,
+} from "../../src/core/repositories/pagination-params";
 import { PhysicalDocumentRepository } from "../../src/domain/material-movimentation/application/repositories/physical-document-repository";
 import { PhysicalDocument } from "../../src/domain/material-movimentation/enterprise/entities/physical-document";
 import { InMemoryProjectRepository } from "./in-memory-project-repository";
@@ -71,7 +74,12 @@ export class InMemoryPhysicalDocumentRepository
     baseId,
     identifier?: number,
     projectId?: string
-  ): Promise<PhysicalDocumentWithProject[]> {
+  ): Promise<{
+    physicalDocuments: PhysicalDocumentWithProject[];
+    pagination: PaginationParamsResponse;
+  }> {
+    const pageCount = 40;
+
     const physicalDocuments = this.items
       .filter(
         (physicaldocument) =>
@@ -106,9 +114,17 @@ export class InMemoryPhysicalDocumentRepository
         });
       })
       .sort((a, b) => a.identifier - b.identifier)
-      .slice((page - 1) * 40, page * 40);
+      .slice((page - 1) * pageCount, page * pageCount);
 
-    return physicalDocuments;
+    const total_count = this.items.length;
+
+    const pagination: PaginationParamsResponse = {
+      page,
+      pageCount,
+      lastPage: Math.ceil(total_count / pageCount),
+    };
+
+    return { physicalDocuments, pagination };
   }
 
   async delete(physicalDocumentId: string) {

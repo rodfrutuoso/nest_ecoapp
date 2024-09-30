@@ -1,4 +1,7 @@
-import { PaginationParams } from "../../../../core/repositories/pagination-params";
+import {
+  PaginationParams,
+  PaginationParamsResponse,
+} from "../../../../core/repositories/pagination-params";
 import { Movimentation } from "../../enterprise/entities/movimentation";
 import { MovimentationWithDetails } from "../../enterprise/entities/value-objects/movimentation-with-details";
 
@@ -29,6 +32,9 @@ export abstract class MovimentationRepository {
     materialId?: string,
     startDate?: Date,
     endDate?: Date
-  ): Promise<MovimentationWithDetails[]>;
+  ): Promise<{
+    movimentations: MovimentationWithDetails[];
+    pagination: PaginationParamsResponse;
+  }>;
   abstract create(movimentations: Movimentation[]): Promise<void>;
 }

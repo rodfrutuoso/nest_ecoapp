@@ -64,12 +64,14 @@ export class FetchPhysicalDocumentsController {
       }
     }
 
-    const physicalDocuments = result.value.physicaldocuments;
+    const physicalDocuments = result.value.physicalDocuments;
+    const pagination = result.value.pagination;
 
     return {
       physicalDocuments: physicalDocuments.map(
         PhysicalDocumentWithProjectPresenter.toHTTP
       ),
+      pagination,
     };
   }
 }

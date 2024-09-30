@@ -59,7 +59,11 @@ export class FetchAccountsController {
     }
 
     const users = result.value.users;
+    const pagination = result.value.pagination;
 
-    return { users: users.map(UserWithBaseContractPresenter.toHTTPUser) };
+    return {
+      users: users.map(UserWithBaseContractPresenter.toHTTPUser),
+      pagination,
+    };
   }
 }

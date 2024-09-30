@@ -5,6 +5,7 @@ import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 import { PhysicalDocumentWithProject } from "src/domain/material-movimentation/enterprise/entities/value-objects/physical-document-with-project";
 import { ProjectRepository } from "../../repositories/project-repository";
 import { Project } from "src/domain/material-movimentation/enterprise/entities/project";
+import { PaginationParamsResponse } from "src/core/repositories/pagination-params";
 
 interface FetchPhysicalDocumentUseCaseRequest {
   page: number;
@@ -16,7 +17,8 @@ interface FetchPhysicalDocumentUseCaseRequest {
 type FetchPhysicalDocumentUseCaseResponse = Eihter<
   ResourceNotFoundError,
   {
-    physicaldocuments: PhysicalDocumentWithProject[];
+    physicalDocuments: PhysicalDocumentWithProject[];
+    pagination: PaginationParamsResponse;
   }
 >;
 
@@ -44,7 +46,7 @@ export class FetchPhysicalDocumentUseCase {
         return left(new ResourceNotFoundError("Projeto não encontrado"));
     }
 
-    const physicaldocuments =
+    const { physicalDocuments, pagination } =
       await this.physicaldocumentRepository.findManyWithProject(
         {
           page,
@@ -54,9 +56,9 @@ export class FetchPhysicalDocumentUseCase {
         project === null ? undefined : project?.id.toString()
       );
 
-    if (!physicaldocuments.length)
+    if (!physicalDocuments.length)
       return left(new ResourceNotFoundError("Pesquisa sem resultados"));
 
-    return right({ physicaldocuments });
+    return right({ physicalDocuments, pagination });
   }
 }

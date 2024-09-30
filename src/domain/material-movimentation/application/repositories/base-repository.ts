@@ -1,4 +1,7 @@
-import { PaginationParams } from "../../../../core/repositories/pagination-params";
+import {
+  PaginationParams,
+  PaginationParamsResponse,
+} from "../../../../core/repositories/pagination-params";
 import { Base } from "../../enterprise/entities/base";
 import { BaseWithContract } from "../../enterprise/entities/value-objects/base-with-contract";
 
@@ -11,5 +14,8 @@ export abstract class BaseRepository {
   abstract findMany(params: PaginationParams): Promise<Base[]>;
   abstract findManyWithContract(
     params: PaginationParams
-  ): Promise<BaseWithContract[]>;
+  ): Promise<{
+    bases: BaseWithContract[];
+    pagination: PaginationParamsResponse;
+  }>;
 }

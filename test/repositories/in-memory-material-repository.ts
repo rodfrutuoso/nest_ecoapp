@@ -54,12 +54,12 @@ export class InMemoryMaterialRepository implements MaterialRepository {
       .sort((a, b) => a.code - b.code)
       .slice((page - 1) * pageCount, page * pageCount);
 
-    const totalItems = this.items.length;
+    const total_count = this.items.length;
 
     const pagination: PaginationParamsResponse = {
       page,
       pageCount,
-      lastPage: Math.ceil(totalItems / pageCount),
+      lastPage: Math.ceil(total_count / pageCount),
     };
 
     return { materials, pagination };

@@ -1,5 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import { PaginationParams } from "src/core/repositories/pagination-params";
+import {
+  PaginationParams,
+  PaginationParamsResponse,
+} from "src/core/repositories/pagination-params";
 import { PhysicalDocumentRepository } from "src/domain/material-movimentation/application/repositories/physical-document-repository";
 import { PhysicalDocument } from "src/domain/material-movimentation/enterprise/entities/physical-document";
 import { BigQueryService } from "../bigquery.service";
@@ -69,29 +72,45 @@ export class BqPhysicalDocumentRepository
     baseId,
     identifier?: number,
     projectId?: string
-  ): Promise<PhysicalDocumentWithProject[]> {
+  ): Promise<{
+    physicalDocuments: PhysicalDocumentWithProject[];
+    pagination: PaginationParamsResponse;
+  }> {
     const pageCount = 40;
 
-    const physicalDocuments = await this.bigquery.physicalDocument.select({
-      where: { projectId, identifier },
-      limit: pageCount,
-      offset: pageCount * (page - 1),
-      orderBy: { column: "identifier", direction: "ASC" },
-      include: {
-        project: {
-          join: {
-            table: "project",
-            on:
-              "physical_document.projectId = project.id AND project.baseId = '" +
-              baseId +
-              "'",
+    const { results: physicalDocuments, total_count } =
+      await this.bigquery.physicalDocument.select({
+        where: { projectId, identifier },
+        limit: pageCount,
+        offset: pageCount * (page - 1),
+        count_results: true,
+        orderBy: { column: "identifier", direction: "ASC" },
+        include: {
+          project: {
+            join: {
+              table: "project",
+              on:
+                "physical_document.projectId = project.id AND project.baseId = '" +
+                baseId +
+                "'",
+            },
+            relationType: "one-to-one",
           },
-          relationType: "one-to-one",
         },
-      },
-    });
+      });
 
-    return physicalDocuments.map(BqPhysicalDocumentWithProjectMapper.toDomain);
+    const pagination: PaginationParamsResponse = {
+      page,
+      pageCount,
+      lastPage: Math.ceil(total_count / pageCount),
+    };
+
+    return {
+      physicalDocuments: physicalDocuments.map(
+        BqPhysicalDocumentWithProjectMapper.toDomain
+      ),
+      pagination,
+    };
   }
 
   async delete(physicalDocumentId: string): Promise<void> {

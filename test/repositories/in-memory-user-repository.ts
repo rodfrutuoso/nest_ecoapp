@@ -4,7 +4,10 @@ import { Storekeeper } from "src/domain/material-movimentation/enterprise/entiti
 import { InMemoryBaseRepository } from "./in-memory-base-repository";
 import { InMemoryContractRepository } from "./in-memory-contract-repository";
 import { UserWithBaseContract } from "src/domain/material-movimentation/enterprise/entities/value-objects/user-with-base-contract";
-import { PaginationParams } from "src/core/repositories/pagination-params";
+import {
+  PaginationParams,
+  PaginationParamsResponse,
+} from "src/core/repositories/pagination-params";
 
 export class InMemoryUserRepository implements UserRepository {
   public items: Array<Estimator | Storekeeper> = [];
@@ -58,7 +61,12 @@ export class InMemoryUserRepository implements UserRepository {
     baseId?: string,
     contractId?: string,
     name?: string
-  ): Promise<UserWithBaseContract[]> {
+  ): Promise<{
+    users: UserWithBaseContract[];
+    pagination: PaginationParamsResponse;
+  }> {
+    const pageCount = 40;
+
     const users = this.items
       .filter((user) => !baseId || user.baseId.toString() === baseId)
       .filter(
@@ -66,7 +74,7 @@ export class InMemoryUserRepository implements UserRepository {
       )
       .filter((user) => !name || user.name.includes(name))
       .sort((a, b) => a.name.localeCompare(b.name))
-      .slice((page - 1) * 40, page * 40)
+      .slice((page - 1) * pageCount, page * pageCount)
       .map((user) => {
         const base = this.baseRepository.items.find(
           (base) => base.id === user.baseId
@@ -97,7 +105,15 @@ export class InMemoryUserRepository implements UserRepository {
         });
       });
 
-    return users;
+    const total_count = this.items.length;
+
+    const pagination: PaginationParamsResponse = {
+      page,
+      pageCount,
+      lastPage: Math.ceil(total_count / pageCount),
+    };
+
+    return { users, pagination };
   }
 
   async findByIds(ids: string[]): Promise<Array<Estimator | Storekeeper>> {

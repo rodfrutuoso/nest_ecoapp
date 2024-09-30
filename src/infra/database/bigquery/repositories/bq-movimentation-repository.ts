@@ -1,5 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import { PaginationParams } from "src/core/repositories/pagination-params";
+import {
+  PaginationParams,
+  PaginationParamsResponse,
+} from "src/core/repositories/pagination-params";
 import { MovimentationRepository } from "src/domain/material-movimentation/application/repositories/movimentation-repository";
 import { Movimentation } from "src/domain/material-movimentation/enterprise/entities/movimentation";
 import { BigQueryService } from "../bigquery.service";
@@ -103,49 +106,65 @@ export class BqMovimentationRepository implements MovimentationRepository {
     materialId?: string,
     startDate?: Date,
     endDate?: Date
-  ): Promise<MovimentationWithDetails[]> {
+  ): Promise<{
+    movimentations: MovimentationWithDetails[];
+    pagination: PaginationParamsResponse;
+  }> {
     const pageCount = 40;
 
-    const movimentations = await this.bigquery.movimentation.select({
-      where: { baseId, userId: storekeeperId, projectId, materialId },
-      greaterOrEqualThan: { createdAt: startDate },
-      lessOrEqualThan: { createdAt: endDate },
-      limit: pageCount,
-      offset: pageCount * (page - 1),
-      orderBy: { column: "createdAt", direction: "DESC" },
-      include: {
-        project: {
-          join: {
-            table: "project",
-            on: "movimentation.projectId = project.id",
+    const { results: movimentations, total_count } =
+      await this.bigquery.movimentation.select({
+        where: { baseId, userId: storekeeperId, projectId, materialId },
+        greaterOrEqualThan: { createdAt: startDate },
+        lessOrEqualThan: { createdAt: endDate },
+        limit: pageCount,
+        offset: pageCount * (page - 1),
+        count_results: true,
+        orderBy: { column: "createdAt", direction: "DESC" },
+        include: {
+          project: {
+            join: {
+              table: "project",
+              on: "movimentation.projectId = project.id",
+            },
+            relationType: "one-to-one",
           },
-          relationType: "one-to-one",
-        },
-        base: {
-          join: {
-            table: "base",
-            on: "movimentation.baseId = base.id",
+          base: {
+            join: {
+              table: "base",
+              on: "movimentation.baseId = base.id",
+            },
+            relationType: "one-to-one",
           },
-          relationType: "one-to-one",
-        },
-        user: {
-          join: {
-            table: "user",
-            on: "movimentation.userId = user.id",
+          user: {
+            join: {
+              table: "user",
+              on: "movimentation.userId = user.id",
+            },
+            relationType: "one-to-one",
           },
-          relationType: "one-to-one",
-        },
-        material: {
-          join: {
-            table: "material",
-            on: "movimentation.materialId = material.id",
+          material: {
+            join: {
+              table: "material",
+              on: "movimentation.materialId = material.id",
+            },
+            relationType: "one-to-one",
           },
-          relationType: "one-to-one",
         },
-      },
-    });
+      });
 
-    return movimentations.map(BqMovimentationWithDetailsMapper.toDomain);
+    const pagination: PaginationParamsResponse = {
+      page,
+      pageCount,
+      lastPage: Math.ceil(total_count / pageCount),
+    };
+
+    return {
+      movimentations: movimentations.map(
+        BqMovimentationWithDetailsMapper.toDomain
+      ),
+      pagination,
+    };
   }
 
   async create(movimentations: Movimentation[]): Promise<void> {

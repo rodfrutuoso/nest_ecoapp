@@ -34,6 +34,11 @@ export const FetchAccountsDecorator = () => {
               },
             },
           ],
+          pagination: {
+            page: 1,
+            pageCount: 40,
+            lastPage: 1,
+          },
         },
       },
     }),

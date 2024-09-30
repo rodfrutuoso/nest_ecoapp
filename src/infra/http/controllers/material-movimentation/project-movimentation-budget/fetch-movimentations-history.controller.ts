@@ -95,11 +95,13 @@ export class FetchMovimentationHistoryController {
     }
 
     const movimentations = result.value.movimentations;
+    const pagination = result.value.pagination;
 
     return {
       movimentations: movimentations.map(
         MovimentationWithDetailsPresenter.toHTTP
       ),
+      pagination,
     };
   }
 }

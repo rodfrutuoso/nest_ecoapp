@@ -1,6 +1,9 @@
 import { UserRepository } from "src/domain/material-movimentation/application/repositories/user-repository";
 import { BigQueryService } from "../bigquery.service";
-import { PaginationParams } from "src/core/repositories/pagination-params";
+import {
+  PaginationParams,
+  PaginationParamsResponse,
+} from "src/core/repositories/pagination-params";
 import { Estimator } from "src/domain/material-movimentation/enterprise/entities/estimator";
 import { Storekeeper } from "src/domain/material-movimentation/enterprise/entities/storekeeper";
 import { UserWithBaseContract } from "src/domain/material-movimentation/enterprise/entities/value-objects/user-with-base-contract";
@@ -42,14 +45,18 @@ export class BqUserRepository implements UserRepository {
     baseId?: string,
     contractId?: string,
     name?: string
-  ): Promise<UserWithBaseContract[]> {
+  ): Promise<{
+    users: UserWithBaseContract[];
+    pagination: PaginationParamsResponse;
+  }> {
     const pageCount = 40;
 
-    const users = await this.bigquery.user.select({
+    const { results: users, total_count } = await this.bigquery.user.select({
       where: { baseId, contractId },
       like: { name },
       limit: pageCount,
       offset: pageCount * (page - 1),
+      count_results: true,
       orderBy: { column: "cpf", direction: "ASC" },
       include: {
         base: {
@@ -63,7 +70,16 @@ export class BqUserRepository implements UserRepository {
       },
     });
 
-    return users.map(BqUserWithBaseContractMapper.toDomainUser);
+    const pagination: PaginationParamsResponse = {
+      page,
+      pageCount,
+      lastPage: Math.ceil(total_count / pageCount),
+    };
+
+    return {
+      users: users.map(BqUserWithBaseContractMapper.toDomainUser),
+      pagination,
+    };
   }
 
   async findByIds(userIds: string[]): Promise<Array<Storekeeper | Estimator>> {
