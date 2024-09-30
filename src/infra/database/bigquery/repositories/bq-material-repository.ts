@@ -1,5 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import { PaginationParams } from "src/core/repositories/pagination-params";
+import {
+  PaginationParams,
+  PaginationParamsResponse,
+} from "src/core/repositories/pagination-params";
 import { MaterialRepository } from "src/domain/material-movimentation/application/repositories/material-repository";
 import { Material } from "src/domain/material-movimentation/enterprise/entities/material";
 import { BigQueryService } from "../bigquery.service";
@@ -47,19 +50,27 @@ export class BqMaterialRepository implements MaterialRepository {
     { page }: PaginationParams,
     contractId: string,
     type?: string
-  ): Promise<Material[]> {
+  ): Promise<{ materials: Material[]; pagination: PaginationParamsResponse }> {
     const pageCount = 40;
 
     const objectSearch =
       type === undefined ? { contractId } : { contractId, type };
 
-    const materials = await this.bigquery.material.select({
+    const { results, total_count } = await this.bigquery.material.select({
       where: objectSearch,
       limit: pageCount,
       offset: pageCount * (page - 1),
+      count_results: true,
       orderBy: { column: "code", direction: "ASC" },
     });
 
-    return materials.map(BqMaterialMapper.toDomain);
+    const materials = results;
+    const pagination: PaginationParamsResponse = {
+      page,
+      pageCount,
+      lastPage: Math.ceil(total_count / pageCount),
+    };
+
+    return { materials: materials.map(BqMaterialMapper.toDomain), pagination };
   }
 }

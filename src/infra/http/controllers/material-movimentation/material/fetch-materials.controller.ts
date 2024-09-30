@@ -59,7 +59,8 @@ export class FetchMaterialController {
     }
 
     const materials = result.value.materials;
+    const pagination = result.value.pagination;
 
-    return { materials: materials.map(MaterialPresenter.toHTTP) };
+    return { materials: materials.map(MaterialPresenter.toHTTP), pagination };
   }
 }

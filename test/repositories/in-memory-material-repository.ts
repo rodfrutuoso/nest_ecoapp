@@ -1,4 +1,7 @@
-import { PaginationParams } from "../../src/core/repositories/pagination-params";
+import {
+  PaginationParams,
+  PaginationParamsResponse,
+} from "../../src/core/repositories/pagination-params";
 import { MaterialRepository } from "../../src/domain/material-movimentation/application/repositories/material-repository";
 import { Material } from "../../src/domain/material-movimentation/enterprise/entities/material";
 
@@ -39,7 +42,9 @@ export class InMemoryMaterialRepository implements MaterialRepository {
     { page }: PaginationParams,
     contractId: string,
     type?: string
-  ): Promise<Material[]> {
+  ): Promise<{ materials: Material[]; pagination: PaginationParamsResponse }> {
+    const pageCount = 40;
+
     const materials = this.items
       .filter(
         (material) =>
@@ -47,8 +52,16 @@ export class InMemoryMaterialRepository implements MaterialRepository {
       )
       .filter((material) => !type || material.type === type)
       .sort((a, b) => a.code - b.code)
-      .slice((page - 1) * 40, page * 40);
+      .slice((page - 1) * pageCount, page * pageCount);
 
-    return materials;
+    const totalItems = this.items.length;
+
+    const pagination: PaginationParamsResponse = {
+      page,
+      pageCount,
+      lastPage: Math.ceil(totalItems / pageCount),
+    };
+
+    return { materials, pagination };
   }
 }

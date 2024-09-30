@@ -300,7 +300,7 @@ Authorization: Bearer {{authToken}}
 ###
 
 # @name fetch_movimentations
-GET {{baseURL}}/movimentations?page=3
+GET {{baseURL}}/movimentations
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 

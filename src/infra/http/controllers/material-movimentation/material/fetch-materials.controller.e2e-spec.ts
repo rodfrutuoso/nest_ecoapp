@@ -4,10 +4,8 @@ import { Test } from "@nestjs/testing";
 import request from "supertest";
 import { BigQueryService } from "src/infra/database/bigquery/bigquery.service";
 import { JwtService } from "@nestjs/jwt";
-import { randomUUID } from "crypto";
 import { UserFactory } from "test/factories/make-user";
 import { MaterialFactory } from "test/factories/make-material";
-import { UniqueEntityID } from "src/core/entities/unique-entity-id";
 import { DatabaseModule } from "src/infra/database/database.module";
 import { ContractFactory } from "test/factories/make-contract";
 
@@ -79,6 +77,11 @@ describe("Fetch Materials (E2E)", () => {
         expect.objectContaining({ code: 123133 }),
         expect.objectContaining({ code: 123134 }),
       ],
+      pagination: {
+        page: 1,
+        pageCount: 40,
+        lastPage: 1,
+      },
     });
   });
 });

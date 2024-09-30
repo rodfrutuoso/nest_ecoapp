@@ -3,6 +3,7 @@ import { Eihter, left, right } from "../../../../../core/either";
 import { Material } from "../../../enterprise/entities/material";
 import { MaterialRepository } from "../../repositories/material-repository";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
+import { PaginationParamsResponse } from "src/core/repositories/pagination-params";
 
 interface FetchMaterialUseCaseRequest {
   page: number;
@@ -14,6 +15,7 @@ type FetchMaterialUseCaseResponse = Eihter<
   ResourceNotFoundError,
   {
     materials: Material[];
+    pagination: PaginationParamsResponse;
   }
 >;
 
@@ -26,7 +28,7 @@ export class FetchMaterialUseCase {
     type,
     contractId,
   }: FetchMaterialUseCaseRequest): Promise<FetchMaterialUseCaseResponse> {
-    const materials = await this.materialRepository.findMany(
+    const { materials, pagination } = await this.materialRepository.findMany(
       {
         page,
       },
@@ -37,6 +39,6 @@ export class FetchMaterialUseCase {
     if (!materials.length)
       return left(new ResourceNotFoundError("Pesquisa sem resultados"));
 
-    return right({ materials });
+    return right({ materials, pagination });
   }
 }

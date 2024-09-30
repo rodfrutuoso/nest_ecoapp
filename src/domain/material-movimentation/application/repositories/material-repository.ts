@@ -1,4 +1,7 @@
-import { PaginationParams } from "../../../../core/repositories/pagination-params";
+import {
+  PaginationParams,
+  PaginationParamsResponse,
+} from "../../../../core/repositories/pagination-params";
 import { Material } from "../../enterprise/entities/material";
 
 export abstract class MaterialRepository {
@@ -7,13 +10,11 @@ export abstract class MaterialRepository {
     code: number,
     contractId: string
   ): Promise<Material | null>;
-  abstract findByCodeWithoutContract(
-    code: number,
-  ): Promise<Material | null>;
+  abstract findByCodeWithoutContract(code: number): Promise<Material | null>;
   abstract findByIds(materialIds: string[]): Promise<Material[]>;
   abstract findMany(
     params: PaginationParams,
     contractId: string,
     type?: string
-  ): Promise<Material[]>;
+  ): Promise<{ materials: Material[]; pagination: PaginationParamsResponse }>;
 }

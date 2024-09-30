@@ -112,7 +112,7 @@ export class BqMovimentationRepository implements MovimentationRepository {
       lessOrEqualThan: { createdAt: endDate },
       limit: pageCount,
       offset: pageCount * (page - 1),
-      orderBy: { column: "materialId", direction: "ASC" },
+      orderBy: { column: "createdAt", direction: "DESC" },
       include: {
         project: {
           join: {

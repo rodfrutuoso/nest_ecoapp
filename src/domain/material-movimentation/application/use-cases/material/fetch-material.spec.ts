@@ -62,7 +62,14 @@ describe("Fetch Materials", () => {
       page: 2,
       contractId: "contrato-1",
     });
-    if (result.isRight()) expect(result.value.materials).toHaveLength(5);
+    if (result.isRight()) {
+      expect(result.value.materials).toHaveLength(5);
+      expect(result.value.pagination).toMatchObject({
+        page: 2,
+        pageCount: 40,
+        lastPage: 2,
+      });
+    }
   });
 
   it("should be able to fetch materials by type", async () => {

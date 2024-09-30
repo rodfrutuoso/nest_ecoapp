@@ -71,10 +71,10 @@ export class BigQueryMethods<T extends Record<string, any>> {
   ): Promise<T[] | { results: T[]; total_count: number }> {
     const query = this.buildSelectQuery(options);
     let rows = await this.runQuery(query);
+    const totalCount = rows[0]?.total_count ?? 0;
     rows = await this.processQueryResults(rows, options.include);
 
     if (options.count_results) {
-      const totalCount = rows[0]?.total_count ?? 0;
       const results = rows.map((row) => {
         const { total_count, ...rest } = row;
         return rest as T;

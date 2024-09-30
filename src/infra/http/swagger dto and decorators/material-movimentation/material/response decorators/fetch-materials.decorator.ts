@@ -24,6 +24,11 @@ export const FetchMaterialDecorator = () => {
               unit: "CDA",
             },
           ],
+          pagination: {
+            page: 1,
+            pageCount: 40,
+            lastPage: 1,
+          },
         },
       },
     }),
