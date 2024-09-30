@@ -27,6 +27,10 @@ export abstract class MaterialPerProject<
     this.props.createdAt = createdAt;
   }
 
+  set value(value: number) {
+    this.props.value = value;
+  }
+
   get materialId() {
     return this.props.materialId;
   }

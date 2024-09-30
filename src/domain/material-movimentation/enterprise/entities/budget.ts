@@ -41,6 +41,10 @@ export class Budget extends MaterialPerProject<BudgetProps> {
     this.props.updatedAuthorId = updatedAuthorId;
     this.touch();
   }
+  
+  private touch() {
+    this.props.updatedAt = new Date();
+  }
 
   static create(
     props: Optional<BudgetProps, "createdAt">,
@@ -55,9 +59,5 @@ export class Budget extends MaterialPerProject<BudgetProps> {
     );
 
     return transferRegister;
-  }
-
-  private touch() {
-    this.props.updatedAt = new Date();
   }
 }

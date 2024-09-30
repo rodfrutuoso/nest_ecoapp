@@ -12,7 +12,7 @@
 - create 'edited by' and 'edited at' fields on budget entity [x]
 - create get project by project_number [x]
 - create register budgets [x]
-- create get budgets by project_number []
+- create get budgets by project_number [x]
 - create update budget (this use case will create lines new budgets for that project) []
 - create fetch budgets (by list of projects and returning just found projects) []
 - create register estimator [x]
@@ -26,7 +26,7 @@
 - change physical document fetch by project_number instead of projectId [x]
 - change physical document to use user base [x]
 - refact all use cases to search by user repository instead of estimator or storekeeper repository [x]
-- return in pagination params max quantity of pages[]
+- return in pagination params max quantity of pages[x]
 
 # Test 1 file
 

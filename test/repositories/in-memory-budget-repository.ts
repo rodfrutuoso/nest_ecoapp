@@ -26,6 +26,14 @@ export class InMemoryBudgetRepository implements BudgetRepository {
     return budgets;
   }
 
+  async findByIds(budgetIds: string[]): Promise<Budget[]> {
+    const budgets = this.items.filter((budget) =>
+      budgetIds.includes(budget.id.toString())
+    );
+
+    return budgets;
+  }
+
   async findByProjectWithDetails(
     projectid: string,
     baseId: string
@@ -82,5 +90,13 @@ export class InMemoryBudgetRepository implements BudgetRepository {
 
   async create(budgets: Budget[]) {
     budgets.map((budget) => this.items.push(budget));
+  }
+
+  async save(budget: Budget) {
+    const itemIndex = this.items.findIndex(
+      (item) => item.id.toString() === budget.id.toString()
+    );
+
+    this.items[itemIndex] = budget;
   }
 }

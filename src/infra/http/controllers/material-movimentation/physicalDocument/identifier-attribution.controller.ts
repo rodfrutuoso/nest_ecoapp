@@ -13,6 +13,7 @@ import { ResourceNotFoundError } from "src/domain/material-movimentation/applica
 import { IdentifierAttributionBodyDto } from "src/infra/http/swagger dto and decorators/material-movimentation/physicalDocument/dto classes/identifier-attribution.dto";
 import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
 import { CurrentUser } from "src/infra/auth/current-user.decorator";
+import { IdentifierAttributionDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/physicalDocument/response decorators/identifier-attribution.decorator";
 
 const identifierAttributionBodySchema = z.object({
   project_number: z.string(),
@@ -26,6 +27,7 @@ export class IdentifierAttributionController {
 
   @Post()
   @HttpCode(201)
+  @IdentifierAttributionDecorator()
   async handle(
     @CurrentUser() user: UserPayload,
     @Body(new ZodValidationPipe(identifierAttributionBodySchema))
