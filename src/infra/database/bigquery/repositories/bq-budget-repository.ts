@@ -70,4 +70,19 @@ export class BqBudgetRepository implements BudgetRepository {
 
     await this.bigquery.budget.create(data);
   }
+
+  async findByIds(ids: string[]): Promise<Budget[]> {
+    const projects = await this.bigquery.budget.select({
+      whereIn: { id: ids },
+    });
+
+    return projects.map(BqBudgetMapper.toDomain);
+  }
+
+  async save(budget: Budget): Promise<void> {
+    await this.bigquery.budget.update({
+      data: BqBudgetMapper.toBigquery(budget),
+      where: { id: budget.id.toString() },
+    });
+  }
 }

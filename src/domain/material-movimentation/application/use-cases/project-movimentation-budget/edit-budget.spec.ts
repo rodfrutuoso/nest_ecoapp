@@ -82,38 +82,80 @@ describe("Edit Budget", () => {
       value: 3,
     });
     await inMemoryBudgetRepository.create([budget]);
-    
+
+    const updatedBudgets = [{ budgetId: budget.id.toString(), value: 5 }];
+    const newBudgets = [];
+
+    const result = await sut.execute({
+      estimatorId: user.id.toString(),
+      projectId: project.id.toString(),
+      updatedBudgets,
+      newBudgets,
+    });
+
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value.updatedBudgets[0].value).toEqual(5);
+    }
+    expect(inMemoryBudgetRepository.items).toHaveLength(1);
+  });
+
+  it("should be able to edit a budget inserting new items", async () => {
+    const contract = makeContract({}, new UniqueEntityID("ID-CONTRACT-BA"));
+    await inMemoryContractRepository.create(contract);
+
+    const base = makeBase(
+      { contractId: contract.id },
+      new UniqueEntityID("ID-BASE-VCA")
+    );
+    await inMemoryBaseRepository.create(base);
+
+    const project = makeProject({ baseId: base.id }, new UniqueEntityID("1"));
+    await inMemoryProjectRepository.create(project);
+
+    const material = makeMaterial(
+      { contractId: contract.id },
+      new UniqueEntityID("4")
+    );
+    await inMemoryMaterialRepository.create(material);
+
+    const user = makeUser({ contractId: contract.id }, new UniqueEntityID("5"));
+    await inMemoryUserRepository.create(user);
+
+    const budget = makeBudget({
+      contractId: contract.id,
+      estimatorId: user.id,
+      materialId: material.id,
+      projectId: project.id,
+      value: 3,
+    });
+    await inMemoryBudgetRepository.create([budget]);
+
     const updatedBudgets = [{ budgetId: budget.id.toString(), value: 5 }];
     const newBudgets = [{ materialId: material.id.toString(), value: 6 }];
-    
+
     const result = await sut.execute({
-        estimatorId: user.id.toString(),
-        projectId: project.id.toString(),
-        updatedBudgets,
-        newBudgets,
+      estimatorId: user.id.toString(),
+      projectId: project.id.toString(),
+      updatedBudgets,
+      newBudgets,
     });
-    
-    // console.log(inMemoryBudgetRepository.items);
-    // console.log(result.value);
 
     expect(result.isRight()).toBe(true);
     if (result.isRight()) {
       expect(result.value.newBudgets[0].value).toEqual(6);
       expect(result.value.updatedBudgets[0].value).toEqual(5);
     }
-    // expect(inMemoryBudgetRepository.items[0].id).toBeTruthy();
+    expect(inMemoryBudgetRepository.items).toHaveLength(2);
   });
 
-  it("should not be able to register budgets if informed Ids are not found", async () => {
-    const result = await sut.execute([
-      {
-        projectId: "1",
-        materialId: "4",
-        estimatorId: "5",
-        contractId: "ID-CONTRACT-BA",
-        value: 5,
-      },
-    ]);
+  it("should mpt be able to edit a budget if informed Ids are not found", async () => {
+    const result = await sut.execute({
+      estimatorId: "estimator-id",
+      projectId: "project-id",
+      updatedBudgets: [],
+      newBudgets: [],
+    });
 
     expect(result.isLeft()).toBe(true);
     expect(result.value).toBeInstanceOf(ResourceNotFoundError);
