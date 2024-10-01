@@ -13,12 +13,42 @@ export class BqBudgetWithDetailsMapper {
     if (raw.user?.type && BqBudgetWithDetailsMapper.isUserType(raw.user.type)) {
       userType = raw.user.type;
     }
+    let updatedAuthorType: UserType = "Orçamentista";
+    if (
+      raw.updatedAuthor?.type &&
+      BqBudgetWithDetailsMapper.isUserType(raw.updatedAuthor.type)
+    ) {
+      updatedAuthorType = raw.updatedAuthor.type;
+    }
     return BudgetWithDetails.create({
       budgetId: new UniqueEntityID(raw.id),
       value: raw.value,
       createdAt: raw.createdAt,
-      updatedAt: raw.updatedAt,
-      updatedAuthorId: new UniqueEntityID(raw.updatedAuthorId),
+      updatedAt: raw.updatedAt === null ? undefined : raw.updatedAt,
+      updatedAuthor:
+        raw.updatedAuthor?.id === null
+          ? undefined
+          : Estimator.create(
+              {
+                contractId: new UniqueEntityID(
+                  raw.updatedAuthor?.contractId == null
+                    ? undefined
+                    : raw.updatedAuthor?.contractId
+                ),
+                baseId: new UniqueEntityID(
+                  raw.updatedAuthor?.baseId == null
+                    ? undefined
+                    : raw.updatedAuthor?.baseId
+                ),
+                cpf: raw.updatedAuthor?.cpf ?? "",
+                email: raw.updatedAuthor?.email ?? "",
+                name: raw.updatedAuthor?.name ?? "",
+                password: raw.updatedAuthor?.password ?? "",
+                type: updatedAuthorType,
+                status: raw.updatedAuthor?.status ?? "",
+              },
+              new UniqueEntityID(raw.updatedAuthor?.id)
+            ),
       material: Material.create(
         {
           code: raw.material?.code ?? 0,

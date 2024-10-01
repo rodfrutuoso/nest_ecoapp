@@ -14,7 +14,7 @@ export interface BudgetWithDetailsProps {
   material: Material;
   project: Project;
   contract: Contract;
-  updatedAuthorId?: UniqueEntityID;
+  updatedAuthor?: Estimator | Storekeeper;
   updatedAt?: Date;
 }
 
@@ -43,8 +43,8 @@ export class BudgetWithDetails extends ValueObject<BudgetWithDetailsProps> {
   get updatedAt() {
     return this.props.updatedAt;
   }
-  get updatedAuthorId() {
-    return this.props.updatedAuthorId;
+  get updatedAuthor() {
+    return this.props.updatedAuthor;
   }
 
   static create(props: BudgetWithDetailsProps) {

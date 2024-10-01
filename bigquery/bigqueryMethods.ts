@@ -376,9 +376,10 @@ export class BigQueryMethods<T extends Record<string, any>> {
   ): string {
     const includeClauses = Object.entries(include).map(([alias, options]) => {
       const { table, on } = options!.join;
-      return `LEFT JOIN \`${this.datasetId.split(".")[0]}.${table}\` AS ${
-        options!.join.table
-      } ON ${on}`;
+      const modifiedOn = on.replace(new RegExp(`\\b${table}\\b`, 'g'), alias);
+      return `LEFT JOIN \`${
+        this.datasetId.split(".")[0]
+      }.${table}\` AS ${alias} ON ${modifiedOn}`;
     });
 
     const includeColumns = Object.entries(include)
@@ -386,10 +387,7 @@ export class BigQueryMethods<T extends Record<string, any>> {
         const includeTable = options!.join.table;
         const schema = BigqueryShemas.getSchema(includeTable).fields;
         return schema
-          .map(
-            (field) =>
-              `${includeTable}.${field.name} AS ${includeTable}_${field.name}`
-          )
+          .map((field) => `${alias}.${field.name} AS ${alias}_${field.name}`)
           .join(", ");
       })
       .join(", ");
@@ -454,7 +452,7 @@ export class BigQueryMethods<T extends Record<string, any>> {
     if (include) {
       for (const [alias, options] of Object.entries(include)) {
         const relatedSchema = await this.getTableSchema(options!.join.table);
-        includeSchemas[options!.join.table] = relatedSchema;
+        includeSchemas[alias] = relatedSchema;
       }
     }
 

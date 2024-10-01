@@ -7,7 +7,14 @@ export class BudgetWithDetailsPresenter {
       createdAt: budget.createdAt,
       value: budget.value,
       updatedAt: budget.updatedAt,
-      updatedAuthorId: budget.updatedAuthorId,
+      updatedAuthor:
+        budget.updatedAuthor === undefined
+          ? undefined
+          : {
+              id: budget.updatedAuthor.id.toString(),
+              name: budget.updatedAuthor.name,
+              email: budget.updatedAuthor.email,
+            },
       contract: {
         id: budget.contract.id.toString(),
         contractName: budget.contract.contractName,

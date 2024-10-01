@@ -16,12 +16,13 @@ export interface BqBudgetProps {
   value: number;
   createdAt: Date;
   updatedAuthorId?: string;
-  updatedAt?: Date
+  updatedAt?: Date;
 
   contract?: BqContractProps;
   user?: BqUserProps;
   material?: BqMaterialProps;
   project?: BqProjectProps;
+  updatedAuthor?: BqUserProps;
 }
 
 @Injectable()
