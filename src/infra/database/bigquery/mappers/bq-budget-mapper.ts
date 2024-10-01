@@ -26,6 +26,8 @@ export class BqBudgetMapper {
       materialId: budget.materialId.toString(),
       createdAt: budget.createdAt,
       value: budget.value,
+      updatedAt: budget.updatedAt,
+      updatedAuthorId: budget.updatedAuthorId?.toString(),
     };
   }
 }

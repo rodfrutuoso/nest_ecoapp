@@ -17,6 +17,7 @@ import { RegisterContractBodyDto } from "./material-movimentation/contract-base/
 import { RegisterBaseBodyDto } from "./material-movimentation/contract-base/dto classes/register-base.dto";
 import { GetProjectByProjectNumberQueryDto } from "./material-movimentation/project-movimentation-budget/dto classes/get-project-by-project_number.dto";
 import { RegisterBudgetBodyDto } from "./material-movimentation/project-movimentation-budget/dto classes/register-budget.dto";
+import { EditBudgetBodyDto } from "./material-movimentation/project-movimentation-budget/dto classes/edit-budget.dto";
 
 @Module({
   providers: [
@@ -38,6 +39,7 @@ import { RegisterBudgetBodyDto } from "./material-movimentation/project-moviment
     RegisterBaseBodyDto,
     GetProjectByProjectNumberQueryDto,
     RegisterBudgetBodyDto,
+    EditBudgetBodyDto,
   ],
   exports: [
     FetchAccountsQueryDto,
@@ -58,6 +60,7 @@ import { RegisterBudgetBodyDto } from "./material-movimentation/project-moviment
     RegisterBaseBodyDto,
     GetProjectByProjectNumberQueryDto,
     RegisterBudgetBodyDto,
+    EditBudgetBodyDto,
   ],
 })
 export class DtoModule {}

@@ -6,6 +6,8 @@ export class BudgetWithDetailsPresenter {
       id: budget.budgetId.toString(),
       createdAt: budget.createdAt,
       value: budget.value,
+      updatedAt: budget.updatedAt,
+      updatedAuthorId: budget.updatedAuthorId,
       contract: {
         id: budget.contract.id.toString(),
         contractName: budget.contract.contractName,

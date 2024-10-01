@@ -418,13 +418,16 @@ export class BigQueryMethods<T extends Record<string, any>> {
   }
 
   private buildSetClause(data: Partial<T>): string {
-    return Object.keys(data)
-      .map(
-        (key) =>
-          `${key} = ${
-            typeof data[key] === "string" ? `'${data[key]}'` : data[key]
-          }`
-      )
+    return Object.entries(data)
+      .map(([key, value]) => {
+        if (this.isDate(value)) {
+          return `${key} = '${value.toISOString()}'`;
+        }
+        if (typeof value === "string") {
+          return `${key} = '${value.replace(/'/g, "''")}'`;
+        }
+        return `${key} = ${value}`;
+      })
       .join(", ");
   }
 

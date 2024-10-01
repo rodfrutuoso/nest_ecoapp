@@ -60,6 +60,8 @@ export class BqBudgetRepository implements BudgetRepository {
       },
     });
 
+    console.log(budgets)
+
     const budgetsMapped = budgets.map(BqBudgetWithDetailsMapper.toDomain);
 
     return budgetsMapped;

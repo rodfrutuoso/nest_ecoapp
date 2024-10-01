@@ -46,7 +46,6 @@ Authorization: Bearer {{authToken}}
 
 # @name fetch_materials
 GET {{baseURL}}/materials
-?contractId=e816f105-e022-4560-b32c-d2af40c18351
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
@@ -390,3 +389,23 @@ Authorization: Bearer {{authToken}}
         "value": 458.2
     }
 ]
+
+
+###
+
+# @name edit_budget
+PUT  {{baseURL}}/budgets/30d2f9c4-decc-418a-bc5d-0fb16db7af57
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "updatedBudgets": [{
+        "budgetId": "245dedfe-2c7c-4e6e-b10f-a6003a53d601",
+        "value": 240
+    }],
+    "newBudgets": [{
+        "materialId": "386dafeb-d232-4857-ab91-746643045bf3",
+        "value": 2
+    }]
+}
+

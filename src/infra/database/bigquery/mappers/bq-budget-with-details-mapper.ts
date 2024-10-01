@@ -17,6 +17,8 @@ export class BqBudgetWithDetailsMapper {
       budgetId: new UniqueEntityID(raw.id),
       value: raw.value,
       createdAt: raw.createdAt,
+      updatedAt: raw.updatedAt,
+      updatedAuthorId: new UniqueEntityID(raw.updatedAuthorId),
       material: Material.create(
         {
           code: raw.material?.code ?? 0,

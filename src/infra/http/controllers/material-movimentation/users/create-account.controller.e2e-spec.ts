@@ -69,10 +69,6 @@ describe("Create account (E2E)", () => {
       where: { email: "joaopilotinha@ecoeletrica.com.br" },
     });
 
-    console.log(response.headers);
-    console.log(response.body);
-    console.log(response.status);
-
     expect(response.statusCode).toBe(201);
     expect(userDataBase.name).toEqual("Joao da Pilotinha");
   });

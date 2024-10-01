@@ -63,7 +63,6 @@ export class EditBudgetUseCase {
       });
     });
 
-    console.log(this.toUpdateBudgets);
     const updatedBudgets = this.toUpdateBudgets.map((budget) => {
       budget.value = editBudgetUseCaseRequest.updatedBudgets.find(
         (budgetRequest) => budgetRequest.budgetId === budget.id.toString()
@@ -78,7 +77,6 @@ export class EditBudgetUseCase {
     await this.budgetRepository.create(newBudgets);
 
     for (let index = 0; index < updatedBudgets.length; index++) {
-      console.log(updatedBudgets[index]);
       await this.budgetRepository.save(updatedBudgets[index]);
     }
 

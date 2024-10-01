@@ -9,6 +9,8 @@ export class BudgetPresenter {
       projectId: budget.projectId.toString(),
       materialId: budget.materialId.toString(),
       createdAt: budget.createdAt,
+      updatedAt: budget.updatedAt,
+      updatedAuthorId: budget.updatedAuthorId,
       value: budget.value,
     };
   }
