@@ -27,7 +27,7 @@ const editBudgetBodySchema = z
       z.object({
         materialId: z.string().uuid(),
         value: z.number(),
-      })
+      }).optional()
     ),
   })
   .required();

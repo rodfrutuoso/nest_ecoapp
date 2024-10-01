@@ -74,7 +74,8 @@ export class EditBudgetUseCase {
       return budget;
     });
 
-    await this.budgetRepository.create(newBudgets);
+    if (editBudgetUseCaseRequest.newBudgets.length !== 0)
+      await this.budgetRepository.create(newBudgets);
 
     for (let index = 0; index < updatedBudgets.length; index++) {
       await this.budgetRepository.save(updatedBudgets[index]);
@@ -106,6 +107,7 @@ export class EditBudgetUseCase {
     }
 
     if (
+      editBudgetUseCaseRequest.newBudgets.length !== 0 &&
       !(await this.verifyIfIdsExist(
         editBudgetUseCaseRequest.newBudgets,
         "materialId"
@@ -133,13 +135,12 @@ export class EditBudgetUseCase {
     key: keyof (UpdatedBudget & NewBudget)
   ): Promise<boolean> {
     const uniqueValuesArray = this.uniqueValues(editBudgetData, key);
-
     let result: Material[] | Budget[];
 
     switch (key) {
       case "budgetId":
         result = await this.budgetRepository.findByIds(uniqueValuesArray);
-        this.toUpdateBudgets = this.toUpdateBudgets.concat(result);
+        this.toUpdateBudgets = result;
         break;
       case "materialId":
         result = await this.materialRepository.findByIds(uniqueValuesArray);
@@ -148,7 +149,6 @@ export class EditBudgetUseCase {
         result = [];
         break;
     }
-
     return uniqueValuesArray.length === result.length ? true : false;
   }
 

@@ -401,7 +401,7 @@ Authorization: Bearer {{authToken}}
 {
     "updatedBudgets": [{
         "budgetId": "245dedfe-2c7c-4e6e-b10f-a6003a53d601",
-        "value": 240
+        "value": 250
     }],
     "newBudgets": [{
         "materialId": "386dafeb-d232-4857-ab91-746643045bf3",
