@@ -26,7 +26,7 @@ const fetchBudgetByProjectNameBodySchema = z
 @Controller("/budgets")
 export class FetchBudgetByProjectNameController {
   constructor(
-    private fetchBudgetByProjectNameUseCase: FetchBudgetByProjectNameUseCase
+    private fetchBudgetByProjectNameUseCase: FetchBudgetByProjectNameUseCase,
   ) {}
 
   @Get()

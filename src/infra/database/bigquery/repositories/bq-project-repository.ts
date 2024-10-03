@@ -31,7 +31,7 @@ export class BqProjectRepository implements ProjectRepository {
     });
 
     const [project] = await this.bigquery.project.select({
-      like: { project_number },
+      where: { project_number },
       whereIn: { baseId: bases.map((base) => base.id) },
     });
 

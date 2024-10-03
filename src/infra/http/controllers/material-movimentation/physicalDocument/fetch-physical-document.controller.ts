@@ -34,7 +34,7 @@ const fetchPhysicalDocumentsBodySchema = z.object({
 @ApiTags("physical document")
 @Controller("/physical-documents")
 export class FetchPhysicalDocumentsController {
-  constructor(private FetchPhysicalDocument: FetchPhysicalDocumentUseCase) {}
+  constructor(private fetchPhysicalDocument: FetchPhysicalDocumentUseCase) {}
 
   @Get()
   @HttpCode(200)
@@ -46,7 +46,7 @@ export class FetchPhysicalDocumentsController {
   ) {
     const { page, identifier, project_number } = query;
 
-    const result = await this.FetchPhysicalDocument.execute({
+    const result = await this.fetchPhysicalDocument.execute({
       page,
       baseId: user.baseId,
       identifier,

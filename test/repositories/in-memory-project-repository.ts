@@ -32,7 +32,7 @@ export class InMemoryProjectRepository implements ProjectRepository {
 
     const project = this.items.find(
       (item) =>
-        item.project_number.includes(project_number) &&
+        item.project_number === project_number &&
         basesId.includes(item.baseId.toString())
     );
 

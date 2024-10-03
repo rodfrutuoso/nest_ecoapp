@@ -118,6 +118,29 @@ export const FetchBudgetMovimentationByProjectDecorator = () => {
               },
             },
           ],
+          physicalDocumentSearch: {
+            id: "1e38e9a2-11a8-4050-8e29-c1ad28c2d46c",
+            identifier: 10,
+            unitized: false,
+            project: {
+              id: "30d2f9c4-decc-418a-bc5d-0fb16db7af57",
+              project_number: "B-12345678",
+            },
+          },
+          projectSearch: {
+            _id: {
+              value: "30d2f9c4-decc-418a-bc5d-0fb16db7af57",
+            },
+            props: {
+              baseId: {
+                value: "dbe82710-e5e8-449a-ba49-471b356f808d",
+              },
+              city: "Ituí",
+              description: "MP-NUM-SEI-DAS-QUANTAS",
+              project_number: "B-12345678",
+              type: "obra",
+            },
+          },
         },
       },
     }),

@@ -8,4 +8,16 @@ export class FetchBudgetMovimentationByProjectQueryDto {
     description: "project identification number",
   })
   project_number!: string;
+  @ApiProperty({
+    example: true,
+    description: "if true, it'll be send physical documents related data",
+    required: false,
+  })
+  physicalDocument!: boolean;
+  @ApiProperty({
+    example: "B-7654321",
+    description: "if send, it'll be send all projects' information",
+    required: false,
+  })
+  projectIn!: string;
 }

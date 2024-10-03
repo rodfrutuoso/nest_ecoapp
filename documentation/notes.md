@@ -13,8 +13,9 @@
 - create get project by project_number [x]
 - create register budgets [x]
 - create get budgets by project_number [x]
-- create update budget (this use case will create lines new budgets for that project) []
+- create update budget (this use case will create lines new budgets for that project) [x]
 - create fetch budgets (by list of projects and returning just found projects) []
+- create fetch budgets by streaming for all budgets []
 - create register estimator [x]
 - create update estimator [x]
 - create delete estimator [x]
@@ -27,6 +28,8 @@
 - change physical document to use user base [x]
 - refact all use cases to search by user repository instead of estimator or storekeeper repository [x]
 - return in pagination params max quantity of pages[x]
+- adjust edits to apoint error in case of empty body requests[]
+- return physical document and projectIn on movimentations-budgets[]
 
 # Test 1 file
 
