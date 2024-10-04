@@ -6,7 +6,7 @@ export abstract class BudgetRepository {
   abstract findByIds(budgetIds: string[]): Promise<Budget[]>;
   abstract findByProjectWithDetails(
     projectid: string,
-    baseId: string
+    contractId: string
   ): Promise<BudgetWithDetails[]>;
   abstract findByProjectIds(
     projectids: string[],

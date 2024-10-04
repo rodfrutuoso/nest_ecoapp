@@ -22,12 +22,10 @@ export class BqBudgetRepository implements BudgetRepository {
 
   async findByProjectWithDetails(
     projectId: string,
-    baseId: string
+    contractId: string
   ): Promise<BudgetWithDetails[]> {
-    const [base] = await this.bigquery.base.select({ where: { id: baseId } });
-
     const budgets = await this.bigquery.budget.select({
-      where: { projectId, contractId: base.contractId },
+      where: { projectId, contractId },
       include: {
         project: {
           join: {

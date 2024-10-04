@@ -14,7 +14,7 @@
 - create register budgets [x]
 - create get budgets by project_number [x]
 - create update budget (this use case will create lines new budgets for that project) [x]
-- create fetch budgets (by list of projects and returning just found projects) []
+- create fetch budgets (by list of projects and returning just found projects) [x]
 - create fetch budgets by streaming for all budgets []
 - create register estimator [x]
 - create update estimator [x]

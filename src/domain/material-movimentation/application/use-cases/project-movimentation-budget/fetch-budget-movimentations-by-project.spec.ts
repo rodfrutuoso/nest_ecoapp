@@ -49,13 +49,13 @@ describe("Fetch budgets and Movimentations by project", () => {
       inMemoryUserRepository,
       inMemoryMaterialRepository,
       inMemoryProjectRepository,
-      inMemoryContractRepository,
-      inMemoryBaseRepository
+      inMemoryContractRepository
     );
     sut = new FetchBudgetMovimentationByProjectUseCase(
       inMemoryMovimentationRepository,
       inMemoryProjectRepository,
-      inMemoryBudgetRepository
+      inMemoryBudgetRepository,
+      inMemoryBaseRepository
     );
   });
 

@@ -40,8 +40,7 @@ describe("Get Budget by project", () => {
       inMemoryUserRepository,
       inMemoryMaterialRepository,
       inMemoryProjectRepository,
-      inMemoryContractRepository,
-      inMemoryBaseRepository
+      inMemoryContractRepository
     );
     sut = new FetchBudgetByProjectNameUseCase(
       inMemoryBudgetRepository,
@@ -57,10 +56,10 @@ describe("Get Budget by project", () => {
     const base = makeBase({ contractId: contract.id });
     await inMemoryBaseRepository.create(base);
 
-    const estimator = makeUser({ contractId: contract.id });
+    const estimator = makeUser({ contractId: contract.id, baseId: base.id });
     await inMemoryUserRepository.create(estimator);
 
-    const material = makeMaterial();
+    const material = makeMaterial({ contractId: contract.id });
     await inMemoryMaterialRepository.create(material);
 
     const project = makeProject({
@@ -93,7 +92,7 @@ describe("Get Budget by project", () => {
 
     const result = await sut.execute({
       project_number: "B-10101010",
-      baseId: base.id.toString(),
+      contractId: contract.id.toString(),
     });
 
     expect(result.isRight()).toBeTruthy();
@@ -146,7 +145,7 @@ describe("Get Budget by project", () => {
 
     const result = await sut.execute({
       project_number: "B-dntExists",
-      baseId: base.id.toString(),
+      contractId: contract.id.toString(),
     });
 
     expect(result.isLeft()).toBeTruthy();
@@ -203,7 +202,7 @@ describe("Get Budget by project", () => {
 
     const result = await sut.execute({
       project_number: "B-to-be-search",
-      baseId: base.id.toString(),
+      contractId: contract.id.toString(),
     });
 
     expect(result.isLeft()).toBeTruthy();

@@ -41,7 +41,6 @@ describe("Register Budget", () => {
       inMemoryMaterialRepository,
       inMemoryProjectRepository,
       inMemoryContractRepository,
-      inMemoryBaseRepository
     );
     sut = new RegisterBudgetUseCase(
       inMemoryBudgetRepository,

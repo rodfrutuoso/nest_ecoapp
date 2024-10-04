@@ -6,6 +6,7 @@ import { ProjectRepository } from "../../repositories/project-repository";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
 import { MovimentationWithDetails } from "src/domain/material-movimentation/enterprise/entities/value-objects/movimentation-with-details";
 import { BudgetWithDetails } from "src/domain/material-movimentation/enterprise/entities/value-objects/budget-with-details";
+import { BaseRepository } from "../../repositories/base-repository";
 
 interface FetchBudgetMovimentationByProjectUseCaseRequest {
   project_number: string;
@@ -25,13 +26,18 @@ export class FetchBudgetMovimentationByProjectUseCase {
   constructor(
     private movimentationRepository: MovimentationRepository,
     private projectRepository: ProjectRepository,
-    private budgetRepository: BudgetRepository
+    private budgetRepository: BudgetRepository,
+    private baseRepository: BaseRepository
   ) {}
 
   async execute({
     project_number,
     baseId,
   }: FetchBudgetMovimentationByProjectUseCaseRequest): Promise<FetchBudgetMovimentationByProjectUseCaseResponse> {
+    const base = await this.baseRepository.findById(baseId);
+
+    if (!base) return left(new ResourceNotFoundError("Base não encontrado"));
+
     const project = await this.projectRepository.findByProjectNumber(
       project_number,
       baseId
@@ -48,7 +54,7 @@ export class FetchBudgetMovimentationByProjectUseCase {
 
     const budgets = await this.budgetRepository.findByProjectWithDetails(
       project.id.toString(),
-      baseId
+      base.contractId.toString()
     );
 
     return right({ movimentations, budgets });

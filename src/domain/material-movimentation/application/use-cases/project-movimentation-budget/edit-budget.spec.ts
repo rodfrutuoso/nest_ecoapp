@@ -41,8 +41,7 @@ describe("Edit Budget", () => {
       inMemoryUserRepository,
       inMemoryMaterialRepository,
       inMemoryProjectRepository,
-      inMemoryContractRepository,
-      inMemoryBaseRepository
+      inMemoryContractRepository
     );
     sut = new EditBudgetUseCase(
       inMemoryBudgetRepository,

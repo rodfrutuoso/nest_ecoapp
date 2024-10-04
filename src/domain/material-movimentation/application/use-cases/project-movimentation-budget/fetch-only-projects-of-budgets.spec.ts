@@ -39,7 +39,6 @@ describe("Get only projects of exsiting budgets by project", () => {
       inMemoryMaterialRepository,
       inMemoryProjectRepository,
       inMemoryContractRepository,
-      inMemoryBaseRepository
     );
     sut = new FetchOnlyProjectsOfBudgetsUseCase(
       inMemoryBudgetRepository,

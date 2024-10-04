@@ -7,7 +7,7 @@ import { BudgetWithDetails } from "src/domain/material-movimentation/enterprise/
 
 interface FetchBudgetByProjectNameUseCaseRequest {
   project_number: string;
-  baseId: string;
+  contractId: string;
 }
 
 type FetchBudgetByProjectNameUseCaseResponse = Eihter<
@@ -26,19 +26,20 @@ export class FetchBudgetByProjectNameUseCase {
 
   async execute({
     project_number,
-    baseId,
+    contractId,
   }: FetchBudgetByProjectNameUseCaseRequest): Promise<FetchBudgetByProjectNameUseCaseResponse> {
-    const project = await this.projectRepository.findByProjectNumber(
-      project_number,
-      baseId
-    );
+    const project =
+      await this.projectRepository.findByProjectNumberAndContractId(
+        project_number,
+        contractId
+      );
 
     if (!project)
       return left(new ResourceNotFoundError("Projeto não encontrado"));
 
     const budgets = await this.budgetRepository.findByProjectWithDetails(
       project.id.toString(),
-      baseId
+      contractId
     );
 
     if (!budgets.length)

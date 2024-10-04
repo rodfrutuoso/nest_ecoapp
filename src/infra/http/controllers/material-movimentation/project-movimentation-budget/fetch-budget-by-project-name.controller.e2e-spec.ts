@@ -56,6 +56,7 @@ describe("Fetch and Budget By Project Name (E2E)", () => {
 
     const user = await userFactory.makeBqUser({
       baseId: base.id,
+      contractId: contract.id,
     });
 
     const accessToken = jwt.sign({

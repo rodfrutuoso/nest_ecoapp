@@ -26,7 +26,7 @@ const fetchBudgetByProjectNameBodySchema = z
 @Controller("/budgets")
 export class FetchBudgetByProjectNameController {
   constructor(
-    private fetchBudgetByProjectNameUseCase: FetchBudgetByProjectNameUseCase,
+    private fetchBudgetByProjectNameUseCase: FetchBudgetByProjectNameUseCase
   ) {}
 
   @Get()
@@ -41,7 +41,7 @@ export class FetchBudgetByProjectNameController {
 
     const result = await this.fetchBudgetByProjectNameUseCase.execute({
       project_number,
-      baseId: user.baseId,
+      contractId: user.contractId,
     });
 
     if (result.isLeft()) {
