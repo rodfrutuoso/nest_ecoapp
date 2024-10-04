@@ -3,6 +3,8 @@ import { Eihter, left, right } from "../../../../../core/either";
 import { BudgetRepository } from "../../repositories/budget-repository";
 import { ProjectRepository } from "../../repositories/project-repository";
 import { ResourceNotFoundError } from "../errors/resource-not-found-error";
+import { Project } from "src/domain/material-movimentation/enterprise/entities/project";
+import { Budget } from "src/domain/material-movimentation/enterprise/entities/budget";
 
 interface FetchOnlyProjectsOfBudgetsUseCaseRequest {
   project_numbers: string[];
@@ -55,15 +57,30 @@ export class FetchOnlyProjectsOfBudgetsUseCase {
     if (!budgets.length)
       return left(new ResourceNotFoundError("Nenhum orçamento não encontrado"));
 
-    const foundProjects = budgets.map((budget) => {
-      return {
-        id: budget.projectId.toString(),
-        project_number: projects.find(
-          (project) => project.id === budget.projectId
-        )!.project_number,
-      };
-    });
+    const foundProjects = this.createProjectAndIdArray(projects, budgets);
 
     return right({ foundProjects });
+  }
+
+  private createProjectAndIdArray(
+    projects: Project[],
+    budgets: Budget[]
+  ): ProjectAndId[] {
+    const uniqueFoundProjects: Record<string, ProjectAndId> = {};
+
+    budgets.forEach((budget) => {
+      const project = projects.find(
+        (project) => project.id.toString() === budget.projectId.toString()
+      );
+
+      if (project && project.project_number) {
+        uniqueFoundProjects[project.project_number] = {
+          id: budget.projectId.toString(),
+          project_number: project.project_number,
+        };
+      }
+    });
+
+    return Object.values(uniqueFoundProjects);
   }
 }

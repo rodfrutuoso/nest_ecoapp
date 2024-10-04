@@ -76,12 +76,13 @@ export class BqBudgetRepository implements BudgetRepository {
     projectids: string[],
     contractId: string
   ): Promise<Budget[]> {
-    const projects = await this.bigquery.budget.select({
+    const budgets = await this.bigquery.budget.select({
+      distinct: true,
       whereIn: { projectId: projectids },
       where: { contractId },
     });
 
-    return projects.map(BqBudgetMapper.toDomain);
+    return budgets.map(BqBudgetMapper.toDomain);
   }
 
   async create(budgets: Budget[]): Promise<void> {

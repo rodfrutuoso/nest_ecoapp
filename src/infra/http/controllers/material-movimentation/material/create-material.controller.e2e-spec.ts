@@ -33,9 +33,8 @@ describe("Create Material (E2E)", () => {
   });
 
   test("[POST] /materials", async () => {
-    const user = await userFactory.makeBqUser({});
-
     const contract = await contractFactory.makeBqContract({});
+    const user = await userFactory.makeBqUser({ contractId: contract.id });
 
     const accessToken = jwt.sign({
       sub: user.id.toString(),
@@ -52,7 +51,6 @@ describe("Create Material (E2E)", () => {
         description: "material de teste",
         type: "concreto",
         unit: "CDA",
-        contractId: contract.id.toString(),
       });
 
     const [MaterialDataBase] = await bigquery.material.select({

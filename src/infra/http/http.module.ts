@@ -52,6 +52,8 @@ import { DeleteUserUseCase } from "src/domain/material-movimentation/application
 import { RegisterUserUseCase } from "src/domain/material-movimentation/application/use-cases/users/register-user";
 import { EditBudgetController } from "./controllers/material-movimentation/project-movimentation-budget/edit-budget.controller";
 import { EditBudgetUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/edit-budget";
+import { FetchOnlyProjectsOfBudgetsUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/fetch-only-projects-of-budgets";
+import { FetchOnlyProjectsOfBudgetController } from "./controllers/material-movimentation/project-movimentation-budget/fetch-only-projects-of-budgets.controller";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, DtoModule],
@@ -81,6 +83,7 @@ import { EditBudgetUseCase } from "src/domain/material-movimentation/application
     GetProjectByProjectNumberController,
     RegisterBudgetController,
     EditBudgetController,
+    FetchOnlyProjectsOfBudgetController,
   ],
   providers: [
     CreateMaterialUseCase,
@@ -108,6 +111,7 @@ import { EditBudgetUseCase } from "src/domain/material-movimentation/application
     GetProjectByProjectNumberUseCase,
     RegisterBudgetUseCase,
     EditBudgetUseCase,
+    FetchOnlyProjectsOfBudgetsUseCase,
   ],
 })
 export class HttpModule {}

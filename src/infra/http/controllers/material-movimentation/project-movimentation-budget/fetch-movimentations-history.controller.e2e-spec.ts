@@ -116,6 +116,11 @@ describe("Fetch Movimentation History (E2E)", () => {
           material: expect.objectContaining({ id: "material3" }),
         }),
       ]),
+      pagination: expect.objectContaining({
+        lastPage: 1,
+        page: 1,
+        pageCount: 40,
+      }),
     });
   });
 });

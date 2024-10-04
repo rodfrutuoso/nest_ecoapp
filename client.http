@@ -410,3 +410,14 @@ Authorization: Bearer {{authToken}}
     }]
 }
 
+###
+
+# @name fetch_budgets_only_projects
+POST {{baseURL}}/budgets-only-projects
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "project_numbers": ["B-12345678", "B-1234567"]
+}
+

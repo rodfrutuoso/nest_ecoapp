@@ -65,6 +65,11 @@ describe("Fetch Accounts (E2E)", () => {
         expect.objectContaining({ name: "rafael" }),
         expect.objectContaining({ name: "max" }),
       ]),
+      pagination: expect.objectContaining({
+        lastPage: 1,
+        page: 1,
+        pageCount: 40,
+      }),
     });
   });
 });
