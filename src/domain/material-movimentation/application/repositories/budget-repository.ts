@@ -12,6 +12,10 @@ export abstract class BudgetRepository {
     projectids: string[],
     contractId: string
   ): Promise<Budget[]>;
+  abstract findByProjectIdsWithDetails(
+    projectids: string[],
+    contractId: string
+  ): Promise<BudgetWithDetails[]>;
   abstract create(budgets: Budget[]): Promise<void>;
   abstract save(budget: Budget): Promise<void>;
 }
