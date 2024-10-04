@@ -88,6 +88,19 @@ export class InMemoryBudgetRepository implements BudgetRepository {
     return budgets;
   }
 
+  async findByProjectIds(
+    projectids: string[],
+    contractId: string
+  ): Promise<Budget[]> {
+    const budgets = this.items.filter(
+      (budget) =>
+        projectids.includes(budget.projectId.toString()) &&
+        budget.contractId.toString() === contractId
+    );
+
+    return budgets;
+  }
+
   async create(budgets: Budget[]) {
     budgets.map((budget) => this.items.push(budget));
   }

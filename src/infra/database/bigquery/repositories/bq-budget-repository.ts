@@ -72,6 +72,18 @@ export class BqBudgetRepository implements BudgetRepository {
     return budgetsMapped;
   }
 
+  async findByProjectIds(
+    projectids: string[],
+    contractId: string
+  ): Promise<Budget[]> {
+    const projects = await this.bigquery.budget.select({
+      whereIn: { projectId: projectids },
+      where: { contractId },
+    });
+
+    return projects.map(BqBudgetMapper.toDomain);
+  }
+
   async create(budgets: Budget[]): Promise<void> {
     const data = budgets.map(BqBudgetMapper.toBigquery);
 

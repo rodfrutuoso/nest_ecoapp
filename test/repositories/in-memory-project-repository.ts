@@ -26,19 +26,36 @@ export class InMemoryProjectRepository implements ProjectRepository {
     project_number: string,
     contractId: string
   ): Promise<Project | null> {
-    const basesId = this.baseRepository.items
+    const basesIds = this.baseRepository.items
       .filter((base) => base.contractId.toString() === contractId)
       .map((base) => base.id.toString());
 
     const project = this.items.find(
       (item) =>
         item.project_number === project_number &&
-        basesId.includes(item.baseId.toString())
+        basesIds.includes(item.baseId.toString())
     );
 
     if (!project) return null;
 
     return project;
+  }
+
+  async findByProjectNumberAndContractIds(
+    project_numbers: string[],
+    contractId: string
+  ): Promise<Project[]> {
+    const basesIds = this.baseRepository.items
+      .filter((base) => base.contractId.toString() === contractId)
+      .map((base) => base.id.toString());
+
+    const projects = this.items.filter(
+      (item) =>
+        project_numbers.includes(item.project_number) &&
+        basesIds.includes(item.baseId.toString())
+    );
+
+    return projects;
   }
 
   async findByProjectNumberWithoutBase(

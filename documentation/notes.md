@@ -30,6 +30,8 @@
 - return in pagination params max quantity of pages[x]
 - adjust edits to apoint error in case of empty body requests[x]
 - return physical document and projectIn on movimentations-budgets[x]
+- adjust FetchBudgetByProject to search by contract instead of base []
+- adjust findByProjectWithDetails from budget repository to use contract instead of base []
 
 # Test 1 file
 

@@ -40,6 +40,24 @@ export class BqProjectRepository implements ProjectRepository {
     return BqProjectMapper.toDomain(project);
   }
 
+  async findByProjectNumberAndContractIds(
+    project_numbers: string[],
+    contractId: string
+  ): Promise<Project[]> {
+    const bases = await this.bigquery.base.select({
+      where: { contractId },
+    });
+
+    const projects = await this.bigquery.project.select({
+      whereIn: {
+        baseId: bases.map((base) => base.id),
+        project_number: project_numbers,
+      },
+    });
+
+    return projects.map(BqProjectMapper.toDomain);
+  }
+
   async findByProjectNumberWithoutBase(
     project_number: string
   ): Promise<Project | null> {
