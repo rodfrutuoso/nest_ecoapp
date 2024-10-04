@@ -45,6 +45,11 @@ export class EditUserUseCase {
     status,
     password,
   }: EditUserUseCaseRequest): Promise<EditUserResponse> {
+    if (!password && !status && !contractId && !baseId && !type)
+      return left(
+        new ResourceNotFoundError("Nenhum parâmetro para edição enviado")
+      );
+
     const users = await this.userRepository.findByIds([authorId, userId]);
     const user = users.find((item) => item.id.toString() === userId);
     const author = users.find((item) => item.id.toString() === authorId);

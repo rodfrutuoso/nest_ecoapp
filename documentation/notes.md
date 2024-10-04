@@ -28,8 +28,8 @@
 - change physical document to use user base [x]
 - refact all use cases to search by user repository instead of estimator or storekeeper repository [x]
 - return in pagination params max quantity of pages[x]
-- adjust edits to apoint error in case of empty body requests[]
-- return physical document and projectIn on movimentations-budgets[]
+- adjust edits to apoint error in case of empty body requests[x]
+- return physical document and projectIn on movimentations-budgets[x]
 
 # Test 1 file
 

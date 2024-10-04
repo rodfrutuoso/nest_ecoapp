@@ -10,7 +10,7 @@ import { CurrentUser } from "src/infra/auth/current-user.decorator";
 import { UserPayload } from "src/infra/auth/jwt-strategy.guard";
 import { CreateMaterialUseCase } from "src/domain/material-movimentation/application/use-cases/material/create-material";
 import { ResourceAlreadyRegisteredError } from "src/domain/material-movimentation/application/use-cases/errors/resource-already-registered-error";
-import { ApiProperty, ApiTags } from "@nestjs/swagger";
+import { ApiTags } from "@nestjs/swagger";
 import { ResourceNotFoundError } from "src/domain/material-movimentation/application/use-cases/errors/resource-not-found-error";
 import { CreateMaterialDecorator } from "src/infra/http/swagger dto and decorators/material-movimentation/material/response decorators/create-material.decorator";
 import { CreateMaterialBodyDto } from "src/infra/http/swagger dto and decorators/material-movimentation/material/dto classes/create-material.dto";
@@ -21,7 +21,6 @@ const createMaterialBodySchema = z
     description: z.string().toUpperCase(),
     type: z.string(),
     unit: z.string(),
-    contractId: z.string().uuid(),
   })
   .required();
 
@@ -38,14 +37,14 @@ export class CreateMaterialController {
     @Body(new ZodValidationPipe(createMaterialBodySchema))
     body: CreateMaterialBodyDto
   ) {
-    const { code, description, type, unit, contractId } = body;
+    const { code, description, type, unit } = body;
 
     const result = await this.createMaterial.execute({
       code,
       description,
       type,
       unit,
-      contractId,
+      contractId: user.contractId,
     });
 
     if (result.isLeft()) {
@@ -61,6 +60,6 @@ export class CreateMaterialController {
       }
     }
 
-    return { message: "criação realizada" }
+    return { message: "criação realizada" };
   }
 }
