@@ -54,6 +54,8 @@ import { EditBudgetController } from "./controllers/material-movimentation/proje
 import { EditBudgetUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/edit-budget";
 import { FetchOnlyProjectsOfBudgetsUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/fetch-only-projects-of-budgets";
 import { FetchOnlyProjectsOfBudgetController } from "./controllers/material-movimentation/project-movimentation-budget/fetch-only-projects-of-budgets.controller";
+import { FetchExistingBudgetByProjectsUseCase } from "src/domain/material-movimentation/application/use-cases/project-movimentation-budget/fetch-existing-budgets-by-projects";
+import { FetchExistingBudgetByProjectsController } from "./controllers/material-movimentation/project-movimentation-budget/fetch-existing-budgets-by-projects.controller";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, DtoModule],
@@ -84,6 +86,7 @@ import { FetchOnlyProjectsOfBudgetController } from "./controllers/material-movi
     RegisterBudgetController,
     EditBudgetController,
     FetchOnlyProjectsOfBudgetController,
+    FetchExistingBudgetByProjectsController,
   ],
   providers: [
     CreateMaterialUseCase,
@@ -112,6 +115,7 @@ import { FetchOnlyProjectsOfBudgetController } from "./controllers/material-movi
     RegisterBudgetUseCase,
     EditBudgetUseCase,
     FetchOnlyProjectsOfBudgetsUseCase,
+    FetchExistingBudgetByProjectsUseCase,
   ],
 })
 export class HttpModule {}

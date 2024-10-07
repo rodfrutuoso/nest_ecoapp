@@ -19,6 +19,7 @@ import { GetProjectByProjectNumberQueryDto } from "./material-movimentation/proj
 import { RegisterBudgetBodyDto } from "./material-movimentation/project-movimentation-budget/dto classes/register-budget.dto";
 import { EditBudgetBodyDto } from "./material-movimentation/project-movimentation-budget/dto classes/edit-budget.dto";
 import { FetchOnlyProjectsOfBudgetsBodyDto } from "./material-movimentation/project-movimentation-budget/dto classes/fetch-only-projects-of-budgets.dto";
+import { FetchExistingBudgetByProjectsBodyDto } from "./material-movimentation/project-movimentation-budget/dto classes/fetch-existing-budgets-by-projects.dto";
 
 @Module({
   providers: [
@@ -42,6 +43,7 @@ import { FetchOnlyProjectsOfBudgetsBodyDto } from "./material-movimentation/proj
     RegisterBudgetBodyDto,
     EditBudgetBodyDto,
     FetchOnlyProjectsOfBudgetsBodyDto,
+    FetchExistingBudgetByProjectsBodyDto,
   ],
   exports: [
     FetchAccountsQueryDto,
@@ -64,6 +66,7 @@ import { FetchOnlyProjectsOfBudgetsBodyDto } from "./material-movimentation/proj
     RegisterBudgetBodyDto,
     EditBudgetBodyDto,
     FetchOnlyProjectsOfBudgetsBodyDto,
+    FetchExistingBudgetByProjectsBodyDto,
   ],
 })
 export class DtoModule {}
