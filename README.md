@@ -1,5 +1,7 @@
 # Nest EcoApp
 
+Esse projeto foi descontinuado no meu repositório pessoal, mas está sendo incrementado e atualizado <a href="https://github.com/tiecoeletrica/EcoApp_Backend_Nest" target="_blank"> nesse repositório </a>
+
 ## Descrição
 Nest EcoApp é uma aplicação backend desenvolvida com NestJS para gerenciar operações relacionadas a almoxarifados e orçamentos de obras. O projeto utiliza TypeScript e integra-se com o Google BigQuery para armazenamento e recuperação de dados.
 
